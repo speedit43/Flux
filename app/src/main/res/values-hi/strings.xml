@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">फ्लक्स</string>
+
+    // Settings
+
+    <string name="Settings">Settings</string>
+    <string name="Customize">अनुकूलित करें</string>
+    <string name="Customize_desc">थीम • आकृति • कंट्रास्ट</string>
+    <string name="About">अबाउट</string>
+    <string name="About_desc">संस्करण • डेवलपर्स</string>
+    <string name="Privacy">गोपनीयता</string>
+    <string name="Privacy_desc">स्क्रीन सुरक्षा • ऐप लॉक</string>
+    <string name="Languages">भाषाएँ</string>
+    <string name="Languages_desc">भाषा बदलें</string>
+    <string name="Contact">संपर्क करें</string>
+    <string name="Contact_desc">संपर्क करें</string>
+    <string name="Support">सहायता</string>
+    <string name="Support_desc">अपना समर्थन दिखाएँ</string>
+    <string name="System_theme">सिस्टम थीम</string>
+    <string name="System_theme_desc">डिवाइस की थीम के अनुसार स्वचालित रूप से अनुकूलित</string>
+    <string name="Light_theme">लाइट थीम</string>
+    <string name="Light_theme_desc">लाइट थीम में बदलें</string>
+    <string name="Dark_theme">डार्क थीम</string>
+    <string name="Dark_theme_desc">डार्क थीम में बदलें</string>
+    <string name="Dynamic_theme">डायनामिक थीम</string>
+    <string name="Dynamic_theme_desc">पृष्ठभूमि के अनुसार स्वचालित रूप से अनुकूलित</string>
+    <string name="Amoled_theme">एमोलेड थीम</string>
+    <string name="Amoled_theme_desc">पृष्ठभूमि के लिए काला रंग उपयोग करें</string>
+    <string name="Radius">कोण</string>
+    <string name="Radius_desc">आकार बदलें</string>
+    <string name="Contrast">कंट्रास्ट</string>
+    <string name="Shape">आकार</string>
+    <string name="Themes">थीम्स</string>
+    <string name="Select_radius">कोण चुनें</string>
+    <string name="System_language">सिस्टम भाषा</string>
+    <string name="System_language_desc">डिवाइस की भाषा के अनुसार स्वचालित रूप से अनुकूलित</string>
+    <string name="Build_type">बिल्ड प्रकार</string>
+    <string name="Build_version">बिल्ड संस्करण</string>
+
+
+</resources>
