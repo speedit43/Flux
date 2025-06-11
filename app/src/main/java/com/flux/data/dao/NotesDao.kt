@@ -7,12 +7,11 @@ import androidx.room.OnConflictStrategy
 import androidx.room.Query
 import com.flux.data.model.NotesModel
 import kotlinx.coroutines.flow.Flow
-import java.util.UUID
 
 @Dao
 interface NotesDao {
     @Insert(onConflict=OnConflictStrategy.REPLACE)
-    suspend fun upsertNote(note: NotesModel)
+    suspend fun upsertNote(notes: NotesModel)
 
     @Insert(onConflict=OnConflictStrategy.REPLACE)
     suspend fun upsertNotes(notes: List<NotesModel>)
@@ -21,7 +20,7 @@ interface NotesDao {
     suspend fun deleteNote(note: NotesModel)
 
     @Query("DELETE FROM NotesModel WHERE notesId IN (:ids)")
-    suspend fun deleteNotesByIds(ids: List<UUID>)
+    suspend fun deleteNotes(ids: List<Int>)
 
     @Query("SELECT * FROM NotesModel")
     fun loadAllNotes(): Flow<List<NotesModel>>

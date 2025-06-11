@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Colorize
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.rounded.GridView
 import androidx.compose.material.icons.rounded.RoundedCorner
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -87,6 +88,7 @@ fun Customize(
                     switchEnabled = { onSettingsEvents(SettingEvents.UpdateSettings(settings.data.copy(isAutomaticTheme = false, isDarkMode = false))) }
                 )
             }
+
             item{
                 val isAutomatic=settings.data.isAutomaticTheme
                 SettingOption(
@@ -139,7 +141,7 @@ fun Customize(
                     icon = Icons.Rounded.RoundedCorner,
                     radius = shapeManager(
                         radius = settings.data.cornerRadius,
-                        isBoth = true
+                        isFirst = true
                     ),
                     actionType = ActionType.CUSTOM,
                     customAction = { onExit ->
@@ -148,6 +150,19 @@ fun Customize(
                             onExit()
                         }
                     }
+                )
+
+                SettingOption(
+                    title = "Grid View",
+                    description = "Change Notes View to Grid",
+                    icon = Icons.Rounded.GridView,
+                    radius = shapeManager(
+                        radius = settings.data.cornerRadius,
+                        isLast = true
+                    ),
+                    variable = settings.data.isGridView,
+                    actionType = ActionType.SWITCH,
+                    switchEnabled = { onSettingsEvents(SettingEvents.UpdateSettings(settings.data.copy(isGridView = it))) },
                 )
             }
 

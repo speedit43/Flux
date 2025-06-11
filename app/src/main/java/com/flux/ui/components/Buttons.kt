@@ -11,15 +11,12 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 
 @Composable
-fun CloseButton(
-    contentDescription: String = "Close",
-    onCloseClicked:  () -> Unit
-) {
+fun CloseButton(onCloseClicked:  () -> Unit) {
     IconButton(onClick = onCloseClicked) {
         Icon(
             imageVector = Icons.Rounded.Close,
-            contentDescription = contentDescription,
-            tint = MaterialTheme.colorScheme.onBackground
+            contentDescription = "Close",
+            tint = MaterialTheme.colorScheme.primary
         )
     }
 }
@@ -30,7 +27,7 @@ fun SettingsButton(onSettingsClicked: () -> Unit) {
         Icon(
             imageVector = Icons.Rounded.Settings,
             contentDescription = "Settings",
-            tint = MaterialTheme.colorScheme.onBackground
+            tint = MaterialTheme.colorScheme.primary
         )
     }
 }
@@ -41,7 +38,7 @@ fun GridViewButton(isGridView: Boolean, onButtonClicked: () -> Unit) {
         Icon(
             imageVector = if(isGridView) Icons.Outlined.GridView else Icons.Outlined.ViewAgenda,
             contentDescription = "GridView",
-            tint = MaterialTheme.colorScheme.onBackground
+            tint = MaterialTheme.colorScheme.primary
         )
     }
 }

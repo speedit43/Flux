@@ -1,28 +1,37 @@
 package com.flux.ui.screens.settings
 
+import android.content.Intent
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.rounded.Build
+import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.rounded.Code
+import androidx.compose.material.icons.rounded.DeveloperMode
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.flux.BuildConfig
 import com.flux.R
 import com.flux.ui.components.BasicScaffold
-import com.flux.ui.components.SettingCategory
 import com.flux.ui.components.SettingIcon
 import com.flux.ui.components.SingleSettingOption
 import com.flux.ui.components.shapeManager
+import androidx.core.net.toUri
+import com.flux.ui.components.ActionType
+import com.flux.ui.components.SettingOption
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun About(navController: NavController, radius: Int){
+    val context = LocalContext.current
 
     BasicScaffold(
         title = stringResource(R.string.About),
@@ -40,22 +49,47 @@ fun About(navController: NavController, radius: Int){
             }
 
             item{
-                SettingCategory(
+                SettingOption(
                     title = stringResource(R.string.Build_type),
-                    subTitle = BuildConfig.BUILD_TYPE.uppercase(),
-                    icon = Icons.Rounded.Build,
-                    shape = shapeManager(radius = radius, isFirst = true),
-                    action = { }
+                    description = BuildConfig.BUILD_TYPE.uppercase(),
+                    icon = Icons.Filled.Settings,
+                    radius = shapeManager(radius = radius, isFirst = true),
+                    actionType = ActionType.None
                 )
             }
 
             item{
-                SettingCategory(
-                    title = stringResource(R.string.Build_version),
-                    subTitle = BuildConfig.VERSION_NAME,
+                SettingOption(
+                    title =  stringResource(R.string.Build_version),
+                    description = BuildConfig.VERSION_NAME,
                     icon = Icons.Rounded.Info,
-                    shape = shapeManager(radius = radius, isLast = true),
-                    action = { }
+                    radius = shapeManager(radius = radius, isLast = true),
+                    actionType = ActionType.None
+                )
+            }
+
+            item{
+                Spacer(Modifier.height(24.dp))
+                SettingOption(
+                    title =  "Developer",
+                    description = "Ronit Chinda",
+                    icon = Icons.Rounded.DeveloperMode,
+                    radius = shapeManager(radius = radius, isFirst = true),
+                    actionType = ActionType.None
+                )
+            }
+
+            item{
+                SettingOption(
+                    title =  "Source Code",
+                    description = "Github Repository",
+                    icon = Icons.Rounded.Code,
+                    radius = shapeManager(radius = radius, isLast = true),
+                    actionType = ActionType.LINK,
+                    linkClicked = {
+                        val intent = Intent(Intent.ACTION_VIEW, "https://github.com/chindaronit/Flux".toUri())
+                        context.startActivity(intent)
+                    }
                 )
             }
         }

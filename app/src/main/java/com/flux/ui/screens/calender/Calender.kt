@@ -21,7 +21,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.flux.navigation.BottomBar
 import com.flux.navigation.NavRoutes
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -42,8 +41,7 @@ fun Calender(navController: NavController){
                     }
                 }
             )
-        },
-        bottomBar = { BottomBar(navController) }
+        }
     ) { innerPadding ->
 //        LazyColumn(modifier = Modifier.padding(innerPadding)) {
 //            item{

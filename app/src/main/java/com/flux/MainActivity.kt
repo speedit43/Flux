@@ -12,11 +12,13 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.flux.navigation.AppNavHost
 import com.flux.ui.theme.FluxTheme
 import com.flux.ui.viewModel.LabelViewModel
 import com.flux.ui.viewModel.NotesViewModel
 import com.flux.ui.viewModel.SettingsViewModel
+import com.flux.ui.viewModel.WorkspaceViewModel
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -31,9 +33,12 @@ class MainActivity : AppCompatActivity() {
             val settingsViewModel: SettingsViewModel = hiltViewModel()
             val settings by settingsViewModel.state.collectAsState()
             val notesViewModel: NotesViewModel = hiltViewModel()
-            val notesState by notesViewModel.state.collectAsState()
             val labelViewModel: LabelViewModel = hiltViewModel()
-            val labelState by labelViewModel.state.collectAsState()
+            val workspaceViewModel: WorkspaceViewModel = hiltViewModel()
+            val notesState by notesViewModel.state.collectAsStateWithLifecycle()
+            val labelState by labelViewModel.state.collectAsStateWithLifecycle()
+            val workspaceState by workspaceViewModel.state.collectAsStateWithLifecycle()
+
 
             FluxTheme(settings) {
                 Surface(
@@ -44,9 +49,11 @@ class MainActivity : AppCompatActivity() {
                         settingsViewModel = settingsViewModel,
                         notesViewModel = notesViewModel,
                         labelViewModel = labelViewModel,
+                        workspaceViewModel=workspaceViewModel,
                         settings = settings,
                         notesState = notesState,
-                        labelState = labelState
+                        labelState = labelState,
+                        workspaceState=workspaceState
                     )
                 }
             }

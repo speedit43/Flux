@@ -28,14 +28,11 @@ class SettingsViewModel @Inject constructor (
     private fun updateState(reducer: (Settings) -> Settings) { _state.value = reducer(_state.value) }
 
     private fun reduce(event: SettingEvents) {
-        when (event) {
-            is SettingEvents.UpdateSettings -> { updateSettings(event.data) }
-        }
+        when (event) { is SettingEvents.UpdateSettings -> { updateSettings(event.data) } }
     }
 
     private fun loadSettings(){
         updateState { it.copy(isLoading = true) }
-
         viewModelScope.launch {
             dao.loadSettings().collect { data->
                 if(data!=null) updateState { it.copy(isLoading = false, data=data) }

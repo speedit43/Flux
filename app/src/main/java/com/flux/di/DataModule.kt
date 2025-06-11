@@ -5,9 +5,11 @@ import androidx.room.Room
 import com.flux.data.dao.LabelDao
 import com.flux.data.dao.NotesDao
 import com.flux.data.dao.SettingsDao
+import com.flux.data.dao.WorkspaceDao
 import com.flux.data.database.LabelDatabase
 import com.flux.data.database.NotesDatabase
 import com.flux.data.database.SettingsDatabase
+import com.flux.data.database.WorkspaceDatabase
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -60,4 +62,18 @@ object DataModule {
     @Singleton
     @Provides
     fun provideLabelDao(db: LabelDatabase): LabelDao = db.dao
+
+    @Singleton
+    @Provides
+    fun provideWorkspaceDatabase(
+        @ApplicationContext app: Context
+    ): WorkspaceDatabase = Room.databaseBuilder(
+        app,
+        WorkspaceDatabase::class.java,
+        "WorkspaceDatabase"
+    ).build()
+
+    @Singleton
+    @Provides
+    fun provideWorkspaceDao(db: WorkspaceDatabase): WorkspaceDao = db.dao
 }

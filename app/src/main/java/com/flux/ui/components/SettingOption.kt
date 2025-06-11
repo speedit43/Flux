@@ -50,7 +50,8 @@ enum class ActionType {
     SWITCH,
     LINK,
     CUSTOM,
-    CLIPBOARD
+    CLIPBOARD,
+    None
 }
 
 sealed class SettingIcon {
@@ -72,8 +73,8 @@ fun SingleSettingOption(
 ) {
     Card(
         modifier = Modifier
-            .padding(top = if(first) 16.dp else 0.dp, bottom = if(last) 16.dp else 0.dp)
-            .clip(shapeManager(isBoth = true, radius=radius))
+            .padding(top = if (first) 16.dp else 0.dp, bottom = if (last) 16.dp else 0.dp)
+            .clip(shapeManager(isBoth = true, radius = radius))
             .background(MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
             .clickable { onClick() },
         shape = shapeManager(isBoth = true, radius=radius),
@@ -84,7 +85,9 @@ fun SingleSettingOption(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(8.dp).fillMaxWidth()
+            modifier = Modifier
+                .padding(8.dp)
+                .fillMaxWidth()
         ) {
             Row(
                 Modifier.weight(1f),
@@ -185,7 +188,7 @@ fun SettingOption(
                         }
                         Spacer(modifier = Modifier.width(8.dp))
                     }
-                    if (actionType != ActionType.LINK && !description.isNullOrBlank()) {
+                    if (!description.isNullOrBlank()) {
                         MaterialText(
                             title = title,
                             description = description.ifBlank { clipboardText }
@@ -213,6 +216,7 @@ private fun handleAction(
         ActionType.LINK -> onLinkClicked()
         ActionType.CUSTOM -> customAction()
         ActionType.CLIPBOARD -> copyToClipboard(context, clipboardText)
+        ActionType.None -> {}
     }
 }
 
@@ -246,6 +250,7 @@ private fun RenderActionComponent(
         ActionType.LINK -> RenderLinkIcon(onLinkClicked)
         ActionType.CLIPBOARD -> RenderClipboardIcon()
         ActionType.CUSTOM -> customButton()
+        ActionType.None -> {}
     }
 }
 

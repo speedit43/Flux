@@ -24,9 +24,7 @@ class LabelViewModel @Inject constructor(
     val state: StateFlow<LabelState> = _state.asStateFlow()
 
     init { loadAllLabels() }
-
     fun onEvent(event: LabelEvents) { viewModelScope.launch { reduce(event) } }
-
     private fun updateState(reducer: (LabelState) -> LabelState) { _state.value = reducer(_state.value) }
     private suspend fun reduce(event: LabelEvents) {
         when (event) {
@@ -39,18 +37,8 @@ class LabelViewModel @Inject constructor(
         updateState { it.copy(isLoading = true) }
         viewModelScope.launch {
             dao.loadAllLabels().collect { data ->
-                if (data.isEmpty()) {
-                    seedDefaultLabels()
-                } else {
-                    updateState { it.copy(isLoading = false, data = data) }
-                }
+                updateState { it.copy(isLoading = false, data = data) }
             }
-        }
-    }
-
-    private suspend fun seedDefaultLabels() {
-        withContext(Dispatchers.IO) {
-            dao.upsertLabels(listOf(LabelModel(value = "Bookmark"), LabelModel(value = "Default")))
         }
     }
 

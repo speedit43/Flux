@@ -4,17 +4,19 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Label
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Bookmark
-import androidx.compose.material.icons.filled.BookmarkBorder
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.outlined.Delete
+import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -26,17 +28,67 @@ import androidx.compose.ui.Modifier
 @Composable
 fun DropdownMenuWithDetails(
     isPinned: Boolean,
-    isBookmarked: Boolean,
     onTogglePinned: ()->Unit,
-    onToggleBookmark: ()->Unit,
     onAddLabel: ()->Unit,
+    onAboutClicked: ()->Unit,
     onDelete: ()->Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    Box(
-        modifier = Modifier
-    ) {
+    Box(modifier = Modifier) {
+        IconButton(onClick = { expanded = !expanded }) { Icon(Icons.Default.MoreVert, contentDescription = "More options") }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded = false }
+        ) {
+            DropdownMenuItem(
+                text = { Text(if (isPinned) "Unpin" else "Pin") },
+                leadingIcon = { Icon(if (isPinned) Icons.Filled.PushPin else Icons.Outlined.PushPin, contentDescription = null) },
+                onClick = onTogglePinned
+            )
+            HorizontalDivider()
+            DropdownMenuItem(
+                text = { Text("Labels") },
+                leadingIcon = { Icon(Icons.AutoMirrored.Outlined.Label, contentDescription = null) },
+                trailingIcon = { Icon(Icons.Default.Add, contentDescription = null) },
+                onClick = {
+                    expanded=false
+                    onAddLabel()
+                }
+            )
+            HorizontalDivider()
+            DropdownMenuItem(
+                text = { Text("About") },
+                leadingIcon = { Icon(Icons.Outlined.Info, contentDescription = null) },
+                onClick = {
+                    expanded=false
+                    onAboutClicked()
+                }
+            )
+            HorizontalDivider()
+            DropdownMenuItem(
+                colors = MenuDefaults.itemColors(textColor = MaterialTheme.colorScheme.error, leadingIconColor = MaterialTheme.colorScheme.error),
+                text = { Text("Delete Note") },
+                leadingIcon = { Icon(Icons.Outlined.Delete, contentDescription = null) },
+                onClick = {
+                    expanded=false
+                    onDelete()
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun WorkspaceMore(
+    showEditLabel: Boolean,
+    onEditDetails: ()->Unit,
+    onEditLabel: ()->Unit,
+    onDelete: ()->Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box(modifier = Modifier) {
         IconButton(onClick = { expanded = !expanded }) {
             Icon(Icons.Default.MoreVert, contentDescription = "More options")
         }
@@ -44,42 +96,29 @@ fun DropdownMenuWithDetails(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            // First section
             DropdownMenuItem(
-                text = {
-                    val text=if (isPinned) "Unpin" else "Pin"
-                    Text(text) },
-                leadingIcon = { val icon = if (isPinned) Icons.Filled.PushPin else Icons.Outlined.PushPin
-                    Icon(icon, contentDescription = null) },
-                onClick = onTogglePinned
+                text = { Text("Edit Details") },
+                leadingIcon = { Icon(Icons.Outlined.Edit, contentDescription = null) },
+                onClick = onEditDetails
             )
-            DropdownMenuItem(
-                text = {
-                    val text=if (isBookmarked) "Bookmarked" else "Bookmark"
-                    Text(text) },
-                leadingIcon = { val icon = if (isBookmarked) Icons.Default.Bookmark else Icons.Default.BookmarkBorder
-                    Icon(icon, contentDescription = null) },
-                onClick = onToggleBookmark
-            )
-
             HorizontalDivider()
-
-            // Second section
-            DropdownMenuItem(
-                text = { Text("Add Label") },
-                leadingIcon = { Icon(Icons.AutoMirrored.Outlined.Label, contentDescription = null) },
-                trailingIcon = { Icon(Icons.Default.Add, contentDescription = null) },
-                onClick = onAddLabel
-            )
-
+            if(showEditLabel){
+                DropdownMenuItem(
+                    text = { Text("Labels") },
+                    leadingIcon = { Icon(Icons.AutoMirrored.Outlined.Label, contentDescription = null) },
+                    onClick = onEditLabel
+                )
+            }
             HorizontalDivider()
-
             DropdownMenuItem(
-                text = { Text("Delete Note") },
+                colors =  MenuDefaults.itemColors(
+                    leadingIconColor = MaterialTheme.colorScheme.error,
+                    textColor = MaterialTheme.colorScheme.error
+                ),
+                text = { Text("Delete Workspace") },
                 leadingIcon = { Icon(Icons.Outlined.Delete, contentDescription = null) },
                 onClick = onDelete
             )
-
         }
     }
 }

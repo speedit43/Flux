@@ -8,13 +8,14 @@
     <string name="Customize">अनुकूलित करें</string>
     <string name="Customize_desc">थीम • आकृति • कंट्रास्ट</string>
     <string name="About">अबाउट</string>
-    <string name="About_desc">संस्करण • डेवलपर्स</string>
+    <string name="About_desc">संस्करण • डेवलपर्स • स्रोत कोड</string>
     <string name="Privacy">गोपनीयता</string>
     <string name="Privacy_desc">स्क्रीन सुरक्षा • ऐप लॉक</string>
     <string name="Languages">भाषाएँ</string>
     <string name="Languages_desc">भाषा बदलें</string>
     <string name="Contact">संपर्क करें</string>
-    <string name="Contact_desc">संपर्क करें</string>
+    <string name="Contact_desc">फ़ीचर अनुरोध • बग रिपोर्ट</string>
+    <string name="Contact_desc2">GitHub पर समस्या उठाएँ</string>
     <string name="Support">सहायता</string>
     <string name="Support_desc">अपना समर्थन दिखाएँ</string>
     <string name="System_theme">सिस्टम थीम</string>
@@ -30,7 +31,7 @@
     <string name="Radius">कोण</string>
     <string name="Radius_desc">आकार बदलें</string>
     <string name="Contrast">कंट्रास्ट</string>
-    <string name="Shape">आकार</string>
+    <string name="Shape">आकार • दृश्य</string>
     <string name="Themes">थीम्स</string>
     <string name="Select_radius">कोण चुनें</string>
     <string name="System_language">सिस्टम भाषा</string>
