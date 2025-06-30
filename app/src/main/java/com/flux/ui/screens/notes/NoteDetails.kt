@@ -120,7 +120,7 @@ fun NoteDetails(
     }
 
     BackHandler {
-        onNotesEvents(NotesEvents.UpsertNote(note.copy(title=title, description = description, isPinned = isPinned, labels = noteLabels.map { it.labelId }.toList())))
+        onNotesEvents(NotesEvents.UpsertNote(note.copy(title=title, description = description, isPinned = isPinned, lastEdited = Date(), labels = noteLabels.map { it.labelId }.toList())))
         navController.popBackStack()
     }
 

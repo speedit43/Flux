@@ -4,6 +4,6 @@ import com.flux.data.model.WorkspaceModel
 
 
 sealed class WorkspaceEvents {
-    data class DeleteSpaces(val spacesId: List<Int>): WorkspaceEvents()
+    data class DeleteSpace(val space: WorkspaceModel): WorkspaceEvents()
     data class UpsertSpace(val space: WorkspaceModel): WorkspaceEvents()
 }

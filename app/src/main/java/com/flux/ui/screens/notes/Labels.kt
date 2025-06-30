@@ -31,7 +31,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.flux.data.model.LabelModel
 import com.flux.ui.components.AddLabelDialog
-import com.flux.ui.events.LabelEvents
+import com.flux.ui.events.NotesEvents
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -39,7 +39,7 @@ fun EditLabels(
     navController: NavController,
     workspaceId: Int,
     allLabels: List<LabelModel>,
-    onLabelEvents: (LabelEvents)->Unit,
+    onNotesEvents: (NotesEvents)->Unit,
 ) {
     var showAddLabel by remember { mutableStateOf(false) }
     var selectedLabel by remember { mutableStateOf<LabelModel>(LabelModel()) }
@@ -47,7 +47,7 @@ fun EditLabels(
     if(showAddLabel){
         AddLabelDialog(initialValue = selectedLabel.value,
             onConfirmation = {
-                onLabelEvents(LabelEvents.UpsertLabel(selectedLabel.copy(value = it, workspaceId = workspaceId)))
+                onNotesEvents(NotesEvents.UpsertLabel(selectedLabel.copy(value = it, workspaceId = workspaceId)))
                 selectedLabel=LabelModel()
             }
         ) {
@@ -88,7 +88,7 @@ fun EditLabels(
         ) {
             items(allLabels) { label ->
                 EditLabelBox(label.value, onDelete = {
-                    onLabelEvents(LabelEvents.DeleteLabel(label))
+                    onNotesEvents(NotesEvents.DeleteLabel(label))
                 }) {
                     showAddLabel=true
                     selectedLabel=label

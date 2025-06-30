@@ -1,6 +1,7 @@
 package com.flux.data.dao
 
 import androidx.room.Dao
+import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
@@ -12,8 +13,8 @@ interface WorkspaceDao {
     @Insert(onConflict=OnConflictStrategy.REPLACE)
     suspend fun upsertWorkspace(space: WorkspaceModel)
 
-    @Query("DELETE FROM WorkspaceModel WHERE workspaceId IN (:workspaceIds)")
-    suspend fun deleteWorkspacesByIds(workspaceIds: List<Int>)
+    @Delete
+    suspend fun deleteWorkspace(workspace: WorkspaceModel)
 
     @Query("SELECT * FROM WorkspaceModel")
     fun loadAllWorkspaces(): Flow<List<WorkspaceModel>>

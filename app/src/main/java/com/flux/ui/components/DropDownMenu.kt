@@ -4,11 +4,15 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.Label
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
 import androidx.compose.material.icons.outlined.Info
+import androidx.compose.material.icons.outlined.Lock
+import androidx.compose.material.icons.outlined.LockOpen
+import androidx.compose.material.icons.outlined.PhotoSizeSelectActual
 import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
@@ -81,34 +85,70 @@ fun DropdownMenuWithDetails(
 
 @Composable
 fun WorkspaceMore(
+    isLocked: Boolean,
     showEditLabel: Boolean,
+    isPinned: Boolean,
     onEditDetails: ()->Unit,
     onEditLabel: ()->Unit,
-    onDelete: ()->Unit
+    onAddCover: ()->Unit,
+    onDelete: ()->Unit,
+    onTogglePinned: () -> Unit,
+    onToggleLock: ()->Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier) {
-        IconButton(onClick = { expanded = !expanded }) {
-            Icon(Icons.Default.MoreVert, contentDescription = "More options")
-        }
+        IconButton(onClick = { expanded=true }) { Icon(Icons.Default.MoreVert, contentDescription = "More options") }
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded = false }
+            onDismissRequest = { expanded=false }
         ) {
             DropdownMenuItem(
                 text = { Text("Edit Details") },
                 leadingIcon = { Icon(Icons.Outlined.Edit, contentDescription = null) },
-                onClick = onEditDetails
+                onClick = {
+                    expanded=false
+                    onEditDetails()
+                }
             )
             HorizontalDivider()
+            DropdownMenuItem(
+                text = { Text(if (isPinned) "UnPin" else "Pin") },
+                leadingIcon = { Icon(if (isPinned) Icons.Filled.PushPin else Icons.Outlined.PushPin, contentDescription = null) },
+                onClick = {
+                    expanded=false
+                    onTogglePinned()
+                }
+            )
+            HorizontalDivider()
+            DropdownMenuItem(
+                text = { Text("Change Cover") },
+                leadingIcon = { Icon(Icons.Outlined.PhotoSizeSelectActual, contentDescription = null) },
+                onClick = {
+                    expanded=false
+                    onAddCover()
+                }
+            )
             if(showEditLabel){
+                HorizontalDivider()
                 DropdownMenuItem(
                     text = { Text("Labels") },
                     leadingIcon = { Icon(Icons.AutoMirrored.Outlined.Label, contentDescription = null) },
-                    onClick = onEditLabel
+                    onClick = {
+                        expanded=false
+                        onEditLabel()
+                    }
                 )
             }
+            HorizontalDivider()
+            DropdownMenuItem(
+                text = { Text(if(isLocked) "Unlock Workspace" else "Lock Workspace") },
+                leadingIcon = { Icon(if(isLocked) Icons.Outlined.LockOpen else Icons.Outlined.Lock, contentDescription = null) },
+                onClick = {
+                    expanded=false
+                    onToggleLock()
+                }
+            )
             HorizontalDivider()
             DropdownMenuItem(
                 colors =  MenuDefaults.itemColors(
@@ -117,7 +157,49 @@ fun WorkspaceMore(
                 ),
                 text = { Text("Delete Workspace") },
                 leadingIcon = { Icon(Icons.Outlined.Delete, contentDescription = null) },
-                onClick = onDelete
+                onClick = {
+                    expanded=false
+                    onDelete()
+                }
+            )
+        }
+    }
+}
+
+@Composable
+fun WorkspacePreviewMore(
+    isPinned: Boolean,
+    onDelete: ()->Unit,
+    onTogglePinned: () -> Unit
+) {
+    var expanded by remember { mutableStateOf(false) }
+
+    Box(modifier = Modifier) {
+        IconButton(onClick = { expanded=true }) { Icon(Icons.Default.MoreHoriz, contentDescription = "More options") }
+        DropdownMenu(
+            expanded = expanded,
+            onDismissRequest = { expanded=false }
+        ) {
+            DropdownMenuItem(
+                text = { Text(if (isPinned) "UnPin" else "Pin") },
+                leadingIcon = { Icon(if (isPinned) Icons.Filled.PushPin else Icons.Outlined.PushPin, contentDescription = null) },
+                onClick = {
+                    expanded=false
+                    onTogglePinned()
+                }
+            )
+            HorizontalDivider()
+            DropdownMenuItem(
+                colors =  MenuDefaults.itemColors(
+                    leadingIconColor = MaterialTheme.colorScheme.error,
+                    textColor = MaterialTheme.colorScheme.error
+                ),
+                text = { Text("Delete Workspace") },
+                leadingIcon = { Icon(Icons.Outlined.Delete, contentDescription = null) },
+                onClick = {
+                    expanded=false
+                    onDelete()
+                }
             )
         }
     }

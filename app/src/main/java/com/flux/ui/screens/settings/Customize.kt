@@ -16,6 +16,7 @@ import androidx.compose.material.icons.filled.Colorize
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Settings
+import androidx.compose.material.icons.rounded.GridOn
 import androidx.compose.material.icons.rounded.GridView
 import androidx.compose.material.icons.rounded.RoundedCorner
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -60,8 +61,7 @@ fun Customize(
         title = stringResource(R.string.Customize),
         onBackClicked = { navController.popBackStack() }
     ) { innerPadding ->
-        LazyColumn(modifier = Modifier.padding(innerPadding).padding(16.dp, 8.dp, 16.dp))
-        {
+        LazyColumn(modifier = Modifier.padding(innerPadding).padding(16.dp, 8.dp, 16.dp)) {
             item{
                 Text(stringResource(R.string.Themes), color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold, fontSize = 20.sp)
                 Spacer(Modifier.height(12.dp))
@@ -130,9 +130,14 @@ fun Customize(
                 )
             }
 
-            item{
+            item {
                 Spacer(Modifier.height(12.dp))
-                Text(stringResource(R.string.Shape), color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                Text(
+                    stringResource(R.string.Shape),
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
+                )
                 Spacer(Modifier.height(12.dp))
 
                 SettingOption(
@@ -146,23 +151,43 @@ fun Customize(
                     actionType = ActionType.CUSTOM,
                     customAction = { onExit ->
                         OnRadiusClicked(settings) {
-                            onSettingsEvents(SettingEvents.UpdateSettings(settings.data.copy(cornerRadius = it)))
+                            onSettingsEvents(
+                                SettingEvents.UpdateSettings(
+                                    settings.data.copy(
+                                        cornerRadius = it
+                                    )
+                                )
+                            )
                             onExit()
                         }
                     }
                 )
-
+            }
+            item {
                 SettingOption(
                     title = "Grid View",
                     description = "Change Notes View to Grid",
                     icon = Icons.Rounded.GridView,
                     radius = shapeManager(
                         radius = settings.data.cornerRadius,
-                        isLast = true
                     ),
                     variable = settings.data.isGridView,
                     actionType = ActionType.SWITCH,
                     switchEnabled = { onSettingsEvents(SettingEvents.UpdateSettings(settings.data.copy(isGridView = it))) },
+                )
+            }
+            item{
+                SettingOption(
+                    title = "Monthly View",
+                    description = "Change to Monthly calender View",
+                    icon = Icons.Rounded.GridOn,
+                    radius = shapeManager(
+                        radius = settings.data.cornerRadius,
+                        isLast = true
+                    ),
+                    variable = settings.data.isCalenderMonthlyView,
+                    actionType = ActionType.SWITCH,
+                    switchEnabled = { onSettingsEvents(SettingEvents.UpdateSettings(settings.data.copy(isCalenderMonthlyView = it))) },
                 )
             }
 

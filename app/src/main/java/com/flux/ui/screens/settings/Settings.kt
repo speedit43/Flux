@@ -1,5 +1,6 @@
 package com.flux.ui.screens.settings
 
+import android.content.Intent
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
@@ -10,11 +11,12 @@ import androidx.compose.material.icons.rounded.Language
 import androidx.compose.material.icons.rounded.Palette
 import androidx.compose.material.icons.rounded.PrivacyTip
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.navigation.NavController
 import com.flux.R
 import com.flux.navigation.NavRoutes
@@ -30,14 +32,27 @@ import com.flux.ui.state.Settings
 fun Settings(
     navController: NavController,
     settings: Settings,
-    snackBarHostState: SnackbarHostState
 ) {
+    val context= LocalContext.current
     BasicScaffold(
         title = stringResource(R.string.Settings),
         onBackClicked = { navController.popBackStack() }
     ) { innerPadding ->
         LazyColumn(modifier = Modifier.padding(innerPadding).padding(16.dp, 8.dp, 16.dp))
         {
+            item {
+                SingleSettingOption(
+                    radius = settings.data.cornerRadius,
+                    text = stringResource(R.string.Support),
+                    description = stringResource(R.string.Support_desc),
+                    trailingIcon = SettingIcon.Vector(Icons.Default.Coffee),
+                    last = true
+                ) {
+                    val intent = Intent(Intent.ACTION_VIEW, "https://coff.ee/chindaronit".toUri())
+                    context.startActivity(intent)
+                }
+            }
+
             item {
                 SettingCategory(
                     title = stringResource(R.string.Privacy),
@@ -108,16 +123,6 @@ fun Settings(
                             restoreState = true
                         }
                     })
-            }
-
-            item {
-                SingleSettingOption(
-                    radius = settings.data.cornerRadius,
-                    text = stringResource(R.string.Support),
-                    description = stringResource(R.string.Support_desc),
-                    trailingIcon = SettingIcon.Vector(Icons.Default.Coffee),
-                    first = true
-                ) { }
             }
         }
     }

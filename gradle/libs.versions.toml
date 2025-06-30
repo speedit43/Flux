@@ -1,21 +1,26 @@
 [versions]
 agp = "8.10.1"
+biometric = "1.4.0-alpha04"
+gson = "2.11.0"
 kotlin = "2.0.0"
 coreKtx = "1.16.0"
-appcompat = "1.7.0"
+appcompat = "1.7.1"
 ksp = "2.0.0-1.0.24"
-lifecycleRuntimeKtx = "2.9.0"
+lifecycleRuntimeKtx = "2.9.1"
 activityCompose = "1.10.1"
-composeBom = "2025.05.01"
+composeBom = "2025.06.01"
 coreSplashscreen = "1.0.1"
 navigationCompose = "2.9.0"
-room = "2.7.1"
+room = "2.7.2"
+coilCompose = "2.7.0"
 
 # Hilt
 hilt = "2.52"
 hiltNavigationCompose = "1.2.0"
+firebaseCrashlyticsBuildtools = "3.0.4"
 
 [libraries]
+androidx-biometric = { module = "androidx.biometric:biometric", version.ref = "biometric" }
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
 androidx-lifecycle-runtime-ktx = { group = "androidx.lifecycle", name = "lifecycle-runtime-ktx", version.ref = "lifecycleRuntimeKtx" }
 androidx-activity-compose = { group = "androidx.activity", name = "activity-compose", version.ref = "activityCompose" }
@@ -26,17 +31,20 @@ androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscree
 androidx-compose-material-icons-extended = { group = "androidx.compose.material", name = "material-icons-extended" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 
-
-#Room
+#Room (Offline Database)
 androidx-room-compiler = { module = "androidx.room:room-compiler", version.ref = "room" }
 androidx-room-runtime = { module = "androidx.room:room-runtime", version.ref = "room" }
 androidx-room-ktx = { group = "androidx.room", name = "room-ktx", version.ref = "room" }
 
-
 # Hilt (Dependency Injection)
+gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 hilt-android = { module = "com.google.dagger:hilt-android", version.ref = "hilt" }
 hilt-android-compiler = { module = "com.google.dagger:hilt-android-compiler", version.ref = "hilt" }
 hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+
+#Coil (Image rendering)
+coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
+firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

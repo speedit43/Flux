@@ -8,7 +8,9 @@ data class SettingsModel(
     @PrimaryKey
     val settingId: String = "Settings",
     val contrast: Int = 0,
+    val isBiometricEnabled: Boolean=false,
     val isGridView: Boolean=true,
+    val isCalenderMonthlyView: Boolean=false,
     val isDarkMode: Boolean = false,
     val isAutomaticTheme: Boolean = true,
     val cornerRadius: Int = 32,

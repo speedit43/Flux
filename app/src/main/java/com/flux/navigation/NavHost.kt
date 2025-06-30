@@ -8,14 +8,18 @@ import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-import com.flux.ui.state.LabelState
+import com.flux.ui.state.HabitState
 import com.flux.ui.state.NotesState
 import com.flux.ui.state.Settings
 import com.flux.ui.state.States
+import com.flux.ui.state.EventState
+import com.flux.ui.state.TodoState
 import com.flux.ui.state.WorkspaceState
-import com.flux.ui.viewModel.LabelViewModel
+import com.flux.ui.viewModel.HabitViewModel
 import com.flux.ui.viewModel.NotesViewModel
 import com.flux.ui.viewModel.SettingsViewModel
+import com.flux.ui.viewModel.EventViewModel
+import com.flux.ui.viewModel.TodoViewModel
 import com.flux.ui.viewModel.ViewModels
 import com.flux.ui.viewModel.WorkspaceViewModel
 
@@ -23,17 +27,20 @@ import com.flux.ui.viewModel.WorkspaceViewModel
 fun AppNavHost(
     navController: NavHostController = rememberNavController(),
     snackbarHostState: SnackbarHostState,
-    labelViewModel: LabelViewModel,
     settingsViewModel: SettingsViewModel,
     notesViewModel: NotesViewModel,
     workspaceViewModel: WorkspaceViewModel,
+    eventViewModel: EventViewModel,
+    habitViewModel: HabitViewModel,
+    todoViewModel: TodoViewModel,
     settings: Settings,
     notesState: NotesState,
-    labelState: LabelState,
-    workspaceState: WorkspaceState
+    workspaceState: WorkspaceState,
+    eventState: EventState,
+    habitState: HabitState,
+    todoState: TodoState
 ) {
-
-    NavHost(navController, startDestination = NavRoutes.Workspace.route) {
+    NavHost(navController, startDestination = NavRoutes.AuthScreen.route) {
         NotesScreens.forEach { (route, screen) ->
             val arguments = mutableListOf<NamedNavArgument>()
 
@@ -51,29 +58,101 @@ fun AppNavHost(
                 })
             }
 
-            animatedComposable(route, arguments) { entry ->
+            bottomSlideComposable(route, arguments) { entry ->
                 val notesId = entry.arguments?.getInt("notesId") ?: 0
                 val workspaceId = entry.arguments?.getInt("workspaceId") ?: 0
 
-                screen(navController, snackbarHostState, notesId, workspaceId, States(notesState, labelState, workspaceState, settings), ViewModels(labelViewModel, notesViewModel, workspaceViewModel, settingsViewModel))
+                screen(navController, snackbarHostState, notesId, workspaceId, States(notesState, eventState, habitState, todoState, workspaceState, settings), ViewModels(notesViewModel, eventViewModel, todoViewModel, habitViewModel, workspaceViewModel, settingsViewModel))
+            }
+        }
+
+        AuthScreen.forEach { (route, screen) ->
+            animatedComposable(route) { entry ->
+                screen(navController, States(notesState, eventState, habitState, todoState, workspaceState, settings))
+            }
+        }
+
+        TodoScreens.forEach { (route, screen) ->
+            val arguments = mutableListOf<NamedNavArgument>()
+
+            if (route.contains("{listId}")) {
+                arguments.add(navArgument("listId") {
+                    type = NavType.IntType
+                    nullable = false
+                })
+            }
+
+            if (route.contains("{workspaceId}")) {
+                arguments.add(navArgument("workspaceId") {
+                    type = NavType.IntType
+                    nullable = false
+                })
+            }
+
+            bottomSlideComposable(route, arguments) { entry ->
+                val listId = entry.arguments?.getInt("listId") ?: 0
+                val workspaceId = entry.arguments?.getInt("workspaceId") ?: 0
+
+                screen(navController, listId, workspaceId, States(notesState, eventState, habitState, todoState, workspaceState, settings), ViewModels(notesViewModel, eventViewModel, todoViewModel, habitViewModel, workspaceViewModel, settingsViewModel))
+            }
+        }
+
+        HabitScreens.forEach { (route, screen) ->
+            val arguments = mutableListOf<NamedNavArgument>()
+
+            if (route.contains("{habitId}")) {
+                arguments.add(navArgument("habitId") {
+                    type = NavType.IntType
+                    nullable = false
+                })
+            }
+
+            if (route.contains("{workspaceId}")) {
+                arguments.add(navArgument("workspaceId") {
+                    type = NavType.IntType
+                    nullable = false
+                })
+            }
+
+            animatedComposable(route, arguments) { entry ->
+                val habitId = entry.arguments?.getInt("habitId") ?: 0
+                val workspaceId = entry.arguments?.getInt("workspaceId") ?: 0
+
+                screen(navController, habitId, workspaceId, States(notesState, eventState, habitState, todoState, workspaceState, settings), ViewModels(notesViewModel, eventViewModel, todoViewModel, habitViewModel, workspaceViewModel, settingsViewModel))
             }
         }
 
         SettingsScreens.forEach { (route, screen)->
             if (route == NavRoutes.Settings.route){
-                slideInComposable(route) { screen(navController, snackbarHostState, States(notesState, labelState, workspaceState, settings), ViewModels(labelViewModel, notesViewModel, workspaceViewModel, settingsViewModel)) }
+                slideInComposable(route) { screen(navController, snackbarHostState, States(notesState, eventState, habitState, todoState, workspaceState, settings), ViewModels(notesViewModel, eventViewModel, todoViewModel, habitViewModel, workspaceViewModel, settingsViewModel)) }
             }
             else{
-                animatedComposable(route) { screen(navController, snackbarHostState, States(notesState, labelState, workspaceState, settings), ViewModels(labelViewModel, notesViewModel, workspaceViewModel, settingsViewModel)) }
+                animatedComposable(route) { screen(navController, snackbarHostState, States(notesState, eventState, habitState, todoState, workspaceState, settings), ViewModels(notesViewModel, eventViewModel, todoViewModel, habitViewModel, workspaceViewModel, settingsViewModel)) }
             }
         }
 
-        TasksScreens.forEach { (route, screen) ->
-            bottomSlideComposable(route) { screen(navController, snackbarHostState) }
-        }
+        EventScreens.forEach { (route, screen) ->
+            val arguments = mutableListOf<NamedNavArgument>()
 
-        CalenderScreens.forEach { (route, screen) ->
-            animatedComposable(route) { screen(navController, snackbarHostState) }
+            if (route.contains("{eventId}")) {
+                arguments.add(navArgument("eventId") {
+                    type = NavType.IntType
+                    nullable = false
+                })
+            }
+
+            if (route.contains("{workspaceId}")) {
+                arguments.add(navArgument("workspaceId") {
+                    type = NavType.IntType
+                    nullable = false
+                })
+            }
+
+            bottomSlideComposable(route, arguments) {entry->
+                val eventId = entry.arguments?.getInt("eventId") ?: 0
+                val workspaceId = entry.arguments?.getInt("workspaceId") ?: 0
+                screen(navController, States(notesState, eventState, habitState, todoState, workspaceState, settings), ViewModels(notesViewModel, eventViewModel, todoViewModel, habitViewModel, workspaceViewModel, settingsViewModel), eventId, workspaceId)
+            }
         }
 
         LabelScreens.forEach { (route, screen) ->
@@ -89,7 +168,7 @@ fun AppNavHost(
             bottomSlideComposable(route, arguments) { entry->
                 val workspaceId = entry.arguments?.getInt("workspaceId") ?: 0
 
-                screen(navController, States(notesState, labelState, workspaceState, settings), ViewModels(labelViewModel, notesViewModel, workspaceViewModel, settingsViewModel), workspaceId)
+                screen(navController, States(notesState, eventState, habitState, todoState, workspaceState, settings), ViewModels(notesViewModel, eventViewModel, todoViewModel, habitViewModel, workspaceViewModel, settingsViewModel), workspaceId)
             }
         }
 
@@ -105,7 +184,7 @@ fun AppNavHost(
 
             animatedComposable(route, arguments) { entry ->
                 val id = entry.arguments?.getInt("workspaceId") ?: 0
-                screen(navController, snackbarHostState, States(notesState, labelState, workspaceState, settings), ViewModels(labelViewModel, notesViewModel, workspaceViewModel, settingsViewModel), id)
+                screen(navController, snackbarHostState, States(notesState, eventState, habitState, todoState, workspaceState, settings), ViewModels(notesViewModel, eventViewModel, todoViewModel, habitViewModel, workspaceViewModel, settingsViewModel), id)
             }
         }
     }

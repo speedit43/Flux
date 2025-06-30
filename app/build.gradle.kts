@@ -57,7 +57,8 @@ dependencies {
     implementation(platform(libs.androidx.compose.bom))
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.compose.material.icons.extended)
-
+    implementation(libs.firebase.crashlytics.buildtools)
+    implementation(libs.androidx.biometric)
 
     // Hilt
     ksp(libs.hilt.android.compiler)
@@ -68,4 +69,11 @@ dependencies {
     ksp(libs.androidx.room.compiler)
     implementation(libs.androidx.room.ktx)
     implementation(libs.androidx.room.runtime)
+
+    // coil
+    implementation(libs.coil.compose)
+
+    // Gson
+    implementation(libs.gson)
+
 }

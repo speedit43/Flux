@@ -2,8 +2,9 @@ package com.flux.ui.viewModel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.flux.data.dao.NotesDao
+import com.flux.data.model.LabelModel
 import com.flux.data.model.NotesModel
+import com.flux.data.repository.NoteRepository
 import com.flux.ui.events.NotesEvents
 import com.flux.ui.state.NotesState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,18 +12,17 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class NotesViewModel @Inject constructor (
-    val dao: NotesDao
+class NotesViewModel @Inject constructor(
+    val repository: NoteRepository
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<NotesState> = MutableStateFlow(NotesState())
     val state: StateFlow<NotesState> = _state.asStateFlow()
-
-    init { loadAllNotes()  }
 
     fun onEvent(event: NotesEvents) { viewModelScope.launch { reduce(event = event) } }
     private fun updateState(reducer: (NotesState) -> NotesState) { _state.value = reducer(_state.value) }
@@ -32,54 +32,62 @@ class NotesViewModel @Inject constructor (
             is NotesEvents.DeleteNotes -> { deleteNotes(event.data) }
             is NotesEvents.TogglePinMultiple -> { togglePinMultiple(event.data) }
             is NotesEvents.DeleteNote -> { deleteNote(event.data) }
+            is NotesEvents.DeleteLabel -> { deleteLabel(event.data) }
+            is NotesEvents.UpsertLabel -> { upsertLabel(event.data) }
+            is NotesEvents.LoadAllNotes -> { loadAllNotes(event.workspaceId) }
+            is NotesEvents.LoadAllLabels -> { loadAllLabels(event.workspaceId) }
+            is NotesEvents.DeleteAllWorkspaceNotes -> { deleteWorkspaceNotes(event.workspaceId) }
         }
     }
+
+    private fun deleteNotes(data: List<NotesModel>) { viewModelScope.launch(Dispatchers.IO) { repository.deleteNotes(data.map { it.notesId }) } }
+    private fun deleteNote(data: NotesModel) { viewModelScope.launch(Dispatchers.IO) { repository.deleteNote(data) } }
+    private fun deleteLabel(data: LabelModel) { viewModelScope.launch(Dispatchers.IO) { repository.deleteLabel(data) } }
+    private fun upsertLabel(data: LabelModel) { viewModelScope.launch(Dispatchers.IO) { repository.upsertLabel(data) } }
+    private fun deleteWorkspaceNotes(workspaceId: Int){ viewModelScope.launch(Dispatchers.IO) { repository.deleteAllWorkspaceNotes(workspaceId) } }
 
     private fun togglePinMultiple(data: List<NotesModel>) {
         viewModelScope.launch(Dispatchers.IO) {
             val isAllPinned=data.all { it.isPinned }
             if(isAllPinned){
                 val updatedNotes = data.map { it.copy(isPinned = false) }
-                dao.upsertNotes(updatedNotes)
+                repository.upsertNotes(updatedNotes)
             }
             else{
                 val updatedNotes = data.map { it.copy(isPinned = true) }
-                dao.upsertNotes(updatedNotes)
+                repository.upsertNotes(updatedNotes)
             }
         }
     }
 
-    private fun deleteNotes(data: List<NotesModel>) {
-        viewModelScope.launch(Dispatchers.IO) {
-            dao.deleteNotes(data.map { it.notesId })
-        }
-    }
-
-    private fun deleteNote(data: NotesModel) {
-        viewModelScope.launch(Dispatchers.IO) {
-            dao.deleteNote(data)
-        }
-    }
-
-    private fun loadAllNotes() {
+    private fun loadAllNotes(workspaceId: Int) {
         updateState { it.copy(isLoading = true) }
 
         viewModelScope.launch {
-            dao.loadAllNotes()
+            repository.loadAllNotes(workspaceId)
+                .distinctUntilChanged()
                 .collect { data ->
-                    updateState { it.copy(isLoading = false, allNotes = data) } }
+                    val sortedData = data.sortedByDescending { it.lastEdited }
+                    updateState { it.copy(isLoading = false, allNotes = sortedData) } }
 
+        }
+    }
+
+    private fun loadAllLabels(workspaceId: Int) {
+        updateState { it.copy(isLoading = true) }
+
+        viewModelScope.launch {
+            repository.loadAllLabels(workspaceId)
+                .collect { data ->
+                    updateState { it.copy(isLoading = false, allLabels = data) } }
         }
     }
 
     private fun updateNotes(data: NotesModel) {
         val isNewNote = state.value.allNotes.none { it.notesId == data.notesId }
         val isBlankNote = data.title.isBlank() && data.description.isBlank() && data.labels.isEmpty()
-
         if (isNewNote && isBlankNote) return
-        println("ViewModel $data")
-        viewModelScope.launch(Dispatchers.IO) {
-            dao.upsertNote(data)
-        }
+
+        viewModelScope.launch(Dispatchers.IO) { repository.upsertNote(data) }
     }
 }

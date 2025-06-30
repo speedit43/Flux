@@ -13,12 +13,12 @@ interface LabelDao {
     @Insert(onConflict=OnConflictStrategy.REPLACE)
     suspend fun upsertLabel(label: LabelModel)
 
-    @Insert(onConflict=OnConflictStrategy.REPLACE)
-    suspend fun upsertLabels(labels: List<LabelModel>)
-
     @Delete
     suspend fun deleteLabel(label: LabelModel)
 
-    @Query("SELECT * FROM LabelModel")
-    fun loadAllLabels(): Flow<List<LabelModel>>
+    @Query("DELETE FROM LabelModel WHERE workspaceId = :workspaceId")
+    suspend fun deleteAllWorkspaceLabels(workspaceId: Int)
+
+    @Query("SELECT * FROM LabelModel where workspaceId IN (:workspaceId)")
+    fun loadAllLabels(workspaceId: Int): Flow<List<LabelModel>>
 }

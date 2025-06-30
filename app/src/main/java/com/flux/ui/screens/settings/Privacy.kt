@@ -3,6 +3,7 @@ package com.flux.ui.screens.settings
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material.icons.filled.RemoveRedEye
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.Composable
@@ -41,11 +42,24 @@ fun Privacy(
                     title = "Screen Protection",
                     description = "Disable Screenshots",
                     icon = Icons.Filled.RemoveRedEye,
-                    radius = shapeManager(radius = data.cornerRadius, isBoth = true),
+                    radius = shapeManager(radius = data.cornerRadius, isFirst = true),
                     actionType = ActionType.SWITCH,
                     variable = data.isScreenProtection,
                     switchEnabled = {
                         onSettingsEvents(SettingEvents.UpdateSettings(data.copy(isScreenProtection = it)))
+                    }
+                )
+            }
+            item {
+                SettingOption(
+                    title = "App lock",
+                    description = "Fingerprint Authentication",
+                    icon = Icons.Filled.Fingerprint,
+                    radius = shapeManager(radius = data.cornerRadius, isLast = true),
+                    actionType = ActionType.SWITCH,
+                    variable = data.isBiometricEnabled,
+                    switchEnabled = {
+                        onSettingsEvents(SettingEvents.UpdateSettings(data.copy(isBiometricEnabled = it)))
                     }
                 )
             }
