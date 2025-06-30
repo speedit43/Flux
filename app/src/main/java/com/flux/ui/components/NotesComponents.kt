@@ -25,6 +25,7 @@ import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Label
 import androidx.compose.material.icons.automirrored.filled.LabelImportant
 import androidx.compose.material.icons.automirrored.filled.Notes
 import androidx.compose.material.icons.filled.Close
@@ -47,10 +48,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.flux.R
 import com.flux.data.model.LabelModel
 import com.flux.data.model.NotesModel
 
@@ -69,7 +72,7 @@ fun NotesInputCard(
             value = title,
             onValueChange = onTitleChange,
             shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
-            placeholder = { Text("Title") },
+            placeholder = { Text(stringResource(R.string.Title)) },
             textStyle = MaterialTheme.typography.titleLarge,
             modifier = Modifier.fillMaxWidth(),
             colors = TextFieldDefaults.colors(
@@ -85,7 +88,7 @@ fun NotesInputCard(
         TextField(
             value = description,
             onValueChange = onDescriptionChange,
-            placeholder = { Text("Description") },
+            placeholder = { Text(stringResource(R.string.Description)) },
             textStyle = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.ExtraLight),
             shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp),
             modifier = Modifier
@@ -150,11 +153,12 @@ fun NotesPreviewGrid(
     pinnedNotes: List<NotesModel>,
     unPinnedNotes: List<NotesModel>,
     selectedNotes: List<NotesModel>,
-    onClick: (Int) -> Unit,
+    onClick: (Long) -> Unit,
     onLongPressed: (NotesModel) -> Unit
 ) {
     val columns = if (isGridView) GridCells.Fixed(2) else GridCells.Fixed(1)
     val showPinnedText=!pinnedNotes.isEmpty()
+
     LazyVerticalGrid(
         columns = columns,
         modifier = Modifier.padding(8.dp),
@@ -164,7 +168,7 @@ fun NotesPreviewGrid(
         if (showPinnedText) {
             item(span = { GridItemSpan(maxLineSpan) }) {
                 Text(
-                    "Pinned",
+                    stringResource(R.string.Pinned),
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
@@ -197,7 +201,7 @@ fun NotesPreviewGrid(
         if (showPinnedText) {
             item(span = { GridItemSpan(maxLineSpan) }) {
                 Text(
-                    "Others",
+                    stringResource(R.string.Others),
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold,
                     fontSize = 16.sp,
@@ -232,7 +236,7 @@ fun NotesPreviewCard(
     isGridView: Boolean,
     note: NotesModel,
     labels: List<String>,
-    onClick: (Int) -> Unit,
+    onClick: (Long) -> Unit,
     onLongPressed: () -> Unit
 ) {
     val modifier = if (!isGridView) Modifier.fillMaxWidth() else Modifier
@@ -330,6 +334,22 @@ fun EmptyNotes(){
             contentDescription = null,
             modifier = Modifier.size(48.dp)
         )
-        Text("No Notes Found")
+        Text(stringResource(R.string.Empty_Notes))
+    }
+}
+
+@Composable
+fun EmptyLabels(){
+    Column(
+        modifier = Modifier.fillMaxSize(),
+        verticalArrangement = Arrangement.Center,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Icon(
+            imageVector = Icons.AutoMirrored.Filled.Label,
+            contentDescription = null,
+            modifier = Modifier.size(48.dp)
+        )
+        Text(stringResource(R.string.Empty_Notes))
     }
 }

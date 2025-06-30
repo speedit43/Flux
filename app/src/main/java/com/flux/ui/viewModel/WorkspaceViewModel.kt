@@ -27,7 +27,6 @@ class WorkspaceViewModel @Inject constructor (
     val state: StateFlow<WorkspaceState> = _state.asStateFlow()
     val effect = _effect.receiveAsFlow()
 
-
     private fun setEffect(builder: () -> ScreenEffect) {
         val effectValue = builder()
         viewModelScope.launch { _effect.send(effectValue) }

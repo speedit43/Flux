@@ -57,10 +57,11 @@ fun HabitBottomSheet(
     habit: HabitModel?=null,
     isVisible: Boolean,
     sheetState: SheetState,
-    onConfirm: (HabitModel)->Unit,
+    onConfirm: (HabitModel, Long)->Unit,
     onDismissRequest: () -> Unit,
 ) {
     if (!isVisible) return
+    var adjustedTime by remember { mutableLongStateOf(habit?.startDateTime?: System.currentTimeMillis()) }
     var newHabitTitle by remember { mutableStateOf(habit?.title?:"") }
     var newHabitDescription by remember { mutableStateOf(habit?.description?:"") }
     var newHabitTime by remember { mutableLongStateOf(habit?.startDateTime?: System.currentTimeMillis()) }
@@ -72,7 +73,8 @@ fun HabitBottomSheet(
     ModalBottomSheet(
         sheetState = sheetState,
         onDismissRequest = onDismissRequest,
-        sheetMaxWidth = 500.dp
+        sheetMaxWidth = 500.dp,
+        containerColor = MaterialTheme.colorScheme.surfaceContainer
     ) {
         Column(
             modifier = Modifier.padding(16.dp).fillMaxWidth(),
@@ -104,8 +106,8 @@ fun HabitBottomSheet(
                 singleLine = true,
                 shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     focusedTextColor = MaterialTheme.colorScheme.primary,
@@ -125,8 +127,8 @@ fun HabitBottomSheet(
                 singleLine = true,
                 shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp),
                 colors = TextFieldDefaults.colors(
-                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
-                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainer,
+                    focusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
+                    unfocusedContainerColor = MaterialTheme.colorScheme.surfaceContainerHigh,
                     focusedIndicatorColor = Color.Transparent,
                     unfocusedIndicatorColor = Color.Transparent,
                     focusedTextColor = MaterialTheme.colorScheme.primary,
@@ -191,9 +193,9 @@ fun HabitBottomSheet(
                             startDateTime = newHabitTime,
                             description = newHabitDescription
                         )
-                        onConfirm(newHabit)
+                        onConfirm(newHabit, adjustedTime)
                     }
-                    else{ onConfirm(habit.copy(title = newHabitTitle, description = newHabitDescription, startDateTime = newHabitTime)) }
+                    else{ onConfirm(habit.copy(title = newHabitTitle, description = newHabitDescription, startDateTime = newHabitTime), adjustedTime) }
 
                     keyboardController?.hide()
                     onDismissRequest()
@@ -205,7 +207,13 @@ fun HabitBottomSheet(
                 TimePicker(
                     onConfirm = {
                         val now = Calendar.getInstance()
-                        val calendar = Calendar.getInstance().apply {
+                        val habitCalendar = Calendar.getInstance().apply {
+                            set(Calendar.HOUR_OF_DAY, it.hour)
+                            set(Calendar.MINUTE, it.minute)
+                            set(Calendar.SECOND, 0)
+                            set(Calendar.MILLISECOND, 0)
+                        }
+                        val adjustedCalendar = Calendar.getInstance().apply {
                             set(Calendar.HOUR_OF_DAY, it.hour)
                             set(Calendar.MINUTE, it.minute)
                             set(Calendar.SECOND, 0)
@@ -213,7 +221,8 @@ fun HabitBottomSheet(
 
                             if (before(now)) { add(Calendar.DAY_OF_YEAR, 1) }
                         }
-                        newHabitTime = calendar.timeInMillis
+                        adjustedTime= adjustedCalendar.timeInMillis
+                        newHabitTime = habitCalendar.timeInMillis
                     }
                 ) { timePickerDialog = false }
             }

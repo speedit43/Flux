@@ -58,7 +58,6 @@ import com.flux.other.cancelReminder
 import com.flux.other.isNotificationPermissionGranted
 import com.flux.other.requestExactAlarmPermission
 import com.flux.other.requestNotificationPermission
-import com.flux.other.scheduleReminder
 import com.flux.ui.components.AddSpacesDialog
 import com.flux.ui.components.DeleteAlert
 import com.flux.ui.components.HabitBottomSheet
@@ -134,9 +133,9 @@ fun WorkspaceDetails(
             navController.popBackStack()
             onNotesEvents(NotesEvents.DeleteAllWorkspaceNotes(workspaceId))
             onTodoEvents(TodoEvents.DeleteAllWorkspaceLists(workspaceId))
-            allEvents.forEach { event-> cancelReminder(context, event.eventId, "EVENT") }
+            allEvents.forEach { event-> cancelReminder(context, event.eventId, "EVENT", event.title, event.description, event.repetition.toString()) }
             onTaskEvents(TaskEvents.DeleteAllWorkspaceEvents(workspaceId))
-            allHabits.forEach { habit-> cancelReminder(context, habit.habitId, "HABIT") }
+            allHabits.forEach { habit-> cancelReminder(context, habit.habitId, "HABIT", habit.title, habit.description, "DAILY") }
             onHabitEvents(HabitEvents.DeleteAllWorkspaceHabits(workspaceId))
         }, onDismissRequest = {
             showDeleteWorkspaceDialog=false
@@ -286,11 +285,7 @@ fun WorkspaceDetails(
             workspace = workspace,
             isVisible = editWorkspaceDialog,
             sheetState = sheetState,
-            onDismiss = {
-                scope.launch { sheetState.hide() }.invokeOnCompletion {
-                    editWorkspaceDialog = false
-                }
-            },
+            onDismiss = { scope.launch { sheetState.hide() }.invokeOnCompletion { editWorkspaceDialog = false } },
             onConfirm = {
                 onWorkspaceEvents(WorkspaceEvents.UpsertSpace(it))
                 scope.launch { sheetState.hide() }.invokeOnCompletion {
@@ -303,22 +298,9 @@ fun WorkspaceDetails(
         HabitBottomSheet(
             isVisible = showHabitDialog,
             sheetState = sheetState,
-            onDismissRequest = {
-                scope.launch { sheetState.hide() }.invokeOnCompletion {
-                    showHabitDialog = false
-                }
-            },
-            onConfirm = { newHabit->
-                scheduleReminder(
-                    context = context,
-                    id = newHabit.habitId,
-                    type="HABIT",
-                    repeat = "DAILY",
-                    timeInMillis = newHabit.startDateTime,
-                    title = newHabit.title,
-                    description = newHabit.description
-                )
-                onHabitEvents(HabitEvents.UpsertHabit(newHabit.copy(workspaceId = workspaceId)))
+            onDismissRequest = { scope.launch { sheetState.hide() }.invokeOnCompletion { showHabitDialog = false } },
+            onConfirm = { newHabit, adjustedTime->
+                onHabitEvents(HabitEvents.UpsertHabit(context, newHabit.copy(workspaceId = workspaceId), adjustedTime))
                 scope.launch { sheetState.hide() }.invokeOnCompletion { showHabitDialog = false }
             }
         )

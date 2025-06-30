@@ -6,8 +6,8 @@ import androidx.room.PrimaryKey
 @Entity
 data class TodoModel (
     @PrimaryKey(autoGenerate = true)
-    val id: Int = 0,
-    val workspaceId: Int = 0,
+    val id: Long = 0L,
+    val workspaceId: Long = 0L,
     val title: String = "",
     val items: List<TodoItem> = emptyList()
 )

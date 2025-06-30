@@ -39,10 +39,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import com.flux.R
 import com.flux.data.model.HabitInstanceModel
 import com.flux.data.model.HabitModel
 import com.flux.ui.events.HabitEvents
@@ -69,7 +71,7 @@ fun EmptyHabits(){
             contentDescription = null,
             modifier = Modifier.size(48.dp)
         )
-        Text("No Habit Found")
+        Text(stringResource(R.string.Empty_Habits))
     }
 }
 
@@ -167,7 +169,7 @@ fun HabitPreviewCard(
 }
 
 @Composable
-fun HabitCalenderCard(radius: Int, habitId: Int, workspaceId: Int, startDateTime: Long, habitInstances: List<HabitInstanceModel>, onHabitEvents: (HabitEvents)->Unit){
+fun HabitCalenderCard(radius: Int, habitId: Long, workspaceId: Long, startDateTime: Long, habitInstances: List<HabitInstanceModel>, onHabitEvents: (HabitEvents)->Unit){
     val habitStartMonth = Instant.ofEpochMilli(startDateTime).atZone(ZoneId.systemDefault()).toLocalDate().let { YearMonth.of(it.year, it.month) }
     var currentMonth by remember { mutableStateOf(YearMonth.now()) }
     val currentYearMonth = YearMonth.now()

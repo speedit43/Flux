@@ -17,8 +17,8 @@ interface LabelDao {
     suspend fun deleteLabel(label: LabelModel)
 
     @Query("DELETE FROM LabelModel WHERE workspaceId = :workspaceId")
-    suspend fun deleteAllWorkspaceLabels(workspaceId: Int)
+    suspend fun deleteAllWorkspaceLabels(workspaceId: Long)
 
     @Query("SELECT * FROM LabelModel where workspaceId IN (:workspaceId)")
-    fun loadAllLabels(workspaceId: Int): Flow<List<LabelModel>>
+    fun loadAllLabels(workspaceId: Long): Flow<List<LabelModel>>
 }

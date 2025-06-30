@@ -45,7 +45,7 @@ import com.flux.ui.events.TodoEvents
 fun TodoDetail(
     navController: NavController,
     list: TodoModel,
-    workspaceId: Int,
+    workspaceId: Long,
     onTodoEvents: (TodoEvents)->Unit
 ){
     var title by remember { mutableStateOf(list.title) }
@@ -59,7 +59,9 @@ fun TodoDetail(
                 title = { Text("Edit List") },
                 navigationIcon = { IconButton({navController.popBackStack()}) { Icon(Icons.AutoMirrored.Default.ArrowBack, null) } },
                 actions = {
-                    IconButton({
+                    IconButton(
+                        enabled = title.isNotBlank(),
+                        onClick = {
                         navController.popBackStack()
                         onTodoEvents(TodoEvents.UpsertList(list.copy(title=title, items = itemList.toList(), workspaceId = workspaceId)))
                     }) { Icon(Icons.Default.Check, null) }

@@ -89,10 +89,10 @@ fun WorkspaceHomeScreen(
                 if(isNotesRemoved){ onNotesEvents(NotesEvents.DeleteAllWorkspaceNotes(workspaceId)) }
                 if(isTodoRemoved) { onTodoEvents(TodoEvents.DeleteAllWorkspaceLists(workspaceId)) }
                 if(isEventsRemoved) {
-                    allEvents.forEach { event-> cancelReminder(context, event.eventId, "EVENT") }
+                    allEvents.forEach { event-> cancelReminder(context, event.eventId, "EVENT", event.title, event.description, event.repetition.toString()) }
                     onTaskEvents(TaskEvents.DeleteAllWorkspaceEvents(workspaceId)) }
                 if(isHabitRemoved) {
-                    allHabits.forEach { habit-> cancelReminder(context, habit.habitId, "HABIT") }
+                    allHabits.forEach { habit-> cancelReminder(context, habit.habitId, "HABIT", habit.title, habit.description, "DAILY") }
                     onHabitEvents(HabitEvents.DeleteAllWorkspaceHabits(workspaceId)) }
                 onWorkspaceEvents(WorkspaceEvents.UpsertSpace(updatedWorkspace))
                 showRemoveDialog = false

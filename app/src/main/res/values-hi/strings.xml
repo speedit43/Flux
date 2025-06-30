@@ -4,7 +4,7 @@
 
     // Settings
 
-    <string name="Settings">Settings</string>
+    <string name="Settings">सेटिंग्स</string>
     <string name="Customize">अनुकूलित करें</string>
     <string name="Customize_desc">थीम • आकृति • कंट्रास्ट</string>
     <string name="About">अबाउट</string>
@@ -15,7 +15,7 @@
     <string name="Languages_desc">भाषा बदलें</string>
     <string name="Contact">संपर्क करें</string>
     <string name="Contact_desc">फ़ीचर अनुरोध • बग रिपोर्ट</string>
-    <string name="Contact_desc2">GitHub पर समस्या उठाएँ</string>
+    <string name="Contact_desc2">गिटहब पर समस्या उठाएँ</string>
     <string name="Support">सहायता</string>
     <string name="Support_desc">अपना समर्थन दिखाएँ</string>
     <string name="System_theme">सिस्टम थीम</string>
@@ -38,6 +38,47 @@
     <string name="System_language_desc">डिवाइस की भाषा के अनुसार स्वचालित रूप से अनुकूलित</string>
     <string name="Build_type">बिल्ड प्रकार</string>
     <string name="Build_version">बिल्ड संस्करण</string>
+    <string name="Developer">डेवलपर</string>
+    <string name="Developer_Name">रोनित चिंदा</string>
+    <string name="Source_Code">सोर्स कोड</string>
+    <string name="Github_Repository">गिटहब रिपोजिटरी</string>
+
+    <!-- Common -->
+    <string name="Pin">पिन करें</string>
+    <string name="Unpin">अनपिन करें</string>
+    <string name="Pinned">पिन की गई</string>
+    <string name="Dismiss">खारिज करें</string>
+    <string name="Confirm">पुष्टि करें</string>
+
+    <!-- Notes -->
+    <string name="Others">अन्य</string>
+    <string name="Labels">लेबल</string>
+    <string name="Delete_Note">नोट हटाएं</string>
+    <string name="Title">शीर्षक</string>
+    <string name="Description">विवरण</string>
+    <string name="Empty_Notes">कोई नोट नहीं मिला</string>
+    <string name="Empty_Labels">कोई लेबल नहीं मिला</string>
+    <string name="Last_Edited">अंतिम संपादन</string>
+    <string name="Word_Count">शब्दों की संख्या</string>
+    <string name="Character_Count">अक्षरों की संख्या</string>
+    <string name="Edit_Labels">लेबल संपादित करें</string>
+    <string name="Add_Label">नया लेबल जोड़ें</string>
+    <string name="Edit_Label">लेबल संपादित करें</string>
+
+
+    <!-- To-do List -->
+    <string name="Empty_Lists">कोई सूची नहीं मिली</string>
+    <string name="Edit_list">सूची संपादित करें</string>
+    <string name="Add_Item">नया आइटम जोड़ें</string>
+
+    <!-- Habits -->
+    <string name="Empty_Habits">कोई आदत नहीं मिली</string>
+    <string name="Started">शुरुआत</string>
+    <string name="Current_Streak">वर्तमान क्रम</string>
+    <string name="Best_Streak">सर्वश्रेष्ठ क्रम</string>
+    <string name="Add_Habit">आदत जोड़ें</string>
+    <string name="Edit_Habit">आदत संपादित करें</string>
+
 
 
 </resources>

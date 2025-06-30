@@ -145,7 +145,7 @@ fun NotesSearchBar(
     onCloseClicked: () -> Unit,
     onSettingsEvents: (SettingEvents)->Unit,
     selectedNotes: List<NotesModel>,
-    onNotesClick: (Int)->Unit,
+    onNotesClick: (Long)->Unit,
     onNotesLongPress: (NotesModel)->Unit
 ){
     val query = textFieldState.text.toString()

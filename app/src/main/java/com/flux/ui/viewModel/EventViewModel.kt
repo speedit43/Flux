@@ -1,11 +1,13 @@
 package com.flux.ui.viewModel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.flux.data.model.EventInstanceModel
 import com.flux.data.model.EventModel
 import com.flux.data.model.Repetition
 import com.flux.data.repository.EventRepository
+import com.flux.other.scheduleReminder
 import com.flux.ui.events.TaskEvents
 import com.flux.ui.state.EventState
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -36,7 +38,7 @@ class EventViewModel @Inject constructor (
     private suspend fun reduce(event: TaskEvents) {
         when (event) {
             is TaskEvents.DeleteTask -> deleteEvent(event.taskEvent)
-            is TaskEvents.UpsertTask -> upsertEvent(event.taskEvent)
+            is TaskEvents.UpsertTask -> upsertEvent(event.context, event.taskEvent, event.adjustedTime)
             is TaskEvents.ToggleStatus -> toggleStatus(event.taskInstance)
             is TaskEvents.LoadTodayTask -> loadTodayEvents(event.workspaceId)
             is TaskEvents.LoadDateTask -> loadDateEvents(event.workspaceId, event.selectedDate)
@@ -47,10 +49,25 @@ class EventViewModel @Inject constructor (
     }
 
     private fun deleteEvent(data: EventModel) { viewModelScope.launch(Dispatchers.IO) { repository.deleteEvent(data) } }
-    private fun upsertEvent(data: EventModel) { viewModelScope.launch(Dispatchers.IO) { repository.upsertEvent(data) } }
+    private fun upsertEvent(context: Context, data: EventModel, adjustedTime: Long?) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.upsertEvent(data)
+            if(adjustedTime!=null){
+                scheduleReminder(
+                    context = context,
+                    id = data.eventId,
+                    type="EVENT",
+                    repeat = data.toString(),
+                    timeInMillis = adjustedTime,
+                    title = data.title,
+                    description = data.description
+                )
+            }
+        }
+    }
     private fun toggleStatus(data: EventInstanceModel) { viewModelScope.launch(Dispatchers.IO) { repository.toggleStatus(data) } }
-    private fun deleteWorkspaceEvents(workspaceId: Int) { viewModelScope.launch(Dispatchers.IO) { repository.deleteAllWorkspaceEvent(workspaceId) } }
-    private suspend fun loadTodayEvents(workspaceId: Int) {
+    private fun deleteWorkspaceEvents(workspaceId: Long) { viewModelScope.launch(Dispatchers.IO) { repository.deleteAllWorkspaceEvent(workspaceId) } }
+    private suspend fun loadTodayEvents(workspaceId: Long) {
         val date = LocalDate.now()
         safeUpdateState { it.copy(isTodayEventLoading = true) }
 
@@ -79,7 +96,7 @@ class EventViewModel @Inject constructor (
         }
     }
 
-    private suspend fun loadDateEvents(workspaceId: Int, date: LocalDate) {
+    private suspend fun loadDateEvents(workspaceId: Long, date: LocalDate) {
         safeUpdateState { it.copy(isDatedEventLoading = true) }
         viewModelScope.launch {
             repository.loadAllEvents(workspaceId)
@@ -106,7 +123,7 @@ class EventViewModel @Inject constructor (
         }
     }
 
-    private fun loadAllEvents(workspaceId: Int) {
+    private fun loadAllEvents(workspaceId: Long) {
         viewModelScope.launch {
             repository.loadAllEvents(workspaceId)
                 .distinctUntilChanged()
@@ -117,7 +134,7 @@ class EventViewModel @Inject constructor (
         }
     }
 
-    private suspend fun loadAllEventsInstances(workspaceId: Int) {
+    private suspend fun loadAllEventsInstances(workspaceId: Long) {
         safeUpdateState { it.copy(isTodayEventLoading = true, isDatedEventLoading = true) }
         viewModelScope.launch {
             repository.loadAllEventInstances(workspaceId)

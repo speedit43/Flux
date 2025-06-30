@@ -10,8 +10,8 @@ interface NoteRepository {
     suspend fun upsertNotes(notes: List<NotesModel>)
     suspend fun deleteNote(note: NotesModel)
     suspend fun deleteLabel(label: LabelModel)
-    suspend fun deleteNotes(notes: List<Int>)
-    suspend fun deleteAllWorkspaceNotes(workspaceId: Int)
-    fun loadAllNotes(workspaceId: Int): Flow<List<NotesModel>>
-    fun loadAllLabels(workspaceId: Int): Flow<List<LabelModel>>
+    suspend fun deleteNotes(notes: List<Long>)
+    suspend fun deleteAllWorkspaceNotes(workspaceId: Long)
+    fun loadAllNotes(workspaceId: Long): Flow<List<NotesModel>>
+    fun loadAllLabels(workspaceId: Long): Flow<List<LabelModel>>
 }

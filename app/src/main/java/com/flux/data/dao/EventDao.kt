@@ -11,14 +11,14 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface EventDao {
     @Insert(onConflict=OnConflictStrategy.REPLACE)
-    suspend fun upsertEvent(task: EventModel)
+    suspend fun upsertEvent(task: EventModel): Long
 
     @Delete
     suspend fun deleteEvent(task: EventModel)
 
     @Query("Delete FROM EventModel where workspaceId = :workspaceId")
-    suspend fun deleteAllWorkspaceEvents(workspaceId: Int)
+    suspend fun deleteAllWorkspaceEvents(workspaceId: Long)
 
     @Query("SELECT * FROM EventModel WHERE workspaceId = :workspaceId")
-    fun loadAllEvents(workspaceId: Int): Flow<List<EventModel>>
+    fun loadAllEvents(workspaceId: Long): Flow<List<EventModel>>
 }

@@ -13,11 +13,11 @@ interface EventInstanceDao {
     suspend fun upsertEventInstance(event: EventInstanceModel)
 
     @Query("DELETE FROM EventInstancemodel WHERE eventId IN (:eventId)")
-    suspend fun deleteAllEventInstance(eventId: Int)
+    suspend fun deleteAllEventInstance(eventId: Long)
 
     @Query("DELETE FROM EventInstanceModel WHERE workspaceId = :workspaceId")
-    suspend fun deleteAllWorkspaceInstance(workspaceId: Int)
+    suspend fun deleteAllWorkspaceInstance(workspaceId: Long)
 
     @Query("SELECT * FROM EventInstanceModel where workspaceId in (:workspaceId)")
-    fun loadAllInstances(workspaceId: Int): Flow<List<EventInstanceModel>>
+    fun loadAllInstances(workspaceId: Long): Flow<List<EventInstanceModel>>
 }

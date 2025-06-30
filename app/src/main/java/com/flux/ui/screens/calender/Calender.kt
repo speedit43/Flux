@@ -48,7 +48,7 @@ fun Calender(
     navController: NavController,
     radius: Int,
     isLoading: Boolean,
-    workspaceId: Int,
+    workspaceId: Long,
     settings: Settings,
     datedEvents: List<EventModel>,
     allEventInstances: List<EventInstanceModel>,

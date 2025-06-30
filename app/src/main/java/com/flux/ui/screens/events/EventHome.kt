@@ -59,7 +59,7 @@ fun EventHome(
     isLoading: Boolean,
     allEvents: List<EventModel>,
     allEventInstances: List<EventInstanceModel>,
-    workspaceId: Int,
+    workspaceId: Long,
     onTaskEvents: (TaskEvents)->Unit
 ) {
     if(isLoading) { Loader() }

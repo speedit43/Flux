@@ -48,7 +48,7 @@ import java.util.Date
 @Composable
 fun NoteDetails(
     navController: NavController,
-    workspaceId: Int,
+    workspaceId: Long,
     note: NotesModel,
     allLabels: List<LabelModel>,
     snackBarHostState: SnackbarHostState,
@@ -195,7 +195,8 @@ fun NotesInfoBottomSheet(
     if (isVisible) {
         ModalBottomSheet(
             onDismissRequest = onDismiss,
-            sheetState = sheetState
+            sheetState = sheetState,
+            containerColor = MaterialTheme.colorScheme.surfaceContainer
         ) {
             LazyColumn (Modifier.fillMaxWidth().padding(16.dp)) {
                 item {

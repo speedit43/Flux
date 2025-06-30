@@ -15,15 +15,15 @@ class EventRepositoryImpl @Inject constructor(
     private val eventInstanceDao: EventInstanceDao,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ): EventRepository {
-    override suspend fun upsertEvent(event: EventModel) { return withContext(ioDispatcher) { eventDao.upsertEvent(event) } }
+    override suspend fun upsertEvent(event: EventModel): Long { return withContext(ioDispatcher) { eventDao.upsertEvent(event) } }
     override suspend fun toggleStatus(eventInstance: EventInstanceModel) { return withContext(ioDispatcher) { eventInstanceDao.upsertEventInstance(eventInstance) } }
-    override fun loadAllEvents(workspaceId: Int): Flow<List<EventModel>> { return eventDao.loadAllEvents(workspaceId) }
-    override fun loadAllEventInstances(workspaceId: Int): Flow<List<EventInstanceModel>> { return eventInstanceDao.loadAllInstances(workspaceId) }
+    override fun loadAllEvents(workspaceId: Long): Flow<List<EventModel>> { return eventDao.loadAllEvents(workspaceId) }
+    override fun loadAllEventInstances(workspaceId: Long): Flow<List<EventInstanceModel>> { return eventInstanceDao.loadAllInstances(workspaceId) }
     override suspend fun deleteEvent(event: EventModel) { return withContext(ioDispatcher) {
         eventInstanceDao.deleteAllEventInstance(event.eventId)
         eventDao.deleteEvent(event) }
     }
-    override suspend fun deleteAllWorkspaceEvent(workspaceId: Int) {
+    override suspend fun deleteAllWorkspaceEvent(workspaceId: Long) {
         return withContext(ioDispatcher) {
             eventDao.deleteAllWorkspaceEvents(workspaceId)
             eventInstanceDao.deleteAllWorkspaceInstance(workspaceId)

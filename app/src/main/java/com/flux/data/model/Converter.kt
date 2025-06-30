@@ -1,18 +1,12 @@
 package com.flux.data.model
 
 import androidx.room.TypeConverter
-import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import java.time.LocalDate
 import java.util.Date
 
 class Converter {
-    @TypeConverter
-    fun fromIntegerList(list: List<Int>): String = list.joinToString(separator = ",")
-
-    @TypeConverter
-    fun toIntegerList(data: String): List<Int> = if (data.isBlank()) emptyList() else data.split(",").map { it.toInt() }
-
     // Convert Date to Long and back
     @TypeConverter
     fun fromDate(date: Date?): Long? {
@@ -51,6 +45,17 @@ class Converter {
     fun toTodoItemList(json: String): List<TodoItem> {
         val type = object : TypeToken<List<TodoItem>>() {}.type
         return Gson().fromJson(json, type)
+    }
+
+    @TypeConverter
+    fun fromLongList(value: List<Long>): String {
+        return value.joinToString(separator = ",")
+    }
+
+    @TypeConverter
+    fun toLongList(value: String): List<Long> {
+        return if (value.isEmpty()) emptyList()
+        else value.split(",").map { it.toLong() }
     }
 
 }

@@ -28,6 +28,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import com.flux.R
 
 @Composable
 fun DropdownMenuWithDetails(
@@ -46,13 +48,13 @@ fun DropdownMenuWithDetails(
             onDismissRequest = { expanded = false }
         ) {
             DropdownMenuItem(
-                text = { Text(if (isPinned) "Unpin" else "Pin") },
+                text = { Text(if (isPinned) stringResource(R.string.Unpin) else stringResource(R.string.Pin)) },
                 leadingIcon = { Icon(if (isPinned) Icons.Filled.PushPin else Icons.Outlined.PushPin, contentDescription = null) },
                 onClick = onTogglePinned
             )
             HorizontalDivider()
             DropdownMenuItem(
-                text = { Text("Labels") },
+                text = { Text(stringResource(R.string.Labels)) },
                 leadingIcon = { Icon(Icons.AutoMirrored.Outlined.Label, contentDescription = null) },
                 trailingIcon = { Icon(Icons.Default.Add, contentDescription = null) },
                 onClick = {
@@ -62,7 +64,7 @@ fun DropdownMenuWithDetails(
             )
             HorizontalDivider()
             DropdownMenuItem(
-                text = { Text("About") },
+                text = { Text(stringResource(R.string.About)) },
                 leadingIcon = { Icon(Icons.Outlined.Info, contentDescription = null) },
                 onClick = {
                     expanded=false
@@ -72,7 +74,7 @@ fun DropdownMenuWithDetails(
             HorizontalDivider()
             DropdownMenuItem(
                 colors = MenuDefaults.itemColors(textColor = MaterialTheme.colorScheme.error, leadingIconColor = MaterialTheme.colorScheme.error),
-                text = { Text("Delete Note") },
+                text = { Text(stringResource(R.string.Delete_Note)) },
                 leadingIcon = { Icon(Icons.Outlined.Delete, contentDescription = null) },
                 onClick = {
                     expanded=false

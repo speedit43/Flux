@@ -15,8 +15,8 @@ enum class EventStatus {
 @Entity
 data class EventModel (
     @PrimaryKey(autoGenerate = true)
-    val eventId: Int = 0,
-    val workspaceId: Int = 0,
+    val eventId: Long = 1L,
+    val workspaceId: Long = 0L,
     val title: String = "",
     val description: String = "",
     val repetition: Repetition = Repetition.NONE,
@@ -27,8 +27,8 @@ data class EventModel (
 
 @Entity(primaryKeys = ["eventId", "instanceDate"])
 data class EventInstanceModel(
-    val eventId: Int=0,
-    val workspaceId: Int=0,
+    val eventId: Long = 0L,
+    val workspaceId: Long = 0L,
     val instanceDate: LocalDate= LocalDate.now(),
     val status: EventStatus= EventStatus.PENDING
 )

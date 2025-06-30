@@ -19,14 +19,12 @@ import com.flux.ui.events.HabitEvents
 fun HabitsHome(
     navController: NavController,
     radius: Int,
-    workspaceId: Int,
+    workspaceId: Long,
     allHabits: List<HabitModel>,
     allInstances: List<HabitInstanceModel>,
     onHabitEvents: (HabitEvents) -> Unit
 ) {
-    if(allHabits.isEmpty()){
-        EmptyHabits()
-    }
+    if(allHabits.isEmpty()){ EmptyHabits() }
     else{
         LazyColumn(
             modifier = Modifier.padding(16.dp),

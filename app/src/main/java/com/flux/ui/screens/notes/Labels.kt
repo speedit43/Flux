@@ -27,17 +27,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.flux.R
 import com.flux.data.model.LabelModel
 import com.flux.ui.components.AddLabelDialog
+import com.flux.ui.components.EmptyLabels
 import com.flux.ui.events.NotesEvents
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditLabels(
     navController: NavController,
-    workspaceId: Int,
+    workspaceId: Long,
     allLabels: List<LabelModel>,
     onNotesEvents: (NotesEvents)->Unit,
 ) {
@@ -61,7 +64,7 @@ fun EditLabels(
         topBar = {
             TopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
-                title = { Text("Edit Labels") },
+                title = { Text(stringResource(R.string.Edit_Labels)) },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -81,20 +84,24 @@ fun EditLabels(
             )
         }
     ) { innerPadding ->
-        LazyColumn(
-            modifier = Modifier.padding(horizontal = 8.dp).padding(innerPadding),
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(allLabels) { label ->
-                EditLabelBox(label.value, onDelete = {
-                    onNotesEvents(NotesEvents.DeleteLabel(label))
-                }) {
-                    showAddLabel=true
-                    selectedLabel=label
+        if(allLabels.isEmpty()){ EmptyLabels()}
+        else{
+            LazyColumn(
+                modifier = Modifier.padding(horizontal = 8.dp).padding(innerPadding),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                items(allLabels) { label ->
+                    EditLabelBox(label.value, onDelete = {
+                        onNotesEvents(NotesEvents.DeleteLabel(label))
+                    }) {
+                        showAddLabel=true
+                        selectedLabel=label
+                    }
                 }
             }
         }
+
     }
 }
 

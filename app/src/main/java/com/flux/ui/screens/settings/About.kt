@@ -71,8 +71,8 @@ fun About(navController: NavController, radius: Int){
             item{
                 Spacer(Modifier.height(24.dp))
                 SettingOption(
-                    title =  "Developer",
-                    description = "Ronit Chinda",
+                    title =  stringResource(R.string.Developer),
+                    description = stringResource(R.string.Developer_Name),
                     icon = Icons.Rounded.DeveloperMode,
                     radius = shapeManager(radius = radius, isFirst = true),
                     actionType = ActionType.None
@@ -81,8 +81,8 @@ fun About(navController: NavController, radius: Int){
 
             item{
                 SettingOption(
-                    title =  "Source Code",
-                    description = "Github Repository",
+                    title =  stringResource(R.string.Source_Code),
+                    description = stringResource(R.string.Github_Repository),
                     icon = Icons.Rounded.Code,
                     radius = shapeManager(radius = radius, isLast = true),
                     actionType = ActionType.LINK,

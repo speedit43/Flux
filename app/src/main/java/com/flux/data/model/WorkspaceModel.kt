@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 @Entity
 data class WorkspaceModel(
     @PrimaryKey(autoGenerate = true)
-    val workspaceId: Int = 0,
+    val workspaceId: Long = 0L,
     val title: String="",
     val description: String="",
     val colorInd: Int=0,

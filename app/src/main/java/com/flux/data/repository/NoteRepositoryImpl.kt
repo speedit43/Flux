@@ -20,10 +20,10 @@ class NoteRepositoryImpl @Inject constructor(
     override suspend fun upsertNotes(notes: List<NotesModel>) { return withContext(ioDispatcher) { notesDao.upsertNotes(notes) } }
     override suspend fun deleteNote(note: NotesModel) { return withContext(ioDispatcher) { notesDao.deleteNote(note) } }
     override suspend fun deleteLabel(label: LabelModel) { return withContext(ioDispatcher) { labelDao.deleteLabel(label) } }
-    override suspend fun deleteNotes(notes: List<Int>) { return withContext(ioDispatcher) { notesDao.deleteNotes(notes) } }
-    override fun loadAllNotes(workspaceId: Int): Flow<List<NotesModel>> { return notesDao.loadAllNotes(workspaceId) }
-    override fun loadAllLabels(workspaceId: Int): Flow<List<LabelModel>> { return labelDao.loadAllLabels(workspaceId) }
-    override suspend fun deleteAllWorkspaceNotes(workspaceId: Int) { return(withContext(ioDispatcher) {
+    override suspend fun deleteNotes(notes: List<Long>) { return withContext(ioDispatcher) { notesDao.deleteNotes(notes) } }
+    override fun loadAllNotes(workspaceId: Long): Flow<List<NotesModel>> { return notesDao.loadAllNotes(workspaceId) }
+    override fun loadAllLabels(workspaceId: Long): Flow<List<LabelModel>> { return labelDao.loadAllLabels(workspaceId) }
+    override suspend fun deleteAllWorkspaceNotes(workspaceId: Long) { return(withContext(ioDispatcher) {
         labelDao.deleteAllWorkspaceLabels(workspaceId)
         notesDao.deleteAllWorkspaceNotes(workspaceId)
     })}

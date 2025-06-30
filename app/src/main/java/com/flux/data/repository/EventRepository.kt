@@ -5,10 +5,10 @@ import com.flux.data.model.EventModel
 import kotlinx.coroutines.flow.Flow
 
 interface EventRepository {
-    suspend fun upsertEvent(event: EventModel)
+    suspend fun upsertEvent(event: EventModel): Long
     suspend fun deleteEvent(event: EventModel)
-    suspend fun deleteAllWorkspaceEvent(workspaceId: Int)
+    suspend fun deleteAllWorkspaceEvent(workspaceId: Long)
     suspend fun toggleStatus(eventInstance: EventInstanceModel)
-    fun loadAllEvents(workspaceId: Int): Flow<List<EventModel>>
-    fun loadAllEventInstances(workspaceId: Int): Flow<List<EventInstanceModel>>
+    fun loadAllEvents(workspaceId: Long): Flow<List<EventModel>>
+    fun loadAllEventInstances(workspaceId: Long): Flow<List<EventInstanceModel>>
 }

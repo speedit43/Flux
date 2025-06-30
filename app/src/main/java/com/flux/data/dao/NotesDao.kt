@@ -20,11 +20,11 @@ interface NotesDao {
     suspend fun deleteNote(note: NotesModel)
 
     @Query("DELETE FROM NotesModel WHERE notesId IN (:ids)")
-    suspend fun deleteNotes(ids: List<Int>)
+    suspend fun deleteNotes(ids: List<Long>)
 
     @Query("DELETE FROM NotesModel WHERE workspaceId = :workspaceId")
-    suspend fun deleteAllWorkspaceNotes(workspaceId: Int)
+    suspend fun deleteAllWorkspaceNotes(workspaceId: Long)
 
     @Query("SELECT * FROM NotesModel where workspaceId IN (:workspaceId)")
-    fun loadAllNotes(workspaceId: Int): Flow<List<NotesModel>>
+    fun loadAllNotes(workspaceId: Long): Flow<List<NotesModel>>
 }

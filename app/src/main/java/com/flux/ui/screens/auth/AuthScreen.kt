@@ -60,12 +60,8 @@ fun AuthScreen(
                     showAuth.value = false
                     navController.navigate(NavRoutes.Workspace.route)
                 },
-                onError = {
-                    Toast.makeText(context, "Error: Can't verify the identity", Toast.LENGTH_SHORT).show()
-                },
-                onFailed = {
-                    Toast.makeText(context, "Error: Authentication failed", Toast.LENGTH_SHORT).show()
-                }
+                onError = {},
+                onFailed = { Toast.makeText(context, "Error: Authentication failed", Toast.LENGTH_SHORT).show() }
             )
 
             if (biometricAuthenticator.isAvailable()) { biometricAuthenticator.authenticate() }

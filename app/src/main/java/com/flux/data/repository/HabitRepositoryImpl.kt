@@ -15,16 +15,16 @@ class HabitRepositoryImpl @Inject constructor(
     private val instanceDao: HabitInstanceDao,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ): HabitRepository  {
-    override suspend fun upsertHabit(habit: HabitModel) { return withContext(ioDispatcher) { dao.upsertHabit(habit) } }
+    override suspend fun upsertHabit(habit: HabitModel): Long { return withContext(ioDispatcher) { dao.upsertHabit(habit) } }
     override suspend fun deleteInstance(habitInstance: HabitInstanceModel) { return withContext(ioDispatcher) { instanceDao.deleteInstance(habitInstance) } }
     override suspend fun upsertHabitInstance(habitInstance: HabitInstanceModel) { return withContext(ioDispatcher) { instanceDao.upsertInstance(habitInstance) } }
-    override fun loadAllHabitInstance(workspaceId: Int): Flow<List<HabitInstanceModel>> { return instanceDao.loadAllInstances(workspaceId) }
-    override fun loadAllHabits(workspaceId: Int): Flow<List<HabitModel>> { return dao.loadAllHabits(workspaceId) }
+    override fun loadAllHabitInstance(workspaceId: Long): Flow<List<HabitInstanceModel>> { return instanceDao.loadAllInstances(workspaceId) }
+    override fun loadAllHabits(workspaceId: Long): Flow<List<HabitModel>> { return dao.loadAllHabits(workspaceId) }
     override suspend fun deleteHabit(habit: HabitModel) { return withContext(ioDispatcher) {
         instanceDao.deleteAllInstances(habit.habitId)
         dao.deleteHabit(habit) }
     }
-    override suspend fun deleteAllWorkspaceHabit(workspaceId: Int) {
+    override suspend fun deleteAllWorkspaceHabit(workspaceId: Long) {
         return withContext(ioDispatcher) {
             dao.deleteAllWorkspaceHabit(workspaceId)
             instanceDao.deleteAllWorkspaceInstance(workspaceId)

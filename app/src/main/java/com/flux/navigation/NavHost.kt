@@ -46,21 +46,21 @@ fun AppNavHost(
 
             if (route.contains("{notesId}")) {
                 arguments.add(navArgument("notesId") {
-                    type = NavType.IntType
+                    type = NavType.LongType
                     nullable = false
                 })
             }
 
             if (route.contains("{workspaceId}")) {
                 arguments.add(navArgument("workspaceId") {
-                    type = NavType.IntType
+                    type = NavType.LongType
                     nullable = false
                 })
             }
 
             bottomSlideComposable(route, arguments) { entry ->
-                val notesId = entry.arguments?.getInt("notesId") ?: 0
-                val workspaceId = entry.arguments?.getInt("workspaceId") ?: 0
+                val notesId = entry.arguments?.getLong("notesId") ?: 0L
+                val workspaceId = entry.arguments?.getLong("workspaceId") ?: 0L
 
                 screen(navController, snackbarHostState, notesId, workspaceId, States(notesState, eventState, habitState, todoState, workspaceState, settings), ViewModels(notesViewModel, eventViewModel, todoViewModel, habitViewModel, workspaceViewModel, settingsViewModel))
             }
@@ -77,21 +77,21 @@ fun AppNavHost(
 
             if (route.contains("{listId}")) {
                 arguments.add(navArgument("listId") {
-                    type = NavType.IntType
+                    type = NavType.LongType
                     nullable = false
                 })
             }
 
             if (route.contains("{workspaceId}")) {
                 arguments.add(navArgument("workspaceId") {
-                    type = NavType.IntType
+                    type = NavType.LongType
                     nullable = false
                 })
             }
 
             bottomSlideComposable(route, arguments) { entry ->
-                val listId = entry.arguments?.getInt("listId") ?: 0
-                val workspaceId = entry.arguments?.getInt("workspaceId") ?: 0
+                val listId = entry.arguments?.getLong("listId") ?: 0L
+                val workspaceId = entry.arguments?.getLong("workspaceId") ?: 0L
 
                 screen(navController, listId, workspaceId, States(notesState, eventState, habitState, todoState, workspaceState, settings), ViewModels(notesViewModel, eventViewModel, todoViewModel, habitViewModel, workspaceViewModel, settingsViewModel))
             }
@@ -102,21 +102,21 @@ fun AppNavHost(
 
             if (route.contains("{habitId}")) {
                 arguments.add(navArgument("habitId") {
-                    type = NavType.IntType
+                    type = NavType.LongType
                     nullable = false
                 })
             }
 
             if (route.contains("{workspaceId}")) {
                 arguments.add(navArgument("workspaceId") {
-                    type = NavType.IntType
+                    type = NavType.LongType
                     nullable = false
                 })
             }
 
             animatedComposable(route, arguments) { entry ->
-                val habitId = entry.arguments?.getInt("habitId") ?: 0
-                val workspaceId = entry.arguments?.getInt("workspaceId") ?: 0
+                val habitId = entry.arguments?.getLong("habitId") ?: 0L
+                val workspaceId = entry.arguments?.getLong("workspaceId") ?: 0L
 
                 screen(navController, habitId, workspaceId, States(notesState, eventState, habitState, todoState, workspaceState, settings), ViewModels(notesViewModel, eventViewModel, todoViewModel, habitViewModel, workspaceViewModel, settingsViewModel))
             }
@@ -136,21 +136,21 @@ fun AppNavHost(
 
             if (route.contains("{eventId}")) {
                 arguments.add(navArgument("eventId") {
-                    type = NavType.IntType
+                    type = NavType.LongType
                     nullable = false
                 })
             }
 
             if (route.contains("{workspaceId}")) {
                 arguments.add(navArgument("workspaceId") {
-                    type = NavType.IntType
+                    type = NavType.LongType
                     nullable = false
                 })
             }
 
             bottomSlideComposable(route, arguments) {entry->
-                val eventId = entry.arguments?.getInt("eventId") ?: 0
-                val workspaceId = entry.arguments?.getInt("workspaceId") ?: 0
+                val eventId = entry.arguments?.getLong("eventId") ?: 0L
+                val workspaceId = entry.arguments?.getLong("workspaceId") ?: 0L
                 screen(navController, States(notesState, eventState, habitState, todoState, workspaceState, settings), ViewModels(notesViewModel, eventViewModel, todoViewModel, habitViewModel, workspaceViewModel, settingsViewModel), eventId, workspaceId)
             }
         }
@@ -160,13 +160,13 @@ fun AppNavHost(
 
             if (route.contains("{workspaceId}")) {
                 arguments.add(navArgument("workspaceId") {
-                    type = NavType.IntType
+                    type = NavType.LongType
                     nullable = false
                 })
             }
 
             bottomSlideComposable(route, arguments) { entry->
-                val workspaceId = entry.arguments?.getInt("workspaceId") ?: 0
+                val workspaceId = entry.arguments?.getLong("workspaceId") ?: 0L
 
                 screen(navController, States(notesState, eventState, habitState, todoState, workspaceState, settings), ViewModels(notesViewModel, eventViewModel, todoViewModel, habitViewModel, workspaceViewModel, settingsViewModel), workspaceId)
             }
@@ -177,13 +177,13 @@ fun AppNavHost(
 
             if (route.contains("{workspaceId}")) {
                 arguments.add(navArgument("workspaceId") {
-                    type = NavType.IntType
+                    type = NavType.LongType
                     nullable = false
                 })
             }
 
             animatedComposable(route, arguments) { entry ->
-                val id = entry.arguments?.getInt("workspaceId") ?: 0
+                val id = entry.arguments?.getLong("workspaceId") ?: 0L
                 screen(navController, snackbarHostState, States(notesState, eventState, habitState, todoState, workspaceState, settings), ViewModels(notesViewModel, eventViewModel, todoViewModel, habitViewModel, workspaceViewModel, settingsViewModel), id)
             }
         }

@@ -25,7 +25,7 @@ import com.flux.ui.state.Settings
 @Composable
 fun NotesHome(
     navController: NavController,
-    workspaceId: Int,
+    workspaceId: Long,
     allLabels: List<LabelModel>,
     settings: Settings,
     isLoading: Boolean,

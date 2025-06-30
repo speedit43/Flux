@@ -19,7 +19,6 @@ import androidx.navigation.NavController
 import com.flux.data.model.HabitInstanceModel
 import com.flux.data.model.HabitModel
 import com.flux.other.cancelReminder
-import com.flux.other.scheduleReminder
 import com.flux.ui.components.HabitBottomSheet
 import com.flux.ui.components.HabitCalenderCard
 import com.flux.ui.components.HabitScaffold
@@ -34,7 +33,7 @@ import kotlinx.coroutines.launch
 fun HabitDetails(
     navController: NavController,
     radius: Int,
-    workspaceId: Int,
+    workspaceId: Long,
     habit: HabitModel,
     habitInstances: List<HabitInstanceModel>,
     onHabitEvents: (HabitEvents)-> Unit
@@ -50,7 +49,7 @@ fun HabitDetails(
         description = habit.description,
         onBackPressed = { navController.popBackStack() },
         onDeleteClicked = {
-            cancelReminder(context, habit.habitId, "HABIT")
+            cancelReminder(context, habit.habitId, "HABIT", habit.title, habit.description, "DAILY")
             navController.popBackStack()
             onHabitEvents(HabitEvents.DeleteHabit(habit))
         },
@@ -73,18 +72,9 @@ fun HabitDetails(
         isVisible = showHabitDialog,
         sheetState = sheetState,
         onDismissRequest = { scope.launch { sheetState.hide() }.invokeOnCompletion { showHabitDialog = false } },
-        onConfirm = { newHabit->
-            cancelReminder(context, habit.habitId, "HABIT")
-            scheduleReminder(
-                context = context,
-                id = newHabit.habitId,
-                type="HABIT",
-                repeat = "DAILY",
-                timeInMillis = newHabit.startDateTime,
-                title = newHabit.title,
-                description = newHabit.description
-            )
-            onHabitEvents(HabitEvents.UpsertHabit(newHabit))
+        onConfirm = { newHabit, adjustedTime->
+            cancelReminder(context, habit.habitId, "HABIT", habit.title, habit.description, "DAILY")
+            onHabitEvents(HabitEvents.UpsertHabit(context, newHabit, adjustedTime))
             scope.launch { sheetState.hide() }.invokeOnCompletion { showHabitDialog = false }
         }
     )

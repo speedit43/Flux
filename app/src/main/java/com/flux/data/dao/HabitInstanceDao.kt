@@ -14,14 +14,14 @@ interface HabitInstanceDao {
     suspend fun upsertInstance(habitInstance: HabitInstanceModel)
 
     @Query("DELETE FROM HabitInstanceModel WHERE habitId IN (:habitId)")
-    suspend fun deleteAllInstances(habitId: Int)
+    suspend fun deleteAllInstances(habitId: Long)
 
     @Delete
     suspend fun deleteInstance(habitInstance: HabitInstanceModel)
 
     @Query("DELETE FROM HabitInstanceModel WHERE workspaceId = :workspaceId")
-    suspend fun deleteAllWorkspaceInstance(workspaceId: Int)
+    suspend fun deleteAllWorkspaceInstance(workspaceId: Long)
 
     @Query("SELECT * FROM HabitInstanceModel where workspaceId in (:workspaceId)")
-    fun loadAllInstances(workspaceId: Int): Flow<List<HabitInstanceModel>>
+    fun loadAllInstances(workspaceId: Long): Flow<List<HabitInstanceModel>>
 }

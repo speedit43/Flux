@@ -29,7 +29,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -53,11 +53,11 @@ fun TodoHome(
     navController: NavController,
     radius: Int,
     allList: List<TodoModel>,
-    workspaceId: Int,
+    workspaceId: Long,
     isLoading: Boolean,
     onTodoEvents: (TodoEvents)->Unit
 ) {
-    var expanded by remember { mutableIntStateOf(-1) }
+    var expanded by remember { mutableLongStateOf(-1L) }
 
     if (isLoading) { Loader() }
     else if(allList.isEmpty()) { EmptyTodoList() }

@@ -33,10 +33,10 @@ class TodoViewModel@Inject constructor(
         }
     }
 
-    private fun deleteWorkspaceLists(workspaceId: Int){ viewModelScope.launch(Dispatchers.IO) { repository.deleteAllWorkspaceLists(workspaceId) } }
+    private fun deleteWorkspaceLists(workspaceId: Long){ viewModelScope.launch(Dispatchers.IO) { repository.deleteAllWorkspaceLists(workspaceId) } }
     private fun deleteList(data: TodoModel) { viewModelScope.launch(Dispatchers.IO) { repository.deleteList(data) } }
     private fun upsertList(data: TodoModel) { viewModelScope.launch(Dispatchers.IO) { repository.upsertList(data) } }
-    private fun loadAllLists(workspaceId: Int){
+    private fun loadAllLists(workspaceId: Long){
         updateState { it.copy(isLoading = true) }
         viewModelScope.launch { repository.loadAllLists(workspaceId).distinctUntilChanged().collect { data-> updateState { it.copy(isLoading = false, allLists = data) } } }
     }

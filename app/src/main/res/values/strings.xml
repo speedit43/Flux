@@ -3,7 +3,6 @@
     <string name="app_name">Flux</string>
 
     // Settings
-
     <string name="Settings">Settings</string>
     <string name="Customize">Customize</string>
     <string name="Customize_desc">Theme • Shape • Contrast</string>
@@ -38,5 +37,45 @@
     <string name="System_language_desc">Automatically adapts to device language</string>
     <string name="Build_type">Build Type</string>
     <string name="Build_version">Build Version</string>
+    <string name="Developer">Developer</string>
+    <string name="Developer_Name">Ronit Chinda</string>
+    <string name="Source_Code">Source Code</string>
+    <string name="Github_Repository">Github Repository</string>
+
+    <!-- Common -->
+    <string name="Pin">Pin</string>
+    <string name="Unpin">Unpin</string>
+    <string name="Pinned">Pinned</string>
+    <string name="Dismiss">Dismiss</string>
+    <string name="Confirm">Confirm</string>
+
+    <!-- Notes -->
+    <string name="Others">Others</string>
+    <string name="Labels">Labels</string>
+    <string name="Delete_Note">Delete Note</string>
+    <string name="Title">Title</string>
+    <string name="Description">Description</string>
+    <string name="Empty_Notes">No Notes Found</string>
+    <string name="Empty_Labels">No Labels Found</string>
+    <string name="Last_Edited">Last Edited</string>
+    <string name="Word_Count">Word Count</string>
+    <string name="Character_Count">Character Count</string>
+    <string name="Edit_Labels">Edit Labels</string>
+    <string name="Add_Label">Add New Label</string>
+    <string name="Edit_Label">Edit Label</string>
+
+    <!-- To-do List -->
+    <string name="Empty_Lists">No List Found</string>
+    <string name="Edit_list">Edit List</string>
+    <string name="Add_Item">Add New Item</string>
+
+    <!-- Habits -->
+    <string name="Empty_Habits">No Habit Found</string>
+    <string name="Started">Started On</string>
+    <string name="Current_Streak">Current Streak: </string>
+    <string name="Best_Streak">Best: </string>
+    <string name="Add_Habit">Add Habit</string>
+    <string name="Edit_Habit">Edit Habit</string>
+
 
 </resources>

@@ -55,7 +55,6 @@ import com.flux.data.model.EventModel
 import com.flux.data.model.EventStatus
 import com.flux.data.model.Repetition
 import com.flux.other.cancelReminder
-import com.flux.other.scheduleReminder
 import com.flux.ui.components.CustomNotificationDialog
 import com.flux.ui.components.DatePickerModal
 import com.flux.ui.components.EventNotificationDialog
@@ -120,7 +119,7 @@ fun EventDetails(
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(MaterialTheme.colorScheme.surfaceContainerLow),
                 title = { Text("Edit Event") },
-                navigationIcon = { IconButton({navController.popBackStack()}) { Icon(Icons.AutoMirrored.Default.ArrowBack, null) } },
+                navigationIcon = { IconButton({ navController.popBackStack() }) { Icon(Icons.AutoMirrored.Default.ArrowBack, null) } },
                 actions = {
                     IconButton(
                         enabled = title.isNotBlank(),
@@ -130,24 +129,13 @@ fun EventDetails(
                                 offset = notificationOffset,
                                 repetition = eventRepetition
                             )
-                            cancelReminder(context, event.eventId, "EVENT")
-                            if(adjustedTime!=null){
-                                scheduleReminder(
-                                    context = context,
-                                    id = event.eventId,
-                                    type="EVENT",
-                                    repeat = eventRepetition.toString(),
-                                    timeInMillis = adjustedTime,
-                                    title = title,
-                                    description = description
-                                )
-                            }
+                            cancelReminder(context, event.eventId, "EVENT", title, description, event.repetition.toString())
                         onTaskEvents(TaskEvents.ToggleStatus(eventInstance.copy(status=status)))
-                        onTaskEvents(TaskEvents.UpsertTask(event.copy(title = title, description = description, isAllDay = checked, startDateTime = selectedDateTime, repetition = eventRepetition)))
+                        onTaskEvents(TaskEvents.UpsertTask(context, event.copy(title = title, description = description, isAllDay = checked, startDateTime = selectedDateTime, repetition = eventRepetition), adjustedTime))
                         navController.popBackStack() })
                     { Icon(Icons.Default.Check, null) }
                     IconButton({
-                        cancelReminder(context, event.eventId, "EVENT")
+                        cancelReminder(context, event.eventId, "EVENT", event.title, event.description, event.repetition.toString())
                         navController.popBackStack()
                         onTaskEvents(TaskEvents.DeleteTask(event))
                     }) { Icon(Icons.Outlined.DeleteOutline, null, tint = MaterialTheme.colorScheme.error) }

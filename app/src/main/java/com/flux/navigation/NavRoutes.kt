@@ -59,7 +59,7 @@ sealed class NavRoutes(val route: String) {
     data object About : NavRoutes("settings/about")
     data object Contact : NavRoutes("settings/contact")
 
-    fun withArgs(vararg args: Int): String {
+    fun withArgs(vararg args: Long): String {
         return buildString {
             append(route)
             args.forEach { arg ->
@@ -77,21 +77,21 @@ val AuthScreen =
     )
 
 val NotesScreens =
-    mapOf<String, @Composable (navController: NavController, snackbarHostState: SnackbarHostState, notesId: Int, workspaceId: Int, states: States, viewModels: ViewModels) -> Unit>(
+    mapOf<String, @Composable (navController: NavController, snackbarHostState: SnackbarHostState, notesId: Long, workspaceId: Long, states: States, viewModels: ViewModels) -> Unit>(
         NavRoutes.NoteDetails.route + "/{workspaceId}" + "/{notesId}" to { navController, snackbarHostState, notesId, workspaceId, states, viewModel ->
             NoteDetails(navController, workspaceId, states.notesState.allNotes.find { it.notesId==notesId }?: NotesModel(workspaceId=workspaceId), states.notesState.allLabels.filter { it.workspaceId==workspaceId }, snackbarHostState, viewModel.notesViewModel::onEvent)
         }
     )
 
 val HabitScreens =
-    mapOf<String, @Composable (navController: NavController, habitId: Int, workspaceId: Int, states: States, viewModels: ViewModels) -> Unit>(
+    mapOf<String, @Composable (navController: NavController, habitId: Long, workspaceId: Long, states: States, viewModels: ViewModels) -> Unit>(
         NavRoutes.HabitDetails.route + "/{workspaceId}" + "/{habitId}" to { navController, habitId, workspaceId, states, viewModel ->
             HabitDetails(navController, states.settings.data.cornerRadius, workspaceId, states.habitState.allHabits.find { it.habitId==habitId }?: HabitModel(workspaceId=workspaceId), states.habitState.allInstances.filter { it.habitId==habitId }, viewModel.habitViewModel::onEvent)
         }
     )
 
 val TodoScreens =
-    mapOf<String, @Composable (navController: NavController, listId: Int, workspaceId: Int, states: States, viewModels: ViewModels) -> Unit>(
+    mapOf<String, @Composable (navController: NavController, listId: Long, workspaceId: Long, states: States, viewModels: ViewModels) -> Unit>(
         NavRoutes.TodoDetail.route + "/{workspaceId}" + "/{listId}" to { navController, listId, workspaceId, states, viewModel ->
             TodoDetail(navController, states.todoState.allLists.find { it.id==listId }?: TodoModel(workspaceId=workspaceId), workspaceId, viewModel.todoViewModel::onEvent)
         }
@@ -120,14 +120,14 @@ val SettingsScreens =
     )
 
 val EventScreens =
-    mapOf<String, @Composable (navController: NavController, states: States, viewModels: ViewModels, eventId: Int, workspaceId: Int) -> Unit> (
+    mapOf<String, @Composable (navController: NavController, states: States, viewModels: ViewModels, eventId: Long, workspaceId: Long) -> Unit> (
         NavRoutes.EventDetails.route + "/{workspaceId}" + "/{eventId}" to { navController, states, viewModels, eventId, workspaceId ->
             EventDetails(navController, states.eventState.allEvent.find { it.eventId==eventId }?: EventModel(workspaceId = workspaceId), states.eventState.allEventInstances.find { it.eventId==eventId && it.instanceDate==LocalDate.now() }?: EventInstanceModel(eventId=eventId, instanceDate = LocalDate.now()), viewModels.eventViewModel::onEvent)
         }
     )
 
 val WorkspaceScreens =
-    mapOf<String, @Composable (navController: NavController, snackbarHostState: SnackbarHostState, states: States, viewModels: ViewModels, workspaceId: Int) -> Unit> (
+    mapOf<String, @Composable (navController: NavController, snackbarHostState: SnackbarHostState, states: States, viewModels: ViewModels, workspaceId: Long) -> Unit> (
         NavRoutes.Workspace.route to { navController, snackbarHostState, states, viewModels, _ ->
             WorkSpaces(snackbarHostState, navController, states.settings.data.cornerRadius, states.workspaceState.allSpaces, viewModels.notesViewModel::onEvent, viewModels.eventViewModel::onEvent, viewModels.habitViewModel::onEvent, viewModels.todoViewModel::onEvent, viewModels.workspaceViewModel::onEvent)
         },
@@ -157,7 +157,7 @@ val WorkspaceScreens =
     )
 
 val LabelScreens =
-    mapOf<String, @Composable (navController: NavController, states: States, viewModels: ViewModels, workspaceId: Int) -> Unit> (
+    mapOf<String, @Composable (navController: NavController, states: States, viewModels: ViewModels, workspaceId: Long) -> Unit> (
         NavRoutes.EditLabels.route + "/{workspaceId}" to { navController, states, viewModels, workspaceId ->
             EditLabels(navController, workspaceId, states.notesState.allLabels.filter { it.workspaceId==workspaceId }, viewModels.notesViewModel::onEvent)
         }

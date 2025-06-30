@@ -17,7 +17,6 @@ coilCompose = "2.7.0"
 # Hilt
 hilt = "2.52"
 hiltNavigationCompose = "1.2.0"
-firebaseCrashlyticsBuildtools = "3.0.4"
 
 [libraries]
 androidx-biometric = { module = "androidx.biometric:biometric", version.ref = "biometric" }
@@ -44,7 +43,6 @@ hilt-navigation-compose = { module = "androidx.hilt:hilt-navigation-compose", ve
 
 #Coil (Image rendering)
 coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilCompose" }
-firebase-crashlytics-buildtools = { group = "com.google.firebase", name = "firebase-crashlytics-buildtools", version.ref = "firebaseCrashlyticsBuildtools" }
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }

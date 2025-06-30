@@ -44,7 +44,7 @@ class NotesViewModel @Inject constructor(
     private fun deleteNote(data: NotesModel) { viewModelScope.launch(Dispatchers.IO) { repository.deleteNote(data) } }
     private fun deleteLabel(data: LabelModel) { viewModelScope.launch(Dispatchers.IO) { repository.deleteLabel(data) } }
     private fun upsertLabel(data: LabelModel) { viewModelScope.launch(Dispatchers.IO) { repository.upsertLabel(data) } }
-    private fun deleteWorkspaceNotes(workspaceId: Int){ viewModelScope.launch(Dispatchers.IO) { repository.deleteAllWorkspaceNotes(workspaceId) } }
+    private fun deleteWorkspaceNotes(workspaceId: Long){ viewModelScope.launch(Dispatchers.IO) { repository.deleteAllWorkspaceNotes(workspaceId) } }
 
     private fun togglePinMultiple(data: List<NotesModel>) {
         viewModelScope.launch(Dispatchers.IO) {
@@ -60,7 +60,7 @@ class NotesViewModel @Inject constructor(
         }
     }
 
-    private fun loadAllNotes(workspaceId: Int) {
+    private fun loadAllNotes(workspaceId: Long) {
         updateState { it.copy(isLoading = true) }
 
         viewModelScope.launch {
@@ -73,7 +73,7 @@ class NotesViewModel @Inject constructor(
         }
     }
 
-    private fun loadAllLabels(workspaceId: Int) {
+    private fun loadAllLabels(workspaceId: Long) {
         updateState { it.copy(isLoading = true) }
 
         viewModelScope.launch {

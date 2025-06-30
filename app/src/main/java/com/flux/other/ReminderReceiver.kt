@@ -24,10 +24,10 @@ class ReminderReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val title = intent.getStringExtra("TITLE") ?: "Reminder"
         val description = intent.getStringExtra("DESCRIPTION") ?: "It's time to complete pending things"
-        val id = intent.getIntExtra("ID", 0)
-        val type = intent.getStringExtra("TYPE") ?: "habit"
+        val id = intent.getLongExtra("ID", 0L)
+        val type = intent.getStringExtra("TYPE") ?: "HABIT"
         val repeat = intent.getStringExtra("REPEAT") ?: "NONE"
-        val notificationId = getUniqueRequestCode(type, id)
+        val notificationId = getUniqueRequestCode(type, id).toInt()
 
         val notification = NotificationCompat.Builder(context, "notification_channel")
             .setSmallIcon(R.mipmap.ic_launcher_foreground)
@@ -92,7 +92,7 @@ fun canScheduleHabitReminder(context: Context): Boolean{
 
 fun scheduleReminder(
     context: Context,
-    id: Int,
+    id: Long,
     type: String,
     repeat: String = "NONE",
     timeInMillis: Long,
@@ -101,18 +101,12 @@ fun scheduleReminder(
 ) {
     try {
         val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(context, ReminderReceiver::class.java).apply {
-            putExtra("TITLE", title)
-            putExtra("DESCRIPTION", description)
-            putExtra("ID", id)
-            putExtra("TYPE", type)
-            putExtra("REPEAT", repeat)
-        }
-
+        val intent = createReminderIntent(context, id, type, title, description, repeat)
         val requestCode = getUniqueRequestCode(type, id)
+
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            requestCode,
+            requestCode.toInt(),
             intent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
@@ -124,31 +118,50 @@ fun scheduleReminder(
     }
 }
 
-private fun getUniqueRequestCode(type: String, id: Int): Int {
+fun createReminderIntent(
+    context: Context,
+    id: Long,
+    type: String,
+    title: String,
+    description: String,
+    repeat: String
+): Intent {
+    return Intent(context, ReminderReceiver::class.java).apply {
+        putExtra("TITLE", title)
+        putExtra("DESCRIPTION", description)
+        putExtra("ID", id)
+        putExtra("TYPE", type)
+        putExtra("REPEAT", repeat)
+    }
+}
+
+
+private fun getUniqueRequestCode(type: String, id: Long): Long {
     return when (type) {
-        "habit" -> id
+        "HABIT" -> id
         else -> 200_000 + id
     }
 }
 
-fun cancelReminder(context: Context, id: Int, type: String) {
+fun cancelReminder(context: Context, id: Long, type: String, title: String, description: String, repeat: String="NONE") {
     try {
-        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        val intent = Intent(context, ReminderReceiver::class.java)
+        val intent = createReminderIntent(context = context, id = id, type = type, title = title, description = description, repeat = repeat)
         val requestCode = getUniqueRequestCode(type, id)
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            requestCode,
+            requestCode.toInt(),
             intent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
 
+        val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
         alarmManager.cancel(pendingIntent)
     } catch (e: SecurityException) {
         e.printStackTrace()
         Toast.makeText(context, "Error: Failed to cancel alarm", Toast.LENGTH_LONG).show()
     }
 }
+
 
 fun isNotificationPermissionGranted(context: Context): Boolean {
     return ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
