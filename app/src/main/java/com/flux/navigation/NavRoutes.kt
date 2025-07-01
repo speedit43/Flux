@@ -77,9 +77,9 @@ val AuthScreen =
     )
 
 val NotesScreens =
-    mapOf<String, @Composable (navController: NavController, snackbarHostState: SnackbarHostState, notesId: Long, workspaceId: Long, states: States, viewModels: ViewModels) -> Unit>(
-        NavRoutes.NoteDetails.route + "/{workspaceId}" + "/{notesId}" to { navController, snackbarHostState, notesId, workspaceId, states, viewModel ->
-            NoteDetails(navController, workspaceId, states.notesState.allNotes.find { it.notesId==notesId }?: NotesModel(workspaceId=workspaceId), states.notesState.allLabels.filter { it.workspaceId==workspaceId }, snackbarHostState, viewModel.notesViewModel::onEvent)
+    mapOf<String, @Composable (navController: NavController, notesId: Long, workspaceId: Long, states: States, viewModels: ViewModels) -> Unit>(
+        NavRoutes.NoteDetails.route + "/{workspaceId}" + "/{notesId}" to { navController, notesId, workspaceId, states, viewModel ->
+            NoteDetails(navController, workspaceId, states.notesState.allNotes.find { it.notesId==notesId }?: NotesModel(workspaceId=workspaceId), states.notesState.allLabels.filter { it.workspaceId==workspaceId }, viewModel.notesViewModel::onEvent)
         }
     )
 
@@ -135,7 +135,9 @@ val WorkspaceScreens =
             WorkspaceDetails(
                 navController,
                 states.notesState.allLabels.filter { it.workspaceId==workspaceId },
-                states.settings, states.notesState.isLoading, states.eventState.isTodayEventLoading,
+                states.settings,
+                states.notesState.isNotesLoading,
+                states.eventState.isTodayEventLoading,
                 states.eventState.isDatedEventLoading,
                 states.todoState.isLoading,
                 states.workspaceState.allSpaces.first { it.workspaceId==workspaceId },
@@ -159,6 +161,6 @@ val WorkspaceScreens =
 val LabelScreens =
     mapOf<String, @Composable (navController: NavController, states: States, viewModels: ViewModels, workspaceId: Long) -> Unit> (
         NavRoutes.EditLabels.route + "/{workspaceId}" to { navController, states, viewModels, workspaceId ->
-            EditLabels(navController, workspaceId, states.notesState.allLabels.filter { it.workspaceId==workspaceId }, viewModels.notesViewModel::onEvent)
+            EditLabels(navController, states.notesState.isLabelsLoading, workspaceId, states.notesState.allLabels, viewModels.notesViewModel::onEvent)
         }
     )

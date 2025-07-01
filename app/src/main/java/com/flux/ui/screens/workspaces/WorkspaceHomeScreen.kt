@@ -40,10 +40,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.core.net.toUri
 import coil.compose.AsyncImage
+import com.flux.R
 import com.flux.data.model.EventModel
 import com.flux.data.model.HabitModel
 import com.flux.data.model.WorkspaceModel
@@ -64,7 +66,7 @@ fun WorkspaceHomeScreen(
     onAddSpaces: () -> Unit,
     allEvents: List<EventModel>,
     allHabits: List<HabitModel>,
-    navigateToTab: (String) -> Unit,
+    navigateToTab: (Int) -> Unit,
     onNotesEvents: (NotesEvents)->Unit,
     onTaskEvents: (TaskEvents)->Unit,
     onHabitEvents: (HabitEvents)-> Unit,
@@ -83,8 +85,8 @@ fun WorkspaceHomeScreen(
     if(showRemoveDialog){
         DeleteAlert(
             icon = Icons.Default.RemoveCircle,
-            dialogTitle = "Remove Space?",
-            dialogText = "This can't be undone, It will delete all the data of this space",
+            dialogTitle = stringResource(R.string.removeDialogTitle),
+            dialogText = stringResource(R.string.removeDialogText),
             onConfirmation = {
                 if(isNotesRemoved){ onNotesEvents(NotesEvents.DeleteAllWorkspaceNotes(workspaceId)) }
                 if(isTodoRemoved) { onTodoEvents(TodoEvents.DeleteAllWorkspaceLists(workspaceId)) }
@@ -164,9 +166,9 @@ fun WorkspaceHomeScreen(
                 item {
                     SpacesCard(
                         radius=radius,
-                        title = "Notes",
+                        title = stringResource(R.string.Notes),
                         icon = Icons.AutoMirrored.Default.Notes,
-                        onClick = { navigateToTab("Notes") },
+                        onClick = { navigateToTab(R.string.Notes) },
                         onRemove = {
                             isNotesRemoved=true
                             updatedWorkspace=updatedWorkspace.copy(isNotesAdded = false)
@@ -179,9 +181,9 @@ fun WorkspaceHomeScreen(
                 item {
                     SpacesCard(
                         radius=radius,
-                        title = "To-do",
+                        title = stringResource(R.string.To_Do),
                         icon = Icons.Default.Checklist,
-                        onClick = { navigateToTab("To-do") },
+                        onClick = { navigateToTab(R.string.To_Do) },
                         onRemove = {
                             isTodoRemoved=true
                             updatedWorkspace=workspace.copy(isTodoAdded = false)
@@ -194,9 +196,9 @@ fun WorkspaceHomeScreen(
                 item {
                     SpacesCard(
                         radius=radius,
-                        title = "Events",
+                        title = stringResource(R.string.Events),
                         icon = Icons.Default.Event,
-                        onClick = { navigateToTab("Events") },
+                        onClick = { navigateToTab(R.string.Events) },
                         onRemove = {
                             isEventsRemoved=true
                             updatedWorkspace=updatedWorkspace.copy(isEventsAdded = false)
@@ -209,9 +211,9 @@ fun WorkspaceHomeScreen(
                 item {
                     SpacesCard(
                         radius=radius,
-                        title = "Calendar",
+                        title = stringResource(R.string.Calender),
                         icon = Icons.Default.CalendarMonth,
-                        onClick = { navigateToTab("Calendar") },
+                        onClick = { navigateToTab(R.string.Calender) },
                         onRemove = {
                             updatedWorkspace=updatedWorkspace.copy(isCalenderAdded = false)
                             showRemoveDialog=true
@@ -223,9 +225,9 @@ fun WorkspaceHomeScreen(
                 item {
                     SpacesCard(
                         radius=radius,
-                        title = "Habits",
+                        title = stringResource(R.string.Habits),
                         icon = Icons.Default.EventAvailable,
-                        onClick = { navigateToTab("Habits") },
+                        onClick = { navigateToTab(R.string.Habits) },
                         onRemove = {
                             isHabitRemoved=true
                             updatedWorkspace=updatedWorkspace.copy(isHabitsAdded = false)
@@ -238,7 +240,7 @@ fun WorkspaceHomeScreen(
                 item {
                     SpacesCard(
                         radius=radius,
-                        title = "Add Spaces",
+                        title = stringResource(R.string.Add_Space),
                         icon = Icons.Default.Add,
                         isAddNewSpace = true,
                         onClick = onAddSpaces,

@@ -36,11 +36,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.flux.R
 import com.flux.data.model.TodoModel
 import com.flux.navigation.Loader
 import com.flux.navigation.NavRoutes
@@ -102,7 +104,7 @@ fun TodoHome(
                             }
                         }
                         if(item.items.size>3){
-                            Text("...more", modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp).padding(start = 70.dp, end = 8.dp))
+                            Text(stringResource(R.string.more), modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp).padding(start = 70.dp, end = 8.dp))
                         }
                     }
                     HorizontalDivider(Modifier.alpha(0.5f))
@@ -124,6 +126,6 @@ fun EmptyTodoList(){
             contentDescription = null,
             modifier = Modifier.size(48.dp)
         )
-        Text("No List Found")
+        Text(stringResource(R.string.Empty_Lists))
     }
 }

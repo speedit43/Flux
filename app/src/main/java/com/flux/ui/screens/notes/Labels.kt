@@ -32,6 +32,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.flux.R
 import com.flux.data.model.LabelModel
+import com.flux.navigation.Loader
 import com.flux.ui.components.AddLabelDialog
 import com.flux.ui.components.EmptyLabels
 import com.flux.ui.events.NotesEvents
@@ -40,6 +41,7 @@ import com.flux.ui.events.NotesEvents
 @Composable
 fun EditLabels(
     navController: NavController,
+    isLoading: Boolean,
     workspaceId: Long,
     allLabels: List<LabelModel>,
     onNotesEvents: (NotesEvents)->Unit,
@@ -84,24 +86,26 @@ fun EditLabels(
             )
         }
     ) { innerPadding ->
-        if(allLabels.isEmpty()){ EmptyLabels()}
-        else{
-            LazyColumn(
-                modifier = Modifier.padding(horizontal = 8.dp).padding(innerPadding),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                items(allLabels) { label ->
-                    EditLabelBox(label.value, onDelete = {
-                        onNotesEvents(NotesEvents.DeleteLabel(label))
-                    }) {
-                        showAddLabel=true
-                        selectedLabel=label
+        when {
+            isLoading-> Loader()
+            allLabels.isEmpty()-> EmptyLabels()
+            else -> {
+                LazyColumn(
+                    modifier = Modifier.padding(horizontal = 8.dp).padding(innerPadding),
+                    horizontalAlignment = Alignment.CenterHorizontally,
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    items(allLabels) { label ->
+                        EditLabelBox(label.value, onDelete = {
+                            onNotesEvents(NotesEvents.DeleteLabel(label))
+                        }) {
+                            showAddLabel=true
+                            selectedLabel=label
+                        }
                     }
                 }
             }
         }
-
     }
 }
 

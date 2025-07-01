@@ -30,10 +30,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.semantics.isTraversalGroup
 import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.unit.dp
+import com.flux.R
 import com.flux.data.model.LabelModel
 import com.flux.data.model.NotesModel
 import com.flux.data.model.WorkspaceModel
@@ -125,7 +127,7 @@ fun WorkspaceSearchInputField(
         onSearch = onSearch,
         expanded = expanded,
         onExpandedChange = onExpandedChange,
-        placeholder = { Text("Search Workspaces...") },
+        placeholder = { Text(stringResource(R.string.Search_Workspaces)) },
         leadingIcon = { Icon(Icons.Rounded.Search, "Search") },
         trailingIcon = {
             Row { if(query.isNotBlank() || expanded) CloseButton(onSearchClosed)
@@ -212,7 +214,7 @@ fun NotesSearchInputField(
         onSearch = onSearch,
         expanded = expanded,
         onExpandedChange = onExpandedChange,
-        placeholder = { Text("Search Notes...") },
+        placeholder = { Text(stringResource(R.string.Search_Notes)) },
         leadingIcon = { Icon(Icons.Rounded.Search, "Search") },
         trailingIcon = { Row {
             if (query.isNotBlank()) { CloseButton(onSearchClosed) }

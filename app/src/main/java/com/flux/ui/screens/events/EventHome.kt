@@ -31,10 +31,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.flux.R
 import com.flux.data.model.EventInstanceModel
 import com.flux.data.model.EventModel
 import com.flux.data.model.EventStatus
@@ -135,7 +137,7 @@ fun EmptyEvents(){
             contentDescription = null,
             modifier = Modifier.size(48.dp)
         )
-        Text("No Event Found")
+        Text(stringResource(R.string.Empty_Events))
     }
 }
 
@@ -211,11 +213,7 @@ fun EventCard(
                                     verticalAlignment = Alignment.CenterVertically,
                                     horizontalArrangement = Arrangement.spacedBy(2.dp),
                                 ) {
-                                    Icon(
-                                        Icons.Default.Repeat,
-                                        null,
-                                        modifier = Modifier.size(15.dp)
-                                    )
+                                    Icon(Icons.Default.Repeat, null, modifier = Modifier.size(15.dp))
                                     Text(
                                         repeat.toString(),
                                         style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),

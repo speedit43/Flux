@@ -62,12 +62,12 @@ fun AppNavHost(
                 val notesId = entry.arguments?.getLong("notesId") ?: 0L
                 val workspaceId = entry.arguments?.getLong("workspaceId") ?: 0L
 
-                screen(navController, snackbarHostState, notesId, workspaceId, States(notesState, eventState, habitState, todoState, workspaceState, settings), ViewModels(notesViewModel, eventViewModel, todoViewModel, habitViewModel, workspaceViewModel, settingsViewModel))
+                screen(navController, notesId, workspaceId, States(notesState, eventState, habitState, todoState, workspaceState, settings), ViewModels(notesViewModel, eventViewModel, todoViewModel, habitViewModel, workspaceViewModel, settingsViewModel))
             }
         }
 
         AuthScreen.forEach { (route, screen) ->
-            animatedComposable(route) { entry ->
+            animatedComposable(route){
                 screen(navController, States(notesState, eventState, habitState, todoState, workspaceState, settings))
             }
         }

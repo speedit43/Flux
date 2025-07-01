@@ -26,6 +26,7 @@ class HabitViewModel @Inject constructor(private val repository: HabitRepository
     private val _state: MutableStateFlow<HabitState> = MutableStateFlow(HabitState())
     val state: StateFlow<HabitState> = _state.asStateFlow()
     private val mutex = Mutex()
+
     fun onEvent(event: HabitEvents) { viewModelScope.launch { reduce(event = event) } }
     private suspend fun updateState(reducer: (HabitState) -> HabitState) { mutex.withLock { _state.value = reducer(_state.value) } }
     private suspend fun reduce(event: HabitEvents) {
@@ -57,17 +58,15 @@ class HabitViewModel @Inject constructor(private val repository: HabitRepository
     private fun deleteWorkspaceHabits(workspaceId: Long){ viewModelScope.launch(Dispatchers.IO) { repository.deleteAllWorkspaceHabit(workspaceId) } }
     private suspend fun loadAllInstances(workspaceId: Long){
         updateState { it.copy(isLoading = true) }
-        viewModelScope.launch { repository.loadAllHabitInstance(workspaceId).distinctUntilChanged().collect { data-> updateState { it.copy(isLoading = false, allInstances = data) } } }
+        repository.loadAllHabitInstance(workspaceId).distinctUntilChanged().collect { data-> updateState { it.copy(isLoading = false, allInstances = data) } }
     }
     private suspend fun loadAllHabits(workspaceId: Long) {
         updateState { it.copy(isLoading = true) }
-        viewModelScope.launch {
-            repository.loadAllHabits(workspaceId)
-                .distinctUntilChanged()
-                .collect { data ->
-                    val sortedData = data.sortedBy { it.startDateTime }
-                    updateState { it.copy(isLoading = false, allHabits = sortedData) }
-                }
-        }
+        repository.loadAllHabits(workspaceId)
+            .distinctUntilChanged()
+            .collect { data ->
+                val sortedData = data.sortedBy { it.startDateTime }
+                updateState { it.copy(isLoading = false, allHabits = sortedData) }
+            }
     }
 }

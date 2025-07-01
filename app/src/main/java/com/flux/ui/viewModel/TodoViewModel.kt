@@ -24,7 +24,7 @@ class TodoViewModel@Inject constructor(
 
     fun onEvent(event: TodoEvents) { viewModelScope.launch { reduce(event = event) } }
     private fun updateState(reducer: (TodoState) -> TodoState) { _state.value = reducer(_state.value) }
-    private fun reduce(event: TodoEvents) {
+    private suspend fun reduce(event: TodoEvents) {
         when (event) {
             is TodoEvents.DeleteList -> { deleteList(event.data) }
             is TodoEvents.LoadAllLists -> { loadAllLists(event.workspaceId) }
@@ -36,8 +36,8 @@ class TodoViewModel@Inject constructor(
     private fun deleteWorkspaceLists(workspaceId: Long){ viewModelScope.launch(Dispatchers.IO) { repository.deleteAllWorkspaceLists(workspaceId) } }
     private fun deleteList(data: TodoModel) { viewModelScope.launch(Dispatchers.IO) { repository.deleteList(data) } }
     private fun upsertList(data: TodoModel) { viewModelScope.launch(Dispatchers.IO) { repository.upsertList(data) } }
-    private fun loadAllLists(workspaceId: Long){
+    private suspend fun loadAllLists(workspaceId: Long){
         updateState { it.copy(isLoading = true) }
-        viewModelScope.launch { repository.loadAllLists(workspaceId).distinctUntilChanged().collect { data-> updateState { it.copy(isLoading = false, allLists = data) } } }
+        repository.loadAllLists(workspaceId).distinctUntilChanged().collect { data-> updateState { it.copy(isLoading = false, allLists = data) } }
     }
 }

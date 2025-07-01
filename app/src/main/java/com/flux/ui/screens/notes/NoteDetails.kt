@@ -13,8 +13,6 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SheetState
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -25,8 +23,10 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.flux.R
 import com.flux.data.model.LabelModel
 import com.flux.data.model.NotesModel
 import com.flux.navigation.NavRoutes
@@ -51,7 +51,6 @@ fun NoteDetails(
     workspaceId: Long,
     note: NotesModel,
     allLabels: List<LabelModel>,
-    snackBarHostState: SnackbarHostState,
     onNotesEvents: (NotesEvents) -> Unit
 ) {
     var isPinned by rememberSaveable(note.notesId) { mutableStateOf(note.isPinned) }
@@ -145,8 +144,7 @@ fun NoteDetails(
                 onUndo = { undo() },
                 onRedo = { redo()}
             )
-        },
-        snackbarHost = { SnackbarHost(snackBarHostState) }
+        }
     ) { innerPadding ->
         NotesInputCard(innerPadding, title, description, noteLabels, onTitleChange = { new->
             if (new != title) {
@@ -203,7 +201,7 @@ fun NotesInfoBottomSheet(
                     SettingOption(
                         radius = shapeManager(isFirst = true, radius = 32),
                         icon = Icons.Default.Edit,
-                        title = "Last Edited",
+                        title = stringResource(R.string.Last_Edited),
                         description = lastEdited,
                         actionType = ActionType.None
                     )
@@ -213,7 +211,7 @@ fun NotesInfoBottomSheet(
                     SettingOption(
                         radius = shapeManager(radius = 32),
                         icon = Icons.Default.Numbers,
-                        title = "Word Count",
+                        title = stringResource(R.string.Word_Count),
                         description = words.toString(),
                         actionType = ActionType.None
                     )
@@ -223,7 +221,7 @@ fun NotesInfoBottomSheet(
                     SettingOption(
                         radius = shapeManager(radius = 32, isLast = true),
                         icon = Icons.Default.Abc,
-                        title = "Character Count",
+                        title = stringResource(R.string.Character_Count),
                         description = characters.toString(),
                         actionType = ActionType.None
                     )

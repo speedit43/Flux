@@ -39,8 +39,8 @@ fun Privacy(
         ) {
             item {
                 SettingOption(
-                    title = "Screen Protection",
-                    description = "Disable Screenshots",
+                    title = stringResource(R.string.Screen_Protection),
+                    description = stringResource(R.string.Screen_Protection_Desc),
                     icon = Icons.Filled.RemoveRedEye,
                     radius = shapeManager(radius = data.cornerRadius, isFirst = true),
                     actionType = ActionType.SWITCH,
@@ -52,8 +52,8 @@ fun Privacy(
             }
             item {
                 SettingOption(
-                    title = "App lock",
-                    description = "Fingerprint Authentication",
+                    title = stringResource(R.string.App_Lock),
+                    description = stringResource(R.string.App_Lock_desc),
                     icon = Icons.Filled.Fingerprint,
                     radius = shapeManager(radius = data.cornerRadius, isLast = true),
                     actionType = ActionType.SWITCH,

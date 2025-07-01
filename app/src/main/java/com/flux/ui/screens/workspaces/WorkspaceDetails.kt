@@ -41,9 +41,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.flux.R
 import com.flux.data.model.EventInstanceModel
 import com.flux.data.model.EventModel
 import com.flux.data.model.HabitInstanceModel
@@ -53,7 +55,7 @@ import com.flux.data.model.NotesModel
 import com.flux.data.model.TodoModel
 import com.flux.data.model.WorkspaceModel
 import com.flux.navigation.NavRoutes
-import com.flux.other.canScheduleHabitReminder
+import com.flux.other.canScheduleReminder
 import com.flux.other.cancelReminder
 import com.flux.other.isNotificationPermissionGranted
 import com.flux.other.requestExactAlarmPermission
@@ -80,7 +82,7 @@ import kotlinx.coroutines.launch
 import java.io.FileOutputStream
 
 data class WorkspaceTab(
-    val title: String,
+    val titleId: Int,
     val icon: ImageVector,
     val content: @Composable () -> Unit
 )
@@ -142,28 +144,28 @@ fun WorkspaceDetails(
         })
     }
 
-    val tabs = remember(workspace, allNotes, allLists, allHabits, allHabitInstances, todayEvents, datedEvents, allEventInstances, settings) {
+    val tabs = remember(workspace, isNotesLoading, isTodoLoading, isDatedTaskLoading, isTodayTaskLoading, allNotes, allLists, allHabits, allHabitInstances, todayEvents, datedEvents, allEventInstances, settings) {
         buildList {
-            add(WorkspaceTab("Home", Icons.Default.Home) { })
-            if (workspace.isNotesAdded) add(WorkspaceTab("Notes", Icons.AutoMirrored.Filled.Notes) {
+            add(WorkspaceTab(R.string.Home, Icons.Default.Home) { })
+            if (workspace.isNotesAdded) add(WorkspaceTab(R.string.Notes, Icons.AutoMirrored.Filled.Notes) {
                 NotesHome(navController, workspaceId, allLabels, settings, isNotesLoading, allNotes, onNotesEvents, onSettingEvents)
             })
-            if (workspace.isTodoAdded) add(WorkspaceTab("To-do", Icons.Default.Checklist) {
+            if (workspace.isTodoAdded) add(WorkspaceTab(R.string.To_Do, Icons.Default.Checklist) {
                 TodoHome(navController, settings.data.cornerRadius, allLists, workspaceId, isTodoLoading, onTodoEvents)
             })
-            if (workspace.isEventsAdded) add(WorkspaceTab("Events", Icons.Default.Event) {
+            if (workspace.isEventsAdded) add(WorkspaceTab(R.string.Events, Icons.Default.Event) {
                 EventHome(navController, settings.data.cornerRadius, isTodayTaskLoading, todayEvents, allEventInstances, workspaceId, onTaskEvents)
             })
-            if (workspace.isCalenderAdded) add(WorkspaceTab("Calendar", Icons.Default.CalendarMonth) {
+            if (workspace.isCalenderAdded) add(WorkspaceTab(R.string.Calender, Icons.Default.CalendarMonth) {
                 Calender(navController, settings.data.cornerRadius, isDatedTaskLoading, workspaceId, settings, datedEvents, allEventInstances, onSettingEvents, onTaskEvents)
             })
-            if (workspace.isHabitsAdded) add(WorkspaceTab("Habits", Icons.Default.EventAvailable) {
+            if (workspace.isHabitsAdded) add(WorkspaceTab(R.string.Habits, Icons.Default.EventAvailable) {
                 HabitsHome(navController, settings.data.cornerRadius, workspaceId, allHabits, allHabitInstances, onHabitEvents)
             })
         }
     }.toMutableList()
 
-    tabs[0] = WorkspaceTab("Home", Icons.Default.Home) {
+    tabs[0] = WorkspaceTab(R.string.Home, Icons.Default.Home) {
         WorkspaceHomeScreen(
             radius = settings.data.cornerRadius,
             workspace = workspace,
@@ -172,7 +174,7 @@ fun WorkspaceDetails(
             onWorkspaceEvents = onWorkspaceEvents,
             onAddSpaces = { addSpaceDialog = true },
             navigateToTab = { title ->
-                val index = tabs.indexOfFirst { it.title == title }
+                val index = tabs.indexOfFirst { it.titleId == title }
                 if (index != -1) selectedTabIndex = index
             },
             onTaskEvents = onTaskEvents,
@@ -222,26 +224,30 @@ fun WorkspaceDetails(
             )
         },
         floatingActionButton = {
-            when (tabs[selectedTabIndex].title) {
-                "Notes" -> {
+            when (tabs[selectedTabIndex].titleId) {
+                R.string.Notes -> {
                     FloatingActionButton(onClick = {
                         navController.navigate(NavRoutes.NoteDetails.withArgs(workspaceId, -1))
                     }) {
                         Icon(Icons.Default.Add, null)
                     }
                 }
-                "Events" -> {
+                R.string.Events -> {
                     FloatingActionButton(onClick = {
-                        navController.navigate(NavRoutes.EventDetails.withArgs(workspaceId, -1))
+                        if(!canScheduleReminder(context)) requestExactAlarmPermission(context)
+                        if(!isNotificationPermissionGranted(context)) requestNotificationPermission(context as Activity)
+                        if(canScheduleReminder(context) && isNotificationPermissionGranted(context)){
+                            navController.navigate(NavRoutes.EventDetails.withArgs(workspaceId, -1))
+                        }
                     }) {
                         Icon(Icons.Default.Add, null)
                     }
                 }
-                "Habits" -> {
+                R.string.Habits -> {
                     FloatingActionButton(onClick = {
-                        if(!canScheduleHabitReminder(context)) requestExactAlarmPermission(context)
+                        if(!canScheduleReminder(context)) requestExactAlarmPermission(context)
                         if(!isNotificationPermissionGranted(context)) requestNotificationPermission(context as Activity)
-                        if(canScheduleHabitReminder(context) && isNotificationPermissionGranted(context)){
+                        if(canScheduleReminder(context) && isNotificationPermissionGranted(context)){
                             showHabitDialog = true
                             scope.launch { sheetState.show() }
                         }
@@ -249,7 +255,7 @@ fun WorkspaceDetails(
                         Icon(Icons.Default.Add, null)
                     }
                 }
-                "To-do" -> {
+                R.string.To_Do -> {
                     FloatingActionButton(onClick = {
                         navController.navigate(NavRoutes.TodoDetail.withArgs(workspaceId, -1))
                     }) {
@@ -270,8 +276,8 @@ fun WorkspaceDetails(
                     Tab(
                         selected = selectedTabIndex == index,
                         onClick = { selectedTabIndex = index },
-                        icon = { Icon(tab.icon, contentDescription = tab.title) },
-                        text = { Text(tab.title) }
+                        icon = { Icon(tab.icon, contentDescription = stringResource(tab.titleId)) },
+                        text = { Text(stringResource(tab.titleId)) }
                     )
                 }
             }

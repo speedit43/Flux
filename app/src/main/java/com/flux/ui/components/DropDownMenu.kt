@@ -106,7 +106,7 @@ fun WorkspaceMore(
             onDismissRequest = { expanded=false }
         ) {
             DropdownMenuItem(
-                text = { Text("Edit Details") },
+                text = { Text(stringResource(R.string.Edit_Details)) },
                 leadingIcon = { Icon(Icons.Outlined.Edit, contentDescription = null) },
                 onClick = {
                     expanded=false
@@ -115,7 +115,7 @@ fun WorkspaceMore(
             )
             HorizontalDivider()
             DropdownMenuItem(
-                text = { Text(if (isPinned) "UnPin" else "Pin") },
+                text = { Text(if (isPinned) stringResource(R.string.Unpin) else stringResource(R.string.Pin)) },
                 leadingIcon = { Icon(if (isPinned) Icons.Filled.PushPin else Icons.Outlined.PushPin, contentDescription = null) },
                 onClick = {
                     expanded=false
@@ -124,7 +124,7 @@ fun WorkspaceMore(
             )
             HorizontalDivider()
             DropdownMenuItem(
-                text = { Text("Change Cover") },
+                text = { Text(stringResource(R.string.Change_Cover)) },
                 leadingIcon = { Icon(Icons.Outlined.PhotoSizeSelectActual, contentDescription = null) },
                 onClick = {
                     expanded=false
@@ -134,7 +134,7 @@ fun WorkspaceMore(
             if(showEditLabel){
                 HorizontalDivider()
                 DropdownMenuItem(
-                    text = { Text("Labels") },
+                    text = { Text(stringResource(R.string.Labels)) },
                     leadingIcon = { Icon(Icons.AutoMirrored.Outlined.Label, contentDescription = null) },
                     onClick = {
                         expanded=false
@@ -144,7 +144,7 @@ fun WorkspaceMore(
             }
             HorizontalDivider()
             DropdownMenuItem(
-                text = { Text(if(isLocked) "Unlock Workspace" else "Lock Workspace") },
+                text = { Text(if(isLocked) stringResource(R.string.Unlock_Workspace) else stringResource(R.string.Lock_Workspace)) },
                 leadingIcon = { Icon(if(isLocked) Icons.Outlined.LockOpen else Icons.Outlined.Lock, contentDescription = null) },
                 onClick = {
                     expanded=false
@@ -157,7 +157,7 @@ fun WorkspaceMore(
                     leadingIconColor = MaterialTheme.colorScheme.error,
                     textColor = MaterialTheme.colorScheme.error
                 ),
-                text = { Text("Delete Workspace") },
+                text = { Text(stringResource(R.string.Delete_Workspace)) },
                 leadingIcon = { Icon(Icons.Outlined.Delete, contentDescription = null) },
                 onClick = {
                     expanded=false
@@ -183,7 +183,7 @@ fun WorkspacePreviewMore(
             onDismissRequest = { expanded=false }
         ) {
             DropdownMenuItem(
-                text = { Text(if (isPinned) "UnPin" else "Pin") },
+                text = { Text(if (isPinned) stringResource(R.string.Unpin) else stringResource(R.string.Pin)) },
                 leadingIcon = { Icon(if (isPinned) Icons.Filled.PushPin else Icons.Outlined.PushPin, contentDescription = null) },
                 onClick = {
                     expanded=false
@@ -196,7 +196,7 @@ fun WorkspacePreviewMore(
                     leadingIconColor = MaterialTheme.colorScheme.error,
                     textColor = MaterialTheme.colorScheme.error
                 ),
-                text = { Text("Delete Workspace") },
+                text = { Text(stringResource(R.string.Delete_Workspace)) },
                 leadingIcon = { Icon(Icons.Outlined.Delete, contentDescription = null) },
                 onClick = {
                     expanded=false

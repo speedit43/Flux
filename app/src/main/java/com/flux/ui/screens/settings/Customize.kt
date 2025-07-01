@@ -55,7 +55,7 @@ fun Customize(
     settings: Settings,
     onSettingsEvents: (SettingEvents) -> Unit
 ) {
-    val options = listOf("Low", "Medium", "High")
+    val options = listOf(stringResource(R.string.Low), stringResource(R.string.Medium), stringResource(R.string.High))
 
     BasicScaffold(
         title = stringResource(R.string.Customize),
@@ -165,8 +165,8 @@ fun Customize(
             }
             item {
                 SettingOption(
-                    title = "Grid View",
-                    description = "Change Notes View to Grid",
+                    title = stringResource(R.string.Grid_View),
+                    description = stringResource(R.string.Grid_View_Desc),
                     icon = Icons.Rounded.GridView,
                     radius = shapeManager(
                         radius = settings.data.cornerRadius,
@@ -178,8 +178,8 @@ fun Customize(
             }
             item{
                 SettingOption(
-                    title = "Monthly View",
-                    description = "Change to Monthly calender View",
+                    title = stringResource(R.string.Monthly_View),
+                    description = stringResource(R.string.Monthly_View_Desc),
                     icon = Icons.Rounded.GridOn,
                     radius = shapeManager(
                         radius = settings.data.cornerRadius,
@@ -199,7 +199,6 @@ fun Customize(
                 Spacer(Modifier.height(12.dp))
 
                 AnimatedVisibility(visible = !settings.data.dynamicTheme) {
-
                     SingleChoiceSegmentedButtonRow {
                         options.forEachIndexed { index, label ->
                             SegmentedButton(

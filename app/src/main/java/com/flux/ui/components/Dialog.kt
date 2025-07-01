@@ -65,6 +65,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -72,9 +73,11 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import androidx.compose.ui.window.DialogProperties
+import com.flux.R
 import com.flux.data.model.LabelModel
 import com.flux.data.model.Repetition
 import com.flux.data.model.WorkspaceModel
+import com.flux.ui.screens.events.getRepetitionText
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Date
@@ -91,7 +94,7 @@ fun AddLabelDialog(
     AlertDialog(
         icon = { CircleWrapper(MaterialTheme.colorScheme.primary) { val icon=if(initialValue.isBlank()) Icons.Default.Add else Icons.Default.Edit
             Icon(icon, contentDescription = "Add/Edit Icon", tint = MaterialTheme.colorScheme.onPrimary) } },
-        title = { Text(text = if(initialValue.isBlank()) "Add New Label" else "Edit Label") },
+        title = { Text(text = if(initialValue.isBlank()) stringResource(R.string.Add_Label) else stringResource(R.string.Edit_Label)) },
         text = { OutlinedTextField(value = label, onValueChange = { label=it }, singleLine = true,
             keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
             keyboardActions = KeyboardActions(
@@ -106,9 +109,9 @@ fun AddLabelDialog(
                 onClick = { onConfirmation(label)
                     onDismissRequest() },
                 colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary, contentColor = MaterialTheme.colorScheme.onPrimary)
-            ) { Text("Confirm") }
+            ) { Text(stringResource(R.string.Confirm)) }
         },
-        dismissButton = { TextButton(onClick = { onDismissRequest() }) { Text("Dismiss") } }
+        dismissButton = { TextButton(onClick = { onDismissRequest() }) { Text(stringResource(R.string.Dismiss)) } }
     )
 }
 
@@ -130,40 +133,40 @@ fun AddSpacesDialog(
                 Icon(Icons.Default.Add, contentDescription = "Label Icon", tint = MaterialTheme.colorScheme.onPrimary)
             }
         },
-        title = { Text(text = "Add Spaces") },
+        title = { Text(text = stringResource(R.string.Add_Spaces)) },
         text = {
             LazyColumn {
                 if (!workspace.isNotesAdded) {
                     item {
-                        SpaceCheckboxCard(Icons.AutoMirrored.Default.Notes, "Notes", notesChecked) {
+                        SpaceCheckboxCard(Icons.AutoMirrored.Default.Notes, stringResource(R.string.Notes), notesChecked) {
                             notesChecked = it
                         }
                     }
                 }
                 if (!workspace.isTodoAdded) {
                     item {
-                        SpaceCheckboxCard(Icons.Default.Checklist, "To-do", todoChecked) {
+                        SpaceCheckboxCard(Icons.Default.Checklist, stringResource(R.string.To_Do), todoChecked) {
                             todoChecked = it
                         }
                     }
                 }
                 if (!workspace.isEventsAdded) {
                     item {
-                        SpaceCheckboxCard(Icons.Default.Event, "Events", eventsChecked) {
+                        SpaceCheckboxCard(Icons.Default.Event,  stringResource(R.string.Events), eventsChecked) {
                             eventsChecked = it
                         }
                     }
                 }
                 if (!workspace.isCalenderAdded) {
                     item {
-                        SpaceCheckboxCard(Icons.Default.CalendarMonth, "Calendar", calendarChecked) {
+                        SpaceCheckboxCard(Icons.Default.CalendarMonth, stringResource(R.string.Calender), calendarChecked) {
                             calendarChecked = it
                         }
                     }
                 }
                 if (!workspace.isHabitsAdded) {
                     item {
-                        SpaceCheckboxCard(Icons.Default.EventAvailable, "Habits", habitsChecked) {
+                        SpaceCheckboxCard(Icons.Default.EventAvailable, stringResource(R.string.Habits), habitsChecked) {
                             habitsChecked = it
                         }
                     }
@@ -189,12 +192,12 @@ fun AddSpacesDialog(
                     contentColor = MaterialTheme.colorScheme.onPrimary
                 )
             ) {
-                Text("Confirm")
+                Text(stringResource(R.string.Confirm))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismissRequest) {
-                Text("Dismiss")
+                Text(stringResource(R.string.Dismiss))
             }
         }
     )
@@ -252,7 +255,7 @@ fun SelectLabelDialog(
 
     AlertDialog(
         icon = { CircleWrapper(MaterialTheme.colorScheme.primary) { Icon(Icons.AutoMirrored.Filled.Label, contentDescription = "Label Icon", tint = MaterialTheme.colorScheme.onPrimary) } },
-        title = { Text(text = "Select Label") },
+        title = { Text(text = stringResource(R.string.Select_radius)) },
         text = { LabelCheckBoxList(selectedLabel, labels, onChecked = {selectedLabel.add(it)}, onAddLabel = {
             onAddLabel()
             onDismissRequest()
@@ -269,10 +272,10 @@ fun SelectLabelDialog(
                     contentColor = MaterialTheme.colorScheme.onPrimary
                 )
             ) {
-                Text("Confirm")
+                Text(stringResource(R.string.Confirm))
             }
         },
-        dismissButton = { TextButton(onClick = { onDismissRequest() }) { Text("Dismiss") } }
+        dismissButton = { TextButton(onClick = { onDismissRequest() }) { Text(stringResource(R.string.Dismiss)) } }
     )
 }
 
@@ -307,7 +310,7 @@ fun LabelCheckBoxList(
                         CircleWrapper(color = MaterialTheme.colorScheme.primary) {
                             Icon(Icons.Default.NewLabel, null, tint = MaterialTheme.colorScheme.onPrimary)
                         }
-                        Text(text = "Add New Label", fontWeight = FontWeight.Bold)
+                        Text(text = stringResource(R.string.Add_Label), fontWeight = FontWeight.Bold)
                     }
                     IconButton(onAddLabel) { }
                 }
@@ -366,12 +369,12 @@ fun DatePickerModal(
                 onDateSelected(datePickerState.selectedDateMillis)
                 onDismiss()
             }) {
-                Text("OK")
+                Text(stringResource(R.string.Set))
             }
         },
         dismissButton = {
             TextButton(onClick = onDismiss) {
-                Text("Cancel")
+                Text(stringResource(R.string.Cancel))
             }
         }
     ) {
@@ -380,7 +383,7 @@ fun DatePickerModal(
 }
 
 fun convertMillisToDate(millis: Long): String {
-    val formatter = SimpleDateFormat("MM/dd/yyyy", Locale.getDefault())
+    val formatter = SimpleDateFormat("dd MMM yyyy", Locale.getDefault())
     return formatter.format(Date(millis))
 }
 
@@ -439,7 +442,7 @@ fun TimePicker(
 
 @Composable
 fun TimePickerDialog(
-    title: String = "Select Time",
+    title: String = stringResource(R.string.Select_Time),
     onDismiss: () -> Unit,
     onConfirm: () -> Unit,
     toggle: @Composable () -> Unit = {},
@@ -480,9 +483,9 @@ fun TimePickerDialog(
                 ) {
                     toggle()
                     Spacer(modifier = Modifier.weight(1f))
-                    TextButton(onClick = onDismiss) { Text("Cancel") }
+                    TextButton(onClick = onDismiss) { Text(stringResource(R.string.Cancel)) }
                     TextButton(onClick = { onConfirm()
-                    onDismiss()}) { Text("OK") }
+                    onDismiss()}) { Text(stringResource(R.string.Set)) }
                 }
             }
         }
@@ -512,8 +515,9 @@ fun TaskRepetitionDialog(
                         tint = MaterialTheme.colorScheme.onPrimary
                     )
                 }
+                Spacer(Modifier.height(8.dp))
                 Text(
-                    "Repeat Task",
+                    stringResource(R.string.Repeat_Task),
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold)
                 )
                 Spacer(Modifier.height(16.dp))
@@ -533,7 +537,7 @@ fun TaskRepetitionDialog(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text(option.toString())
+                        Text(getRepetitionText(option))
                         RadioButton(
                             selected = repeatPeriod == option,
                             onClick = {
@@ -558,12 +562,12 @@ fun EventNotificationDialog(
     onDismissRequest: () -> Unit
 ) {
     val options = listOf(
-        0L to "At time of event",
-        5L to "5 minutes before",
-        10L to "10 minutes before",
-        15L to "15 minutes before",
-        30L to "30 minutes before",
-        60L to "1 hour before"
+        0L to stringResource(R.string.On_Time),
+        5L to stringResource(R.string.five_minutes_before),
+        10L to stringResource(R.string.ten_minutes_before),
+        15L to stringResource(R.string.fifteen_minutes_before),
+        30L to stringResource(R.string.thirty_minutes_before),
+        60L to stringResource(R.string.one_hour_before)
     )
 
     // Convert to minutes for comparison
@@ -586,7 +590,7 @@ fun EventNotificationDialog(
                 }
 
                 Text(
-                    "Add Notification",
+                    stringResource(R.string.Add_Notification),
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold)
                 )
 
@@ -628,7 +632,7 @@ fun EventNotificationDialog(
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Text("Custom")
+                    Text(stringResource(R.string.Custom))
                     RadioButton(
                         selected = options.none { it.first == currentMinutes },
                         onClick = {
@@ -649,7 +653,7 @@ fun SetPasskeyDialog(onConfirmRequest: (String)->Unit, onDismissRequest: () -> U
     Dialog(onDismissRequest) {
         Card(shape = RoundedCornerShape(16.dp)) {
             Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                Text("Enter Passkey", style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.primary)
+                Text(stringResource(R.string.enterPasskey), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.primary)
 
                 OutlinedTextField(
                     value = passKey,
@@ -668,14 +672,14 @@ fun SetPasskeyDialog(onConfirmRequest: (String)->Unit, onDismissRequest: () -> U
                 )
 
                 Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
-                    TextButton(onDismissRequest) { Text("Dismiss") }
+                    TextButton(onDismissRequest) { Text(stringResource(R.string.Dismiss)) }
                     TextButton(
                         onClick = {
                             onConfirmRequest(passKey)
                             onDismissRequest()
                         },
                         colors = ButtonDefaults.buttonColors()
-                    ) { Text("Confirm") }
+                    ) { Text(stringResource(R.string.Confirm)) }
                 }
             }
         }
@@ -687,24 +691,24 @@ fun CustomNotificationDialog(
     onDismissRequest: () -> Unit,
     onConfirm: (offsetMillis: Long) -> Unit
 ) {
-    var selectedUnit by remember { mutableStateOf("Minutes") }
+    val timeUnits = listOf(stringResource(R.string.minutes), stringResource(R.string.hours), stringResource(R.string.days))
+    var selectedUnit by remember { mutableStateOf(timeUnits[0]) }
     var amountText by remember { mutableStateOf("1") }
 
-    val timeUnits = listOf("Minutes", "Hours", "Days")
 
     val amount = amountText.toIntOrNull()?.coerceAtLeast(1) ?: 1
 
     val offsetMillis = when (selectedUnit) {
-        "Minutes" -> amount * 60_000L
-        "Hours" -> amount * 60 * 60_000L
-        "Days" -> amount * 24 * 60 * 60_000L
+        stringResource(R.string.minutes) -> amount * 60_000L
+        stringResource(R.string.hours) -> amount * 60 * 60_000L
+        stringResource(R.string.days) -> amount * 24 * 60 * 60_000L
         else -> 0L
     }
 
     Dialog(onDismissRequest = onDismissRequest) {
         Card(Modifier.fillMaxWidth().padding(16.dp)) {
             Column(Modifier.padding(16.dp)) {
-                Text("Custom Notification", style = MaterialTheme.typography.titleLarge)
+                Text(stringResource(R.string.Custom_Notification), style = MaterialTheme.typography.titleLarge)
                 Spacer(Modifier.height(16.dp))
 
                 timeUnits.forEach { unit ->
@@ -731,7 +735,7 @@ fun CustomNotificationDialog(
                 OutlinedTextField(
                     value = amountText,
                     onValueChange = { if (it.all { c -> c.isDigit() }) amountText = it },
-                    label = { Text("Amount") },
+                    label = { Text(stringResource(R.string.Amount)) },
                     singleLine = true,
                     keyboardOptions = KeyboardOptions.Default.copy(
                         keyboardType = KeyboardType.Number
@@ -744,13 +748,13 @@ fun CustomNotificationDialog(
                     Modifier.fillMaxWidth(),
                     horizontalArrangement = Arrangement.End
                 ) {
-                    TextButton(onClick = onDismissRequest) { Text("Cancel") }
+                    TextButton(onClick = onDismissRequest) { Text(stringResource(R.string.Custom)) }
                     Spacer(Modifier.width(8.dp))
                     Button(onClick = {
                         onConfirm(offsetMillis)
                         onDismissRequest()
                     }) {
-                        Text("Set")
+                        Text(stringResource(R.string.Set))
                     }
                 }
             }
@@ -762,8 +766,8 @@ fun CustomNotificationDialog(
 fun DeleteAlert(
     onDismissRequest: () -> Unit,
     onConfirmation: () -> Unit,
-    dialogTitle: String="Are you sure?",
-    dialogText: String="This Can't be undone, it will delete all the data permanently.",
+    dialogTitle: String=stringResource(R.string.deleteDialogTitle),
+    dialogText: String=stringResource(R.string.deleteDialogText),
     icon: ImageVector=Icons.Default.DeleteOutline,
 ) {
     AlertDialog(
@@ -771,7 +775,7 @@ fun DeleteAlert(
         title = { Text(text = dialogTitle) },
         text = { Text(text = dialogText) },
         onDismissRequest = { onDismissRequest() },
-        confirmButton = { TextButton(onClick = { onConfirmation() }) { Text("Confirm") } },
-        dismissButton = { TextButton(onClick = { onDismissRequest() }) { Text("Dismiss") } }
+        confirmButton = { TextButton(onClick = { onConfirmation() }) { Text(stringResource(R.string.Confirm)) } },
+        dismissButton = { TextButton(onClick = { onDismissRequest() }) { Text(stringResource(R.string.Dismiss)) } }
     )
 }

@@ -57,7 +57,7 @@ class EventViewModel @Inject constructor (
                     context = context,
                     id = data.eventId,
                     type="EVENT",
-                    repeat = data.toString(),
+                    repeat = data.repetition.toString(),
                     timeInMillis = adjustedTime,
                     title = data.title,
                     description = data.description
@@ -70,35 +70,33 @@ class EventViewModel @Inject constructor (
     private suspend fun loadTodayEvents(workspaceId: Long) {
         val date = LocalDate.now()
         safeUpdateState { it.copy(isTodayEventLoading = true) }
+        repository.loadAllEvents(workspaceId)
+            .distinctUntilChanged()
+            .collect { data ->
+                val filteredData = data.filter { task ->
+                    val taskStartDate = Instant.ofEpochMilli(task.startDateTime)
+                        .atZone(ZoneId.systemDefault())
+                        .toLocalDate()
 
-        viewModelScope.launch {
-            repository.loadAllEvents(workspaceId)
-                .distinctUntilChanged()
-                .collect { data ->
-                    val filteredData = data.filter { task ->
-                        val taskStartDate = Instant.ofEpochMilli(task.startDateTime)
-                            .atZone(ZoneId.systemDefault())
-                            .toLocalDate()
+                    when (task.repetition) {
+                        Repetition.NONE -> taskStartDate == date
+                        Repetition.DAILY -> !date.isBefore(taskStartDate)
+                        Repetition.WEEKLY -> !date.isBefore(taskStartDate) &&
+                                date.dayOfWeek == taskStartDate.dayOfWeek
 
-                        when (task.repetition) {
-                            Repetition.NONE -> taskStartDate == date
-                            Repetition.DAILY -> !date.isBefore(taskStartDate)
-                            Repetition.WEEKLY -> !date.isBefore(taskStartDate) &&
-                                    date.dayOfWeek == taskStartDate.dayOfWeek
-                            Repetition.MONTHLY -> !date.isBefore(taskStartDate) &&
-                                    date.dayOfMonth == taskStartDate.dayOfMonth
-                            Repetition.YEARLY -> !date.isBefore(taskStartDate) &&
-                                    date.dayOfYear == taskStartDate.dayOfYear
-                        }
+                        Repetition.MONTHLY -> !date.isBefore(taskStartDate) &&
+                                date.dayOfMonth == taskStartDate.dayOfMonth
+
+                        Repetition.YEARLY -> !date.isBefore(taskStartDate) &&
+                                date.dayOfYear == taskStartDate.dayOfYear
                     }
-                    safeUpdateState { it.copy(isTodayEventLoading = false, todayEvents = filteredData) }
                 }
+                safeUpdateState { it.copy(isTodayEventLoading = false, todayEvents = filteredData) }
         }
     }
 
     private suspend fun loadDateEvents(workspaceId: Long, date: LocalDate) {
         safeUpdateState { it.copy(isDatedEventLoading = true) }
-        viewModelScope.launch {
             repository.loadAllEvents(workspaceId)
                 .distinctUntilChanged()
                 .collect { data ->
@@ -119,35 +117,30 @@ class EventViewModel @Inject constructor (
                         }
                     }
                     safeUpdateState { it.copy(isDatedEventLoading = false, datedEvents = filteredData) }
-                }
         }
     }
 
-    private fun loadAllEvents(workspaceId: Long) {
-        viewModelScope.launch {
-            repository.loadAllEvents(workspaceId)
-                .distinctUntilChanged()
-                .collect { data ->
-                    val sortedData = data.sortedBy { it.startDateTime }
-                    safeUpdateState { it.copy(allEvent = sortedData) }
-                }
-        }
+    private suspend fun loadAllEvents(workspaceId: Long) {
+        repository.loadAllEvents(workspaceId)
+            .distinctUntilChanged()
+            .collect { data ->
+                val sortedData = data.sortedBy { it.startDateTime }
+                safeUpdateState { it.copy(allEvent = sortedData) }
+            }
     }
 
     private suspend fun loadAllEventsInstances(workspaceId: Long) {
         safeUpdateState { it.copy(isTodayEventLoading = true, isDatedEventLoading = true) }
-        viewModelScope.launch {
-            repository.loadAllEventInstances(workspaceId)
-                .distinctUntilChanged()
-                .collect { data ->
-                    safeUpdateState {
-                        it.copy(
-                            isTodayEventLoading = false,
-                            isDatedEventLoading = false,
-                            allEventInstances = data
-                        )
-                    }
+        repository.loadAllEventInstances(workspaceId)
+            .distinctUntilChanged()
+            .collect { data ->
+                safeUpdateState {
+                    it.copy(
+                        isTodayEventLoading = false,
+                        isDatedEventLoading = false,
+                        allEventInstances = data
+                    )
                 }
-        }
+            }
     }
 }

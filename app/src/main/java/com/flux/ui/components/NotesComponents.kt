@@ -350,6 +350,6 @@ fun EmptyLabels(){
             contentDescription = null,
             modifier = Modifier.size(48.dp)
         )
-        Text(stringResource(R.string.Empty_Notes))
+        Text(stringResource(R.string.Empty_Labels))
     }
 }

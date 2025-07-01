@@ -42,9 +42,11 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import com.flux.R
 import com.flux.data.model.HabitModel
 import com.flux.data.model.WorkspaceModel
 import com.flux.ui.screens.events.toFormattedTime
@@ -91,7 +93,7 @@ fun HabitBottomSheet(
                     modifier = Modifier.size(32.dp)
                 )
                 Text(
-                    if (isEditing) "Edit Habit" else "Add Habit",
+                    if (isEditing) stringResource(R.string.Edit_Habit) else stringResource(R.string.Add_Habit),
                     fontWeight = FontWeight.Bold,
                     style = MaterialTheme.typography.titleLarge
                 )
@@ -102,7 +104,7 @@ fun HabitBottomSheet(
                 value = newHabitTitle,
                 onValueChange = { newHabitTitle = it },
                 modifier = Modifier.fillMaxWidth(),
-                placeholder = { Text("Title") },
+                placeholder = { Text(stringResource(R.string.Title)) },
                 singleLine = true,
                 shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
                 colors = TextFieldDefaults.colors(
@@ -120,10 +122,8 @@ fun HabitBottomSheet(
             TextField(
                 value = newHabitDescription,
                 onValueChange = { newHabitDescription = it },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .focusRequester(focusRequesterDesc),
-                placeholder = { Text("Description") },
+                modifier = Modifier.fillMaxWidth().focusRequester(focusRequesterDesc),
+                placeholder = { Text(stringResource(R.string.Description)) },
                 singleLine = true,
                 shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp),
                 colors = TextFieldDefaults.colors(
@@ -182,7 +182,7 @@ fun HabitBottomSheet(
                 OutlinedButton(onClick = {
                     keyboardController?.hide()
                     onDismissRequest()
-                }) { Text("Dismiss") }
+                }) { Text(stringResource(R.string.Dismiss)) }
 
                 Spacer(Modifier.width(8.dp))
 
@@ -200,7 +200,7 @@ fun HabitBottomSheet(
                     keyboardController?.hide()
                     onDismissRequest()
                 }, enabled = newHabitTitle.isNotBlank()
-                ) { Text("Confirm") }
+                ) { Text(stringResource(R.string.Confirm)) }
             }
 
             if (timePickerDialog) {
@@ -265,7 +265,7 @@ fun NewWorkspaceBottomSheet(
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                     Icon(if(isEditing) Icons.Default.Edit else Icons.Default.Add, null)
                     Text(
-                        if(isEditing) "Edit Workspace" else "Add Workspace",
+                        if(isEditing) stringResource(R.string.Edit_Workspace) else stringResource(R.string.Add_Workspace),
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.titleLarge
                     )
@@ -275,7 +275,7 @@ fun NewWorkspaceBottomSheet(
                     value = title,
                     onValueChange = { title = it },
                     modifier = Modifier.fillMaxWidth().padding(bottom = 3.dp),
-                    placeholder = { Text("Title") },
+                    placeholder = { Text(stringResource(R.string.Title)) },
                     singleLine = true,
                     shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
                     colors = TextFieldDefaults.colors(
@@ -294,7 +294,7 @@ fun NewWorkspaceBottomSheet(
                     value = description,
                     onValueChange = { description = it },
                     modifier = Modifier.fillMaxWidth().focusRequester(focusRequesterDesc),
-                    placeholder = { Text("Description") },
+                    placeholder = { Text(stringResource(R.string.Description)) },
                     singleLine = true,
                     shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp),
                     colors = TextFieldDefaults.colors(
@@ -331,7 +331,7 @@ fun NewWorkspaceBottomSheet(
                         title = workspace.title
                         description = workspace.description
                     }) {
-                        Text("Dismiss")
+                        Text(stringResource(R.string.Dismiss))
                     }
 
                     Spacer(Modifier.width(8.dp))
@@ -343,7 +343,7 @@ fun NewWorkspaceBottomSheet(
                         title = workspace.title
                         description = workspace.description
                     }) {
-                        Text("Confirm")
+                        Text(stringResource(R.string.Confirm))
                     }
                 }
             }

@@ -2,7 +2,11 @@
 <resources>
     <string name="app_name">Flux</string>
 
-    // Settings
+    <!-- Auth -->
+    <string name="Auth_with_Biometric">Authenticate with Biometrics</string>
+    <string name="Auth_Error">Error: Authentication failed</string>
+
+    <!-- Settings -->
     <string name="Settings">Settings</string>
     <string name="Customize">Customize</string>
     <string name="Customize_desc">Theme • Shape • Contrast</string>
@@ -10,6 +14,10 @@
     <string name="About_desc">Version • Developers • Source Code</string>
     <string name="Privacy">Privacy</string>
     <string name="Privacy_desc">Screen Protection • App Lock</string>
+    <string name="Screen_Protection">Screen Protection</string>
+    <string name="Screen_Protection_Desc">Disable Screenshots</string>
+    <string name="App_Lock">App Lock</string>
+    <string name="App_Lock_desc">Fingerprint Authentication</string>
     <string name="Languages">Languages</string>
     <string name="Languages_desc">Change Language</string>
     <string name="Contact">Contact</string>
@@ -29,7 +37,14 @@
     <string name="Amoled_theme_desc">Use black for background</string>
     <string name="Radius">Radius</string>
     <string name="Radius_desc">Change Shape</string>
+    <string name="Grid_View">Grid View</string>
+    <string name="Grid_View_Desc">Change notes view to grid</string>
+    <string name="Monthly_View">Monthly View</string>
+    <string name="Monthly_View_Desc">Change to monthly calender view</string>
     <string name="Contrast">Contrast</string>
+    <string name="Low">Low</string>
+    <string name="Medium">Medium</string>
+    <string name="High">High</string>
     <string name="Shape">Shape • View</string>
     <string name="Themes">Themes</string>
     <string name="Select_radius">Select Radius</string>
@@ -48,10 +63,16 @@
     <string name="Pinned">Pinned</string>
     <string name="Dismiss">Dismiss</string>
     <string name="Confirm">Confirm</string>
+    <string name="deleteDialogText">This Can\'t be undone, it will delete all the data permanently.</string>
+    <string name="deleteDialogTitle">Are you sure?</string>
+    <string name="removeDialogText">This can\'t be undone, It will delete all the data of this space</string>
+    <string name="removeDialogTitle">Remove Space?</string>
 
     <!-- Notes -->
+    <string name="Notes">Notes</string>
     <string name="Others">Others</string>
     <string name="Labels">Labels</string>
+    <string name="Search_Notes">Search Notes…</string>
     <string name="Delete_Note">Delete Note</string>
     <string name="Title">Title</string>
     <string name="Description">Description</string>
@@ -63,13 +84,17 @@
     <string name="Edit_Labels">Edit Labels</string>
     <string name="Add_Label">Add New Label</string>
     <string name="Edit_Label">Edit Label</string>
+    <string name="Select_Label">Select Label</string>
 
     <!-- To-do List -->
+    <string name="To_Do">To-Do</string>
     <string name="Empty_Lists">No List Found</string>
     <string name="Edit_list">Edit List</string>
     <string name="Add_Item">Add New Item</string>
+    <string name="more">…more</string>
 
     <!-- Habits -->
+    <string name="Habits">Habits</string>
     <string name="Empty_Habits">No Habit Found</string>
     <string name="Started">Started On</string>
     <string name="Current_Streak">Current Streak: </string>
@@ -77,5 +102,58 @@
     <string name="Add_Habit">Add Habit</string>
     <string name="Edit_Habit">Edit Habit</string>
 
+    <!-- Workspace -->
+    <string name="Edit_Workspace">Edit Workspace</string>
+    <string name="Add_Workspace">Add Workspace</string>
+    <string name="Search_Workspaces">Search Workspaces…</string>
+    <string name="Delete_Workspace">Delete Workspace</string>
+    <string name="Edit_Details">Edit Details</string>
+    <string name="Change_Cover">Change Cover</string>
+    <string name="Lock_Workspace">Lock Workspace</string>
+    <string name="Unlock_Workspace">Unlock Workspace</string>
+    <string name="Add_Spaces">Add Spaces</string>
+    <string name="Add_Space">Add Space</string>
+    <string name="Home">Home</string>
+    <string name="Empty_Workspace">No Workspace Found</string>
+
+    <!-- Events -->
+    <string name="Events">Events</string>
+    <string name="Empty_Events">No Events Found</string>
+    <string name="Edit_Event">Edit Event</string>
+    <string name="All_Day">All Day</string>
+    <string name="Repeat_Task">Repeat Task</string>
+    <string name="NONE">NONE</string>
+    <string name="Daily">DAILY</string>
+    <string name="Weekly">WEEKLY</string>
+    <string name="Monthly">MONTHLY</string>
+    <string name="Yearly">YEARLY</string>
+    <string name="Status_Completed">Completed</string>
+    <string name="Status_Pending">Pending</string>
+    <string name="Mark_As_Completed">Mark as completed</string>
+    <string name="Mark_As_Uncompleted">Mark as Uncompleted</string>
+    <string name="On_Time">At the time of event</string>
+    <string name="five_minutes_before">5 minutes before</string>
+    <string name="ten_minutes_before">10 minutes before</string>
+    <string name="fifteen_minutes_before">15 minutes before</string>
+    <string name="thirty_minutes_before">30 minutes before</string>
+    <string name="one_hour_before">1 hour before</string>
+    <string name="day">day</string>
+    <string name="days">Days</string>
+    <string name="hour">hour</string>
+    <string name="hours">Hours</string>
+    <string name="minute">minute</string>
+    <string name="minutes">Minutes</string>
+    <string name="before">before</string>
+    <string name="Custom_Notification">Custom Notification</string>
+    <string name="Add_Notification">Add Notification</string>
+    <string name="Cancel">Cancel</string>
+    <string name="Set">Set</string>
+    <string name="Custom">Custom</string>
+    <string name="Select_Time">Select Time</string>
+    <string name="enterPasskey">Enter Passkey</string>
+    <string name="Amount">Amount</string>
+
+    <!-- Calender -->
+    <string name="Calender">Calender</string>
 
 </resources>

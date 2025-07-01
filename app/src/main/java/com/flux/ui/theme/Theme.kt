@@ -282,7 +282,6 @@ fun FluxTheme(
     settings: Settings,
     content: @Composable () -> Unit
 ) {
-    if(settings.isLoading) return
     val data=settings.data
 
     val isSystemInDarkTheme = isSystemInDarkTheme()

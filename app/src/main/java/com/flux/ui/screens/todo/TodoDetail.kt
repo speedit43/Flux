@@ -33,9 +33,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.flux.R
 import com.flux.data.model.TodoItem
 import com.flux.data.model.TodoModel
 import com.flux.ui.events.TodoEvents
@@ -56,7 +58,7 @@ fun TodoDetail(
         topBar = {
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(MaterialTheme.colorScheme.surfaceContainerLow),
-                title = { Text("Edit List") },
+                title = { Text(stringResource(R.string.Edit_list)) },
                 navigationIcon = { IconButton({navController.popBackStack()}) { Icon(Icons.AutoMirrored.Default.ArrowBack, null) } },
                 actions = {
                     IconButton(
@@ -79,7 +81,7 @@ fun TodoDetail(
                     value = title,
                     singleLine = true,
                     onValueChange = { title=it },
-                    placeholder = { Text("Title") },
+                    placeholder = { Text(stringResource(R.string.Title)) },
                     textStyle = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.fillMaxWidth(),
                     colors = TextFieldDefaults.colors(
@@ -111,7 +113,7 @@ fun TodoDetail(
                                     itemList[index] = item.copy(value = newText)
                                 }
                             },
-                            placeholder = { Text("Title") },
+                            placeholder = { Text(stringResource(R.string.Title)) },
                             textStyle = MaterialTheme.typography.titleMedium.copy(
                                 textDecoration = if (item.isChecked) TextDecoration.LineThrough else TextDecoration.None
                             ),
@@ -144,7 +146,7 @@ fun TodoDetail(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Icon(Icons.Default.SubdirectoryArrowRight, null)
-                        Text("Add new item")
+                        Text(stringResource(R.string.Add_Item))
                     }
                 }
             }

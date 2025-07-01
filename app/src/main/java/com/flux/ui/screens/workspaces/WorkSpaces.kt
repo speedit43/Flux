@@ -34,9 +34,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.flux.R
 import com.flux.data.model.WorkspaceModel
 import com.flux.navigation.NavRoutes
 import com.flux.ui.components.EmptySpaces
@@ -100,7 +102,7 @@ fun WorkSpaces(
                 TextFieldState(query),
                 { query = it },
                 allSpaces.filter { it.title.contains(query, ignoreCase = true) || it.description.contains(query, ignoreCase = true) },
-                {navController.navigate(NavRoutes.Settings.route)},
+                { navController.navigate(NavRoutes.Settings.route) },
                 { query = "" },
                 onWorkSpaceEvents,
                 onClick = { space->
@@ -120,7 +122,7 @@ fun WorkSpaces(
             )
             if(allSpaces.isEmpty()){ EmptySpaces() }
             else {
-                if(allSpaces.any { it.isPinned }){ Text("Pinned", modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp).padding(top = 8.dp), fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary) }
+                if(allSpaces.any { it.isPinned }){ Text(stringResource(R.string.Pinned), modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp).padding(top = 8.dp), fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary) }
                 LazyRow(Modifier.padding(horizontal = 16.dp, vertical = 8.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                     items(allSpaces.filter { it.isPinned }) { space->
                         PinnedSpacesCard(

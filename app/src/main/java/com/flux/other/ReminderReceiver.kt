@@ -85,7 +85,7 @@ fun requestExactAlarmPermission(context: Context) {
     }
 }
 
-fun canScheduleHabitReminder(context: Context): Boolean{
+fun canScheduleReminder(context: Context): Boolean{
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     return alarmManager.canScheduleExactAlarms()
 }
@@ -161,7 +161,6 @@ fun cancelReminder(context: Context, id: Long, type: String, title: String, desc
         Toast.makeText(context, "Error: Failed to cancel alarm", Toast.LENGTH_LONG).show()
     }
 }
-
 
 fun isNotificationPermissionGranted(context: Context): Boolean {
     return ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED

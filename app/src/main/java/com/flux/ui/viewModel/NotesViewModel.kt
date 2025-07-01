@@ -14,6 +14,8 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 import javax.inject.Inject
 
 @HiltViewModel
@@ -21,22 +23,23 @@ class NotesViewModel @Inject constructor(
     val repository: NoteRepository
 ) : ViewModel() {
 
+    private val mutex = Mutex()
     private val _state: MutableStateFlow<NotesState> = MutableStateFlow(NotesState())
     val state: StateFlow<NotesState> = _state.asStateFlow()
 
     fun onEvent(event: NotesEvents) { viewModelScope.launch { reduce(event = event) } }
-    private fun updateState(reducer: (NotesState) -> NotesState) { _state.value = reducer(_state.value) }
-    private fun reduce(event: NotesEvents) {
+    private suspend fun updateState(reducer: (NotesState) -> NotesState) { mutex.withLock { _state.value = reducer(_state.value) } }
+    private suspend fun reduce(event: NotesEvents) {
         when (event) {
-            is NotesEvents.UpsertNote -> { updateNotes(event.data) }
-            is NotesEvents.DeleteNotes -> { deleteNotes(event.data) }
-            is NotesEvents.TogglePinMultiple -> { togglePinMultiple(event.data) }
-            is NotesEvents.DeleteNote -> { deleteNote(event.data) }
-            is NotesEvents.DeleteLabel -> { deleteLabel(event.data) }
-            is NotesEvents.UpsertLabel -> { upsertLabel(event.data) }
-            is NotesEvents.LoadAllNotes -> { loadAllNotes(event.workspaceId) }
-            is NotesEvents.LoadAllLabels -> { loadAllLabels(event.workspaceId) }
-            is NotesEvents.DeleteAllWorkspaceNotes -> { deleteWorkspaceNotes(event.workspaceId) }
+            is NotesEvents.UpsertNote -> updateNotes(event.data)
+            is NotesEvents.DeleteNotes -> deleteNotes(event.data)
+            is NotesEvents.TogglePinMultiple -> togglePinMultiple(event.data)
+            is NotesEvents.DeleteNote -> deleteNote(event.data)
+            is NotesEvents.DeleteLabel -> deleteLabel(event.data)
+            is NotesEvents.UpsertLabel -> upsertLabel(event.data)
+            is NotesEvents.LoadAllNotes -> loadAllNotes(event.workspaceId)
+            is NotesEvents.LoadAllLabels -> loadAllLabels(event.workspaceId)
+            is NotesEvents.DeleteAllWorkspaceNotes -> deleteWorkspaceNotes(event.workspaceId)
         }
     }
 
@@ -60,27 +63,20 @@ class NotesViewModel @Inject constructor(
         }
     }
 
-    private fun loadAllNotes(workspaceId: Long) {
-        updateState { it.copy(isLoading = true) }
+    private suspend fun loadAllNotes(workspaceId: Long) {
+        updateState { it.copy(isNotesLoading = true) }
 
-        viewModelScope.launch {
-            repository.loadAllNotes(workspaceId)
-                .distinctUntilChanged()
-                .collect { data ->
-                    val sortedData = data.sortedByDescending { it.lastEdited }
-                    updateState { it.copy(isLoading = false, allNotes = sortedData) } }
-
-        }
+        repository.loadAllNotes(workspaceId)
+            .distinctUntilChanged()
+            .collect { data ->
+                val sortedData = data.sortedByDescending { it.lastEdited }
+                updateState { it.copy(isNotesLoading = false, allNotes = sortedData) }
+            }
     }
 
-    private fun loadAllLabels(workspaceId: Long) {
-        updateState { it.copy(isLoading = true) }
-
-        viewModelScope.launch {
-            repository.loadAllLabels(workspaceId)
-                .collect { data ->
-                    updateState { it.copy(isLoading = false, allLabels = data) } }
-        }
+    private suspend fun loadAllLabels(workspaceId: Long) {
+        updateState { it.copy(isLabelsLoading = true) }
+        repository.loadAllLabels(workspaceId).collect { data -> updateState { it.copy(isLabelsLoading = false, allLabels = data) } }
     }
 
     private fun updateNotes(data: NotesModel) {

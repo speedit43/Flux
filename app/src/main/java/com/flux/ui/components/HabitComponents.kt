@@ -283,8 +283,8 @@ fun HabitStreakCard(currentStreak: Int, bestStreak: Int, radius: Int){
     ) {
         Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
             Column {
-                Text("Current Streak: $currentStreak days", modifier = Modifier.alpha(0.85f))
-                Text("Best: $bestStreak days", fontWeight = FontWeight.SemiBold)
+                Text("${stringResource(R.string.Current_Streak)} $currentStreak days", modifier = Modifier.alpha(0.85f))
+                Text("${stringResource(R.string.Best_Streak)} $bestStreak days", fontWeight = FontWeight.SemiBold)
             }
             CircleWrapper(MaterialTheme.colorScheme.primary) {
                 Icon(Icons.Default.LocalFireDepartment, null, modifier = Modifier.size(40.dp), tint = MaterialTheme.colorScheme.onPrimary)
@@ -305,7 +305,7 @@ fun HabitStartCard(startDateTime: Long, radius: Int){
             .fillMaxWidth()
             .padding(16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
             Column {
-                Text("Started on", modifier = Modifier.alpha(0.85f))
+                Text(stringResource(R.string.Started), modifier = Modifier.alpha(0.85f))
                 Text(startDateTime.toFormattedDate(), fontWeight = FontWeight.SemiBold)
             }
             CircleWrapper(MaterialTheme.colorScheme.primary) {
