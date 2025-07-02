@@ -12,11 +12,10 @@
 
 </div>
 
-|     ![Image 1](metadata/Preview.png)     | ![Image 2](metadata/organizeYourself.png) |
-|:----------------------------------------:|:-----------------------------------------:|
-| ![Image 3](metadata/NoteEverything.png)  |   ![Image 4](metadata/TrackHabits.png)    |
-|:---------------------------------------: |:----------------------------------------: |
-|    ![Image 3](metadata/Customize.png)    |                                           |
+|    ![Image 1](metadata/Preview.png)     | ![Image 2](metadata/organizeYourself.png) |
+|:---------------------------------------:|:-----------------------------------------:|
+| ![Image 3](metadata/NoteEverything.png) |   ![Image 4](metadata/TrackHabits.png)    |
+|  ![Image 3](metadata/Customize.png)     |                                           |
 ---
 
 ## 🎉 Features
