@@ -6,13 +6,17 @@
 # Flux
 **A lightweight Android productivity app built with Material 3.**
 
+[<img src="/metadata/get-github.png" alt="Get it on GitHub" height="55">](https://github.com/chindaronit/Flux/releases/) 
+
 ---
 
 </div>
 
-| ![Image 1](metadata/page1.png) | ![Image 2](metadata/page2.png) |
-|:------------------------------:|:------------------------------:|
-| ![Image 3](metadata/page3.png) | ![Image 4](metadata/page4.png) |
+|     ![Image 1](metadata/Preview.png)     | ![Image 2](metadata/organizeYourself.png) |
+|:----------------------------------------:|:-----------------------------------------:|
+| ![Image 3](metadata/NoteEverything.png)  |   ![Image 4](metadata/TrackHabits.png)    |
+|:---------------------------------------: |:----------------------------------------: |
+|    ![Image 3](metadata/Customize.png)    |                                           |
 ---
 
 ## 🎉 Features
