@@ -10,18 +10,9 @@
 
 </div>
 
-<div align="center">
-  <div>
-    <img src="metadata/page1.png" width="45%" alt="Screenshot 1"/>
-    <img src="metadata/page2.png" width="45%" alt="Screenshot 2"/>
-  </div>
-  <br/>
-  <div>
-    <img src="metadata/page3.png" width="45%" alt="Screenshot 3"/>
-    <img src="metadata/page4.png" width="45%" alt="Screenshot 4"/>
-  </div>
-</div>
-
+| ![Image 1](metadata/page1.png) | ![Image 2](metadata/page2.png) |
+|:------------------------------:|:------------------------------:|
+| ![Image 3](metadata/page3.png) | ![Image 4](metadata/page4.png) |
 ---
 
 ## 🎉 Features
