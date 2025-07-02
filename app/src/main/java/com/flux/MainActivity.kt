@@ -39,15 +39,13 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
+        createNotificationChannel(this)
         // Splash screen condition
         val splashScreen = installSplashScreen()
         splashScreen.setKeepOnScreenCondition { keepSplashScreen.value }
 
         enableEdgeToEdge()
-
         setContent {
-            createNotificationChannel(this)
             val snackBarHostState = remember { SnackbarHostState() }
 
             // ViewModels
@@ -67,9 +65,7 @@ class MainActivity : AppCompatActivity() {
             val todoState by todoViewModel.state.collectAsStateWithLifecycle()
 
             // Stop splash screen when settings are loaded
-            LaunchedEffect(settings.isLoading) {
-                keepSplashScreen.value = settings.isLoading
-            }
+            LaunchedEffect(settings.isLoading) { keepSplashScreen.value = settings.isLoading }
 
             // Snackbar effect
             LaunchedEffect(Unit) {

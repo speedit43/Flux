@@ -310,7 +310,7 @@ fun NewWorkspaceBottomSheet(
                         onDone = {
                             keyboardController?.hide()
                             focusManager.clearFocus(force = true)
-                            onConfirm(WorkspaceModel(title = title, description = description))
+                            onConfirm(workspace.copy(title = title, description = description))
                             onDismiss()
                             title = workspace.title
                             description = workspace.description
@@ -336,13 +336,16 @@ fun NewWorkspaceBottomSheet(
 
                     Spacer(Modifier.width(8.dp))
 
-                    FilledTonalButton(onClick = {
-                        keyboardController?.hide()
-                        onConfirm(workspace.copy(title=title, description=description))
-                        onDismiss()
-                        title = workspace.title
-                        description = workspace.description
-                    }) {
+                    FilledTonalButton(
+                        enabled = title.isNotBlank(),
+                        onClick = {
+                            keyboardController?.hide()
+                            onConfirm(workspace.copy(title=title, description=description))
+                            onDismiss()
+                            title = workspace.title
+                            description = workspace.description
+                        }
+                    ) {
                         Text(stringResource(R.string.Confirm))
                     }
                 }

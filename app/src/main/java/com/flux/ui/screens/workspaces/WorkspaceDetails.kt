@@ -1,9 +1,9 @@
 package com.flux.ui.screens.workspaces
 
-import android.app.Activity
 import java.io.File
 import android.content.Context
 import android.net.Uri
+import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Column
@@ -58,8 +58,8 @@ import com.flux.navigation.NavRoutes
 import com.flux.other.canScheduleReminder
 import com.flux.other.cancelReminder
 import com.flux.other.isNotificationPermissionGranted
+import com.flux.other.openAppNotificationSettings
 import com.flux.other.requestExactAlarmPermission
-import com.flux.other.requestNotificationPermission
 import com.flux.ui.components.AddSpacesDialog
 import com.flux.ui.components.DeleteAlert
 import com.flux.ui.components.HabitBottomSheet
@@ -234,8 +234,14 @@ fun WorkspaceDetails(
                 }
                 R.string.Events -> {
                     FloatingActionButton(onClick = {
-                        if(!canScheduleReminder(context)) requestExactAlarmPermission(context)
-                        if(!isNotificationPermissionGranted(context)) requestNotificationPermission(context as Activity)
+                        if(!canScheduleReminder(context)) {
+                            Toast.makeText(context, "Please turn on Reminders", Toast.LENGTH_SHORT).show()
+                            requestExactAlarmPermission(context)
+                        }
+                        if(!isNotificationPermissionGranted(context)) {
+                            Toast.makeText(context, "Please turn on notifications", Toast.LENGTH_SHORT).show()
+                            openAppNotificationSettings(context)
+                        }
                         if(canScheduleReminder(context) && isNotificationPermissionGranted(context)){
                             navController.navigate(NavRoutes.EventDetails.withArgs(workspaceId, -1))
                         }
@@ -245,8 +251,14 @@ fun WorkspaceDetails(
                 }
                 R.string.Habits -> {
                     FloatingActionButton(onClick = {
-                        if(!canScheduleReminder(context)) requestExactAlarmPermission(context)
-                        if(!isNotificationPermissionGranted(context)) requestNotificationPermission(context as Activity)
+                        if(!canScheduleReminder(context)){
+                            Toast.makeText(context, "Please turn on Reminders", Toast.LENGTH_SHORT).show()
+                            requestExactAlarmPermission(context)
+                        }
+                        if(!isNotificationPermissionGranted(context)) {
+                            Toast.makeText(context, "Please turn on notifications", Toast.LENGTH_SHORT).show()
+                            openAppNotificationSettings(context)
+                        }
                         if(canScheduleReminder(context) && isNotificationPermissionGranted(context)){
                             showHabitDialog = true
                             scope.launch { sheetState.show() }

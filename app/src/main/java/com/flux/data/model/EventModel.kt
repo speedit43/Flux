@@ -15,7 +15,7 @@ enum class EventStatus {
 @Entity
 data class EventModel (
     @PrimaryKey(autoGenerate = true)
-    val eventId: Long = 1L,
+    val eventId: Long = 0L,
     val workspaceId: Long = 0L,
     val title: String = "",
     val description: String = "",

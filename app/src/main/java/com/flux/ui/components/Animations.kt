@@ -16,7 +16,7 @@ import androidx.compose.animation.*
 private const val DEFAULT_FADE_DURATION = 200
 private const val DEFAULT_SCALE_DURATION = 300
 private const val DEFAULT_SLIDE_DURATION = 300
-private const val DEFAULT_INITIAL_SCALE = 0.8f
+private const val DEFAULT_INITIAL_SCALE = 0.9f
 
 // --- Fade + Scale (Default) ---
 fun defaultScreenEnterAnimation(): EnterTransition {

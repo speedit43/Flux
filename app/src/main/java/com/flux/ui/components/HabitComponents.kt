@@ -86,11 +86,11 @@ fun HabitDateCard(radius:Int, isDone:Boolean, isTodayDone: Boolean, day: String,
         )
     ) {
         Column(
-            Modifier.fillMaxWidth().padding(6.dp),
+            Modifier.fillMaxWidth().padding(vertical = 4.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(day.uppercase(), style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.ExtraLight), modifier= Modifier.alpha(0.95f))
-            Text(date.toString(), style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.ExtraLight), modifier= Modifier.alpha(0.95f))
+            Text(day.uppercase(), style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.ExtraLight), modifier= Modifier.alpha(0.95f))
+            Text(date.toString(), style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.ExtraLight), modifier= Modifier.alpha(0.95f))
         }
     }
 }
@@ -156,8 +156,8 @@ fun HabitPreviewCard(
             }
 
             Row(
-                modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp, horizontal = 8.dp),
-                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 12.dp),
+                horizontalArrangement = Arrangement.spacedBy(2.dp)
             ) {
                 weekDates.forEach { date ->
                     val isDone = instances.any { it.instanceDate == date }

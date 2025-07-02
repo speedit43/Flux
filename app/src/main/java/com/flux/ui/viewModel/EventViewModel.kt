@@ -51,11 +51,11 @@ class EventViewModel @Inject constructor (
     private fun deleteEvent(data: EventModel) { viewModelScope.launch(Dispatchers.IO) { repository.deleteEvent(data) } }
     private fun upsertEvent(context: Context, data: EventModel, adjustedTime: Long?) {
         viewModelScope.launch(Dispatchers.IO) {
-            repository.upsertEvent(data)
+            val id=repository.upsertEvent(data)
             if(adjustedTime!=null){
                 scheduleReminder(
                     context = context,
-                    id = data.eventId,
+                    id = id,
                     type="EVENT",
                     repeat = data.repetition.toString(),
                     timeInMillis = adjustedTime,

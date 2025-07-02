@@ -7,7 +7,7 @@ import java.time.LocalDate
 @Entity
 data class HabitModel (
     @PrimaryKey(autoGenerate = true)
-    val habitId: Long = 1L,
+    val habitId: Long = 0L,
     val workspaceId: Long = 0L,
     val title: String = "",
     val description: String = "",

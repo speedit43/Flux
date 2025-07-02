@@ -173,3 +173,10 @@ fun requestNotificationPermission(activity: Activity, requestCode: Int = 1001) {
         requestCode
     )
 }
+
+fun openAppNotificationSettings(context: Context) {
+    val intent = Intent(Settings.ACTION_APP_NOTIFICATION_SETTINGS).apply {
+        putExtra(Settings.EXTRA_APP_PACKAGE, context.packageName)
+    }
+    context.startActivity(intent)
+}
