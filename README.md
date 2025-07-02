@@ -11,10 +11,15 @@
 </div>
 
 <div align="center">
-    <img src="metadata/page1.png" alt="Screenshot 1"/>
-    <img src="metadata/page2.png" alt="Screenshot 2"/>
-    <img src="metadata/page3.png" alt="Screenshot 3"/>
-    <img src="metadata/page4.png" alt="Screenshot 4"/>
+  <div>
+    <img src="metadata/page1.png" width="45%" alt="Screenshot 1"/>
+    <img src="metadata/page2.png" width="45%" alt="Screenshot 2"/>
+  </div>
+  <br/>
+  <div>
+    <img src="metadata/page3.png" width="45%" alt="Screenshot 3"/>
+    <img src="metadata/page4.png" width="45%" alt="Screenshot 4"/>
+  </div>
 </div>
 
 ---
