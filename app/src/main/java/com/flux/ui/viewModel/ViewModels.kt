@@ -6,5 +6,6 @@ data class ViewModels (
     val todoViewModel: TodoViewModel,
     val habitViewModel: HabitViewModel,
     val workspaceViewModel: WorkspaceViewModel,
+    val journalViewModel: JournalViewModel,
     val settingsViewModel: SettingsViewModel
 )

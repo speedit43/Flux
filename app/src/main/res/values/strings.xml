@@ -67,6 +67,9 @@
     <string name="deleteDialogTitle">Are you sure?</string>
     <string name="removeDialogText">This can\'t be undone, It will delete all the data of this space</string>
     <string name="removeDialogTitle">Remove Space?</string>
+    <string name="Reminder_Permission">Please turn on Reminders</string>
+    <string name="Notification_Permission">Please turn on notifications</string>
+
 
     <!-- Notes -->
     <string name="Notes">Notes</string>
@@ -101,6 +104,7 @@
     <string name="Best_Streak">Best: </string>
     <string name="Add_Habit">Add Habit</string>
     <string name="Edit_Habit">Edit Habit</string>
+    <string name="completed_habits">Completed %1$d times</string>
 
     <!-- Workspace -->
     <string name="Edit_Workspace">Edit Workspace</string>
@@ -155,5 +159,26 @@
 
     <!-- Calender -->
     <string name="Calender">Calender</string>
+
+    <!-- Analytics -->
+    <string name="Analytics">Analytics</string>
+    <string name="Empty_Analytics">Add Spaces to find analytics here</string>
+    <string name="HeatMap">Habit Heat Map</string>
+    <string name="Completed_Today">Completed Today</string>
+    <string name="This_Week">This Week</string>
+    <string name="This_Month">This Month</string>
+    <string name="Upcoming">Upcoming</string>
+    <string name="Failed">Failed</string>
+    <string name="Completed">Completed</string>
+    <string name="journals_written">%1$d Journals written</string>
+    <string name="best_streak">Best: %1$d days</string>
+    <string name="completion_percentage">%1$d%% Completion</string>
+
+    <!-- Journal -->
+    <string name="Journal">Journal</string>
+    <string name="Write_here">Write here…</string>
+    <string name="Empty_Journal">No Entry Found</string>
+    <string name="Today_Entry">Today\'s Entry</string>
+
 
 </resources>

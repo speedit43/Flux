@@ -6,11 +6,13 @@ import androidx.navigation.NavController
 import com.flux.data.model.EventInstanceModel
 import com.flux.data.model.EventModel
 import com.flux.data.model.HabitModel
+import com.flux.data.model.JournalModel
 import com.flux.data.model.NotesModel
 import com.flux.data.model.TodoModel
 import com.flux.ui.screens.auth.AuthScreen
 import com.flux.ui.screens.events.EventDetails
 import com.flux.ui.screens.habits.HabitDetails
+import com.flux.ui.screens.journal.EditJournal
 import com.flux.ui.screens.notes.EditLabels
 import com.flux.ui.screens.notes.NoteDetails
 import com.flux.ui.screens.settings.About
@@ -50,6 +52,9 @@ sealed class NavRoutes(val route: String) {
 
     // TodoList
     data object TodoDetail : NavRoutes("workspace/todo/details")
+
+    // Journal
+    data object EditJournal : NavRoutes("workspace/journal/edit")
 
     // Settings
     data object Settings : NavRoutes("settings")
@@ -97,6 +102,13 @@ val TodoScreens =
         }
     )
 
+val JournalScreens =
+    mapOf<String, @Composable (navController: NavController, journalId: Long, workspaceId: Long, states: States, viewModels: ViewModels) -> Unit>(
+        NavRoutes.EditJournal.route + "/{workspaceId}" + "/{journalId}" to { navController, journalId, workspaceId, states, viewModel ->
+            EditJournal(navController, states.journalState.allEntries.find { it.journalId==journalId }?: JournalModel(workspaceId=workspaceId), viewModel.journalViewModel::onEvent)
+        }
+    )
+
 val SettingsScreens =
     mapOf<String, @Composable (navController: NavController, snackbarHostState: SnackbarHostState, states: States, viewModels: ViewModels) -> Unit> (
         NavRoutes.Settings.route to { navController, _, states, viewModels ->
@@ -129,7 +141,7 @@ val EventScreens =
 val WorkspaceScreens =
     mapOf<String, @Composable (navController: NavController, snackbarHostState: SnackbarHostState, states: States, viewModels: ViewModels, workspaceId: Long) -> Unit> (
         NavRoutes.Workspace.route to { navController, snackbarHostState, states, viewModels, _ ->
-            WorkSpaces(snackbarHostState, navController, states.settings.data.cornerRadius, states.workspaceState.allSpaces, viewModels.notesViewModel::onEvent, viewModels.eventViewModel::onEvent, viewModels.habitViewModel::onEvent, viewModels.todoViewModel::onEvent, viewModels.workspaceViewModel::onEvent)
+            WorkSpaces(snackbarHostState, navController, states.settings.data.cornerRadius, states.workspaceState.allSpaces, viewModels.notesViewModel::onEvent, viewModels.eventViewModel::onEvent, viewModels.habitViewModel::onEvent, viewModels.todoViewModel::onEvent, viewModels.workspaceViewModel::onEvent, viewModels.journalViewModel::onEvent)
         },
         NavRoutes.WorkspaceHome.route + "/{workspaceId}" to { navController, snackbarHostState, states, viewModels, workspaceId ->
             WorkspaceDetails(
@@ -140,6 +152,8 @@ val WorkspaceScreens =
                 states.eventState.isTodayEventLoading,
                 states.eventState.isDatedEventLoading,
                 states.todoState.isLoading,
+                states.journalState.isLoading,
+                states.journalState.isLoadingMore,
                 states.workspaceState.allSpaces.first { it.workspaceId==workspaceId },
                 states.eventState.allEvent,
                 states.notesState.allNotes.filter { it.workspaceId==workspaceId },
@@ -147,6 +161,7 @@ val WorkspaceScreens =
                 states.eventState.datedEvents,
                 states.habitState.allHabits,
                 states.todoState.allLists,
+                states.journalState.allEntries,
                 states.habitState.allInstances,
                 states.eventState.allEventInstances,
                 viewModels.workspaceViewModel::onEvent,
@@ -154,6 +169,7 @@ val WorkspaceScreens =
                 viewModels.eventViewModel::onEvent,
                 viewModels.habitViewModel::onEvent,
                 viewModels.todoViewModel::onEvent,
+                viewModels.journalViewModel::onEvent,
                 viewModels.settingsViewModel::onEvent)
         }
     )

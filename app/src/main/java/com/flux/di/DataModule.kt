@@ -6,6 +6,7 @@ import com.flux.data.dao.EventDao
 import com.flux.data.dao.EventInstanceDao
 import com.flux.data.dao.HabitInstanceDao
 import com.flux.data.dao.HabitsDao
+import com.flux.data.dao.JournalDao
 import com.flux.data.dao.LabelDao
 import com.flux.data.dao.NotesDao
 import com.flux.data.dao.SettingsDao
@@ -18,6 +19,7 @@ import com.flux.data.database.NotesDatabase
 import com.flux.data.database.SettingsDatabase
 import com.flux.data.database.EventDatabase
 import com.flux.data.database.EventInstanceDatabase
+import com.flux.data.database.JournalDatabase
 import com.flux.data.database.TodoDatabase
 import com.flux.data.database.WorkspaceDatabase
 import dagger.Module
@@ -157,4 +159,18 @@ object DataModule {
     @Singleton
     @Provides
     fun provideTodoDao(db: TodoDatabase): TodoDao = db.dao
+
+    @Singleton
+    @Provides
+    fun provideJournalDatabase(
+        @ApplicationContext app: Context
+    ): JournalDatabase = Room.databaseBuilder(
+        app,
+        JournalDatabase::class.java,
+        "JournalDatabase"
+    ).build()
+
+    @Singleton
+    @Provides
+    fun provideJournalDao(db: JournalDatabase): JournalDao = db.dao
 }

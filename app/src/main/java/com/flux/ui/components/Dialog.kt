@@ -24,6 +24,8 @@ import androidx.compose.material.icons.automirrored.filled.Notes
 import androidx.compose.material.icons.automirrored.outlined.LabelImportant
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Analytics
+import androidx.compose.material.icons.filled.AutoStories
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.DeleteOutline
@@ -126,6 +128,8 @@ fun AddSpacesDialog(
     var calendarChecked by remember { mutableStateOf(false) }
     var habitsChecked by remember { mutableStateOf(false) }
     var eventsChecked by remember { mutableStateOf(false) }
+    var analyticsChecked by remember { mutableStateOf(false) }
+    var journalChecked by remember { mutableStateOf(false) }
 
     AlertDialog(
         icon = {
@@ -135,11 +139,18 @@ fun AddSpacesDialog(
         },
         title = { Text(text = stringResource(R.string.Add_Spaces)) },
         text = {
-            LazyColumn {
+            LazyColumn(Modifier.heightIn(max=250.dp)) {
                 if (!workspace.isNotesAdded) {
                     item {
                         SpaceCheckboxCard(Icons.AutoMirrored.Default.Notes, stringResource(R.string.Notes), notesChecked) {
                             notesChecked = it
+                        }
+                    }
+                }
+                if (!workspace.isJournalAdded) {
+                    item {
+                        SpaceCheckboxCard(Icons.Default.AutoStories, stringResource(R.string.Journal), journalChecked) {
+                            journalChecked=it
                         }
                     }
                 }
@@ -171,6 +182,13 @@ fun AddSpacesDialog(
                         }
                     }
                 }
+                if (!workspace.isAnalyticsAdded) {
+                    item {
+                        SpaceCheckboxCard(Icons.Default.Analytics, stringResource(R.string.Analytics), analyticsChecked) {
+                            analyticsChecked=it
+                        }
+                    }
+                }
             }
         },
         onDismissRequest = onDismissRequest,
@@ -182,7 +200,9 @@ fun AddSpacesDialog(
                         isTodoAdded = workspace.isTodoAdded || todoChecked,
                         isCalenderAdded = workspace.isCalenderAdded || calendarChecked,
                         isHabitsAdded = workspace.isHabitsAdded || habitsChecked,
-                        isEventsAdded = workspace.isEventsAdded || eventsChecked
+                        isEventsAdded = workspace.isEventsAdded || eventsChecked,
+                        isAnalyticsAdded = workspace.isAnalyticsAdded || analyticsChecked,
+                        isJournalAdded = workspace.isJournalAdded || journalChecked
                     )
                     onConfirmation(updated)
                     onDismissRequest()
@@ -395,16 +415,17 @@ fun convertMillisToTime(millis: Long): String {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimePicker(
+    initialTime: Long,
     onConfirm: (TimePickerState) -> Unit,
     onDismiss: () -> Unit,
 ) {
 
-    val currentTime = Calendar.getInstance()
+    val currentTime = Calendar.getInstance().apply { timeInMillis=initialTime}
 
     val timePickerState = rememberTimePickerState(
         initialHour = currentTime.get(Calendar.HOUR_OF_DAY),
         initialMinute = currentTime.get(Calendar.MINUTE),
-        is24Hour = true,
+        is24Hour = false,
     )
 
     var showDial by remember { mutableStateOf(true) }

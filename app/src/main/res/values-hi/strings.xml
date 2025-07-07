@@ -67,6 +67,8 @@
     <string name="deleteDialogTitle">क्या आप वाकई सुनिश्चित हैं?</string>
     <string name="removeDialogText">इसे पूर्ववत नहीं किया जा सकता, यह इस स्पेस का सारा डेटा हटा देगा।</string>
     <string name="removeDialogTitle">स्पेस हटाएं?</string>
+    <string name="Reminder_Permission">कृपया रिमाइंडर चालू करें</string>
+    <string name="Notification_Permission">कृपया सूचनाएँ चालू करें</string>
 
     <!-- Notes -->
     <string name="Notes">नोट्स</string>
@@ -101,6 +103,7 @@
     <string name="Best_Streak">सर्वश्रेष्ठ क्रम</string>
     <string name="Add_Habit">आदत जोड़ें</string>
     <string name="Edit_Habit">आदत संपादित करें</string>
+    <string name="completed_habits">%1$d बार पूरा किया गया</string>
 
     <!-- Workspace -->
     <string name="Edit_Workspace">वर्कस्पेस संपादित करें</string>
@@ -155,5 +158,26 @@
 
     <!-- Calender -->
     <string name="Calender">कैलेंडर</string>
+
+    <!-- Analytics -->
+    <string name="Analytics">विश्लेषण</string>
+    <string name="Upcoming">आगामी</string>
+    <string name="Failed">असफल</string>
+    <string name="Completed">पूरा हुआ</string>
+    <string name="Empty_Analytics">एनालिटिक्स देखने के लिए स्पेस जोड़ें</string>
+    <string name="HeatMap">आदत हीट मैप</string>
+    <string name="Completed_Today">आज पूरा किया</string>
+    <string name="This_Week">इस सप्ताह</string>
+    <string name="This_Month">इस महीने</string>
+    <string name="journals_written">%1$d जर्नल्स लिखे गए</string>
+    <string name="best_streak">सर्वश्रेष्ठ: %1$d दिन</string>
+    <string name="completion_percentage">%1$d%% पूर्णता</string>
+
+    <!-- Journal -->
+    <string name="Journal">जर्नल</string>
+    <string name="Empty_Journal">कोई प्रविष्टि नहीं मिली</string>
+    <string name="Today_Entry">आज की प्रविष्टि</string>
+    <string name="Write_here">यहाँ लिखें…</string>
+
 
 </resources>

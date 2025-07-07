@@ -49,6 +49,7 @@ import com.flux.ui.components.WorkSpacesCard
 import com.flux.ui.components.WorkspaceSearchBar
 import com.flux.ui.components.shapeManager
 import com.flux.ui.events.HabitEvents
+import com.flux.ui.events.JournalEvents
 import com.flux.ui.events.NotesEvents
 import com.flux.ui.events.TaskEvents
 import com.flux.ui.events.TodoEvents
@@ -66,7 +67,8 @@ fun WorkSpaces(
     onTaskEvents: (TaskEvents)->Unit,
     onHabitEvents: (HabitEvents)->Unit,
     onTodoEvents: (TodoEvents)->Unit,
-    onWorkSpaceEvents: (WorkspaceEvents) -> Unit
+    onWorkSpaceEvents: (WorkspaceEvents) -> Unit,
+    onJournalEvents: (JournalEvents)->Unit
 ){
     var query by rememberSaveable { mutableStateOf("") }
     var addWorkspace by remember { mutableStateOf(false) }
@@ -86,6 +88,7 @@ fun WorkSpaces(
                 onHabitEvents(HabitEvents.LoadAllHabits(it.workspaceId))
                 onHabitEvents(HabitEvents.LoadAllInstances(it.workspaceId))
                 onTodoEvents(TodoEvents.LoadAllLists(it.workspaceId))
+                onJournalEvents(JournalEvents.LoadInitialEntries(it.workspaceId))
                 navController.navigate(NavRoutes.WorkspaceHome.withArgs(it.workspaceId))
             }
             else{ Toast.makeText(context, "Wrong Passkey", Toast.LENGTH_SHORT).show() }
@@ -116,6 +119,7 @@ fun WorkSpaces(
                         onHabitEvents(HabitEvents.LoadAllHabits(space.workspaceId))
                         onHabitEvents(HabitEvents.LoadAllInstances(space.workspaceId))
                         onTodoEvents(TodoEvents.LoadAllLists(space.workspaceId))
+                        onJournalEvents(JournalEvents.LoadInitialEntries(space.workspaceId))
                         navController.navigate(NavRoutes.WorkspaceHome.withArgs(space.workspaceId))
                     }
                 }
@@ -138,6 +142,7 @@ fun WorkSpaces(
                                     onHabitEvents(HabitEvents.LoadAllHabits(space.workspaceId))
                                     onHabitEvents(HabitEvents.LoadAllInstances(space.workspaceId))
                                     onTodoEvents(TodoEvents.LoadAllLists(space.workspaceId))
+                                    onJournalEvents(JournalEvents.LoadInitialEntries(space.workspaceId))
                                     navController.navigate(NavRoutes.WorkspaceHome.withArgs(space.workspaceId))
                                 }
                             }
@@ -156,6 +161,7 @@ fun WorkSpaces(
                                 onClick = {
                                     if (space.passKey.isNotBlank()) { lockedWorkspace = space }
                                     else {
+                                        onJournalEvents(JournalEvents.LoadInitialEntries(space.workspaceId))
                                         onNotesEvents(NotesEvents.LoadAllNotes(space.workspaceId))
                                         onNotesEvents(NotesEvents.LoadAllLabels(space.workspaceId))
                                         onTaskEvents(TaskEvents.LoadAllInstances(space.workspaceId))

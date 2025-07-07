@@ -12,6 +12,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Notes
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Analytics
+import androidx.compose.material.icons.filled.AutoStories
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.DeleteOutline
@@ -54,6 +56,7 @@ import com.flux.ui.components.CircleWrapper
 import com.flux.ui.components.DeleteAlert
 import com.flux.ui.components.shapeManager
 import com.flux.ui.events.HabitEvents
+import com.flux.ui.events.JournalEvents
 import com.flux.ui.events.NotesEvents
 import com.flux.ui.events.TaskEvents
 import com.flux.ui.events.TodoEvents
@@ -71,6 +74,7 @@ fun WorkspaceHomeScreen(
     onTaskEvents: (TaskEvents)->Unit,
     onHabitEvents: (HabitEvents)-> Unit,
     onTodoEvents: (TodoEvents)->Unit,
+    onJournalEvents: (JournalEvents)->Unit,
     onWorkspaceEvents: (WorkspaceEvents) -> Unit,
 ) {
     val context= LocalContext.current
@@ -81,6 +85,7 @@ fun WorkspaceHomeScreen(
     var isHabitRemoved by remember { mutableStateOf(!workspace.isHabitsAdded) }
     var isEventsRemoved by remember { mutableStateOf(!workspace.isEventsAdded) }
     var isTodoRemoved by remember { mutableStateOf(!workspace.isTodoAdded) }
+    var isJournalRemoved by remember { mutableStateOf(!workspace.isJournalAdded) }
 
     if(showRemoveDialog){
         DeleteAlert(
@@ -95,7 +100,10 @@ fun WorkspaceHomeScreen(
                     onTaskEvents(TaskEvents.DeleteAllWorkspaceEvents(workspaceId)) }
                 if(isHabitRemoved) {
                     allHabits.forEach { habit-> cancelReminder(context, habit.habitId, "HABIT", habit.title, habit.description, "DAILY") }
-                    onHabitEvents(HabitEvents.DeleteAllWorkspaceHabits(workspaceId)) }
+                    onHabitEvents(HabitEvents.DeleteAllWorkspaceHabits(workspaceId))
+                }
+                if(isJournalRemoved){ onJournalEvents(JournalEvents.DeleteWorkspaceEntries(workspaceId)) }
+
                 onWorkspaceEvents(WorkspaceEvents.UpsertSpace(updatedWorkspace))
                 showRemoveDialog = false
             },
@@ -177,6 +185,21 @@ fun WorkspaceHomeScreen(
                     )
                 }
             }
+            if (workspace.isJournalAdded) {
+                item {
+                    SpacesCard(
+                        radius=radius,
+                        title = stringResource(R.string.Journal),
+                        icon = Icons.Default.AutoStories,
+                        onClick = { navigateToTab(R.string.Journal) },
+                        onRemove = {
+                            isJournalRemoved=true
+                            updatedWorkspace=updatedWorkspace.copy(isJournalAdded = false)
+                            showRemoveDialog=true
+                        }
+                    )
+                }
+            }
             if (workspace.isTodoAdded) {
                 item {
                     SpacesCard(
@@ -236,7 +259,21 @@ fun WorkspaceHomeScreen(
                     )
                 }
             }
-            if (!workspace.isNotesAdded || !workspace.isTodoAdded || !workspace.isCalenderAdded || !workspace.isHabitsAdded || !workspace.isEventsAdded) {
+            if (workspace.isAnalyticsAdded) {
+                item {
+                    SpacesCard(
+                        radius=radius,
+                        title = stringResource(R.string.Analytics),
+                        icon = Icons.Default.Analytics,
+                        onClick = { navigateToTab(R.string.Analytics) },
+                        onRemove = {
+                            updatedWorkspace=updatedWorkspace.copy(isAnalyticsAdded = false)
+                            showRemoveDialog=true
+                        }
+                    )
+                }
+            }
+            if (!workspace.isNotesAdded || !workspace.isTodoAdded || !workspace.isCalenderAdded || !workspace.isHabitsAdded || !workspace.isEventsAdded || !workspace.isAnalyticsAdded ||  !workspace.isJournalAdded) {
                 item {
                     SpacesCard(
                         radius=radius,

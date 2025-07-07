@@ -15,8 +15,10 @@ data class WorkspaceModel(
     val passKey: String="",
     val isPinned: Boolean=false,
     val isNotesAdded: Boolean=false,
+    val isJournalAdded: Boolean=false,
     val isTodoAdded: Boolean=false,
     val isEventsAdded: Boolean=false,
     val isCalenderAdded: Boolean=false,
     val isHabitsAdded: Boolean=false,
+    val isAnalyticsAdded: Boolean=false,
 )

@@ -63,7 +63,6 @@ fun HabitBottomSheet(
     onDismissRequest: () -> Unit,
 ) {
     if (!isVisible) return
-    var adjustedTime by remember { mutableLongStateOf(habit?.startDateTime?: System.currentTimeMillis()) }
     var newHabitTitle by remember { mutableStateOf(habit?.title?:"") }
     var newHabitDescription by remember { mutableStateOf(habit?.description?:"") }
     var newHabitTime by remember { mutableLongStateOf(habit?.startDateTime?: System.currentTimeMillis()) }
@@ -193,9 +192,11 @@ fun HabitBottomSheet(
                             startDateTime = newHabitTime,
                             description = newHabitDescription
                         )
-                        onConfirm(newHabit, adjustedTime)
+                        onConfirm(newHabit, getAdjustedTime(newHabitTime))
                     }
-                    else{ onConfirm(habit.copy(title = newHabitTitle, description = newHabitDescription, startDateTime = newHabitTime), adjustedTime) }
+                    else{
+                        onConfirm(habit.copy(title = newHabitTitle, description = newHabitDescription, startDateTime = newHabitTime), getAdjustedTime(newHabitTime))
+                    }
 
                     keyboardController?.hide()
                     onDismissRequest()
@@ -205,29 +206,36 @@ fun HabitBottomSheet(
 
             if (timePickerDialog) {
                 TimePicker(
+                    initialTime = newHabitTime,
                     onConfirm = {
-                        val now = Calendar.getInstance()
                         val habitCalendar = Calendar.getInstance().apply {
                             set(Calendar.HOUR_OF_DAY, it.hour)
                             set(Calendar.MINUTE, it.minute)
                             set(Calendar.SECOND, 0)
                             set(Calendar.MILLISECOND, 0)
                         }
-                        val adjustedCalendar = Calendar.getInstance().apply {
-                            set(Calendar.HOUR_OF_DAY, it.hour)
-                            set(Calendar.MINUTE, it.minute)
-                            set(Calendar.SECOND, 0)
-                            set(Calendar.MILLISECOND, 0)
-
-                            if (before(now)) { add(Calendar.DAY_OF_YEAR, 1) }
-                        }
-                        adjustedTime= adjustedCalendar.timeInMillis
                         newHabitTime = habitCalendar.timeInMillis
                     }
                 ) { timePickerDialog = false }
             }
         }
     }
+}
+
+fun getAdjustedTime(time: Long): Long{
+    val now = Calendar.getInstance()
+    val habitCalendar = Calendar.getInstance().apply { timeInMillis = time }
+    val adjustedCalendar = Calendar.getInstance().apply {
+        timeInMillis = habitCalendar.timeInMillis
+        set(Calendar.SECOND, 0)
+        set(Calendar.MILLISECOND, 0)
+
+        // If the time has already passed today, schedule for tomorrow
+        if (before(now)) {
+            add(Calendar.DAY_OF_YEAR, 1)
+        }
+    }
+    return adjustedCalendar.timeInMillis
 }
 
 @OptIn(ExperimentalMaterial3Api::class)

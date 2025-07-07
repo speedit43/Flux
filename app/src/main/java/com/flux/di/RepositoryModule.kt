@@ -8,6 +8,8 @@ import com.flux.data.repository.SettingsRepository
 import com.flux.data.repository.SettingsRepositoryImpl
 import com.flux.data.repository.EventRepository
 import com.flux.data.repository.EventRepositoryImpl
+import com.flux.data.repository.JournalRepository
+import com.flux.data.repository.JournalRepositoryImpl
 import com.flux.data.repository.TodoRepository
 import com.flux.data.repository.TodoRepositoryImpl
 import com.flux.data.repository.WorkspaceRepository
@@ -57,4 +59,10 @@ abstract class RepositoryBindingModule {
     abstract fun bindTodoRepository(
         impl: TodoRepositoryImpl
     ): TodoRepository
+
+    @Binds
+    @Singleton
+    abstract fun bindJournalRepository(
+        impl: JournalRepositoryImpl
+    ): JournalRepository
 }

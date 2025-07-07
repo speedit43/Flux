@@ -6,5 +6,6 @@ data class States (
     val habitState: HabitState,
     val todoState: TodoState,
     val workspaceState: WorkspaceState,
+    val journalState: JournalState,
     val settings: Settings
 )

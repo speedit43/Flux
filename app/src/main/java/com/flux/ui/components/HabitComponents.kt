@@ -1,16 +1,19 @@
 package com.flux.ui.components
 
+import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -38,7 +41,13 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.geometry.CornerRadius
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -76,24 +85,56 @@ fun EmptyHabits(){
 }
 
 @Composable
-fun HabitDateCard(radius:Int, isDone:Boolean, isTodayDone: Boolean, day: String, date: Int, modifier: Modifier = Modifier) {
+fun HabitDateCard(
+    radius: Int,
+    isDone: Boolean,
+    isTodayDone: Boolean,
+    day: String,
+    date: Int,
+    modifier: Modifier = Modifier
+) {
+    val containerColor = when {
+        isTodayDone && isDone -> MaterialTheme.colorScheme.primary
+        isTodayDone -> MaterialTheme.colorScheme.primaryContainer
+        isDone -> MaterialTheme.colorScheme.tertiary
+        else -> MaterialTheme.colorScheme.tertiaryContainer
+    }
+
+    val contentColor = when {
+        isTodayDone && isDone -> MaterialTheme.colorScheme.onPrimary
+        isTodayDone -> MaterialTheme.colorScheme.onPrimaryContainer
+        isDone -> MaterialTheme.colorScheme.onTertiary
+        else -> MaterialTheme.colorScheme.onTertiaryContainer
+    }
+
     Card(
         modifier = modifier,
-        shape = shapeManager(radius=radius*2),
+        shape = shapeManager(radius = radius * 2),
         colors = CardDefaults.cardColors(
-            containerColor = if (isTodayDone && isDone) MaterialTheme.colorScheme.primary else if (isTodayDone) MaterialTheme.colorScheme.primaryContainer else if (isDone) MaterialTheme.colorScheme.secondary else  MaterialTheme.colorScheme.tertiaryContainer,
-            contentColor = if (isTodayDone && isDone) MaterialTheme.colorScheme.onPrimary else if (isTodayDone) MaterialTheme.colorScheme.onPrimaryContainer else if(isDone) MaterialTheme.colorScheme.onSecondary else MaterialTheme.colorScheme.onTertiaryContainer
+            containerColor = containerColor,
+            contentColor = contentColor
         )
     ) {
         Column(
-            Modifier.fillMaxWidth().padding(vertical = 4.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 4.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(day.uppercase(), style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.ExtraLight), modifier= Modifier.alpha(0.95f))
-            Text(date.toString(), style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.ExtraLight), modifier= Modifier.alpha(0.95f))
+            Text(
+                day.uppercase(),
+                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.ExtraLight),
+                modifier = Modifier.alpha(0.95f)
+            )
+            Text(
+                date.toString(),
+                style = MaterialTheme.typography.labelLarge.copy(fontWeight = FontWeight.ExtraLight),
+                modifier = Modifier.alpha(0.95f)
+            )
         }
     }
 }
+
 
 @Composable
 fun HabitPreviewCard(
@@ -185,13 +226,11 @@ fun HabitCalenderCard(radius: Int, habitId: Long, workspaceId: Long, startDateTi
         modifier = Modifier.fillMaxWidth().height(330.dp),
         onClick = {},
         shape = shapeManager(radius = radius*2),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
     ) {
         Column(Modifier.padding(16.dp)) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(4.dp),
+                modifier = Modifier.fillMaxWidth().padding(4.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -279,7 +318,7 @@ fun HabitStreakCard(currentStreak: Int, bestStreak: Int, radius: Int){
         modifier = Modifier.fillMaxWidth(),
         onClick = {},
         shape = shapeManager(radius = radius*2),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
     ) {
         Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
             Column {
@@ -299,7 +338,7 @@ fun HabitStartCard(startDateTime: Long, radius: Int){
         modifier = Modifier.fillMaxWidth(),
         onClick = {},
         shape = shapeManager(radius=radius*2),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
+        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
     ) {
         Row(Modifier
             .fillMaxWidth()
@@ -310,6 +349,149 @@ fun HabitStartCard(startDateTime: Long, radius: Int){
             }
             CircleWrapper(MaterialTheme.colorScheme.primary) {
                 Icon(Icons.Default.Flag, null, modifier = Modifier.size(40.dp), tint = MaterialTheme.colorScheme.onPrimary)
+            }
+        }
+    }
+}
+
+@Composable
+fun MonthlyHabitAnalyticsCard(radius: Int, habitInstances: List<HabitInstanceModel>) {
+    val today = LocalDate.now()
+    val yearMonth = YearMonth.of(today.year, today.month)
+    val daysInMonth = yearMonth.lengthOfMonth()
+
+    val weekRanges = remember(daysInMonth) {
+        val ranges = mutableListOf<IntRange>()
+        var start = 1
+        while (start <= daysInMonth) {
+            val end = minOf(start + 6, daysInMonth)
+            ranges.add(start..end)
+            start = end + 1
+        }
+        ranges
+    }
+
+    val weekCounts = remember(habitInstances) {
+        val counts = MutableList(weekRanges.size) { 0 }
+
+        habitInstances
+            .distinctBy { it.instanceDate }
+            .forEach { instance ->
+                val day = instance.instanceDate.dayOfMonth
+                weekRanges.forEachIndexed { index, range ->
+                    if (day in range) {
+                        counts[index]++
+                        return@forEachIndexed
+                    }
+                }
+            }
+
+        counts
+    }
+
+    val completedHabits = weekCounts.sum()
+
+    Card(
+        modifier = Modifier.fillMaxWidth(),
+        shape = shapeManager(radius = radius * 2),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp)
+        ),
+        onClick = {}
+    ) {
+        Column(Modifier.fillMaxSize().padding(12.dp)) {
+            Text(
+                text = stringResource(R.string.This_Month),
+                style = MaterialTheme.typography.titleMedium,
+            )
+
+            Text(
+                text = stringResource(R.string.completed_habits, completedHabits),
+                style = MaterialTheme.typography.labelMedium,
+                color = MaterialTheme.colorScheme.primary,
+                modifier = Modifier.padding(bottom = 24.dp)
+            )
+            HabitBarChart(
+                weekCounts = weekCounts,
+                weekLabels = weekRanges.map { "${it.first}-${it.last}" }
+            )
+        }
+    }
+}
+
+
+@Composable
+fun HabitBarChart(
+    weekCounts: List<Int>,
+    weekLabels: List<String>,
+    modifier: Modifier = Modifier
+) {
+    val maxDaysPerWeek = 7
+    val yLabels = (maxDaysPerWeek downTo 1).toList()
+    val primaryColor = MaterialTheme.colorScheme.primary // ← get color in @Composable scope
+
+    Row(modifier = modifier.fillMaxWidth().height(220.dp).padding(bottom = 16.dp)) {
+        // Y-axis labels
+        Box(modifier = Modifier.width(20.dp).padding(end = 8.dp).fillMaxHeight()) {
+            Canvas(modifier = Modifier.fillMaxSize()) {
+                val stepHeight = size.height / maxDaysPerWeek
+                val textPaint = Paint().asFrameworkPaint().apply {
+                    isAntiAlias = true
+                    textSize = 32f
+                    color = primaryColor.toArgb()
+                    textAlign = android.graphics.Paint.Align.RIGHT
+                }
+
+                yLabels.forEach { label ->
+                    val y = size.height - (stepHeight * label)
+                    drawContext.canvas.nativeCanvas.drawText(
+                        label.toString(),
+                        size.width - 10f,
+                        y + 5f,
+                        textPaint
+                    )
+                }
+            }
+        }
+
+        // Bar chart canvas
+        Canvas(modifier = Modifier.weight(1f).fillMaxHeight()) {
+            val barWidth = size.width / (weekCounts.size * 2 + 1)
+            val spacing = barWidth
+            val stepHeight = size.height / maxDaysPerWeek
+
+            weekCounts.forEachIndexed { index, count ->
+                val barHeight = stepHeight * count
+                val x = spacing + index * (barWidth + spacing)
+                val y = size.height - barHeight
+
+                drawRoundRect(
+                    color = primaryColor,
+                    topLeft = Offset(x, y),
+                    size = Size(barWidth, barHeight),
+                    cornerRadius = CornerRadius(x = 16.dp.toPx(), y = 16.dp.toPx())
+                )
+
+                drawContext.canvas.nativeCanvas.drawText(
+                    weekLabels[index],
+                    x + barWidth / 2,
+                    size.height + 40f,
+                    android.graphics.Paint().apply {
+                        color = android.graphics.Color.BLACK
+                        textSize = 30f
+                        textAlign = android.graphics.Paint.Align.CENTER
+                    }
+                )
+            }
+
+            for (i in 1..maxDaysPerWeek) {
+                val y = size.height - (stepHeight * i)
+                drawLine(
+                    color = Color.Gray.copy(alpha = 0.5f),
+                    start = Offset(0f, y),
+                    end = Offset(size.width, y),
+                    strokeWidth = 0.25.dp.toPx()
+                )
             }
         }
     }

@@ -24,6 +24,7 @@ import com.flux.ui.components.HabitCalenderCard
 import com.flux.ui.components.HabitScaffold
 import com.flux.ui.components.HabitStartCard
 import com.flux.ui.components.HabitStreakCard
+import com.flux.ui.components.MonthlyHabitAnalyticsCard
 import com.flux.ui.components.calculateStreaks
 import com.flux.ui.events.HabitEvents
 import kotlinx.coroutines.launch
@@ -62,6 +63,7 @@ fun HabitDetails(
                 item { HabitStartCard(habit.startDateTime, radius) }
                 item { HabitStreakCard(currentStreak, bestStreak, radius) }
                 item { HabitCalenderCard(radius, habit.habitId, workspaceId, habit.startDateTime, habitInstances, onHabitEvents) }
+                item { MonthlyHabitAnalyticsCard(radius, habitInstances) }
             }
         }
     )

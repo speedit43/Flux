@@ -148,7 +148,7 @@ fun SettingOption(
             modifier = Modifier
                 .padding(bottom = 3.dp)
                 .clip(radius ?: RoundedCornerShape(13.dp))
-                .background(MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
+                .background(MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp))
                 .clickable {
                     handleAction(
                         context,

@@ -4,6 +4,7 @@ import androidx.compose.ui.graphics.Color
 
 val completed=Color(0xFF009B44)
 val pending=Color(0xFFBE0000)
+val failed=Color(0xFFFFD600)
 
 val primaryLight = Color(0xFF006A65)
 val onPrimaryLight = Color(0xFFFFFFFF)

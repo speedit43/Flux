@@ -28,6 +28,7 @@ import com.flux.ui.viewModel.HabitViewModel
 import com.flux.ui.viewModel.NotesViewModel
 import com.flux.ui.viewModel.SettingsViewModel
 import com.flux.ui.viewModel.EventViewModel
+import com.flux.ui.viewModel.JournalViewModel
 import com.flux.ui.viewModel.TodoViewModel
 import com.flux.ui.viewModel.WorkspaceViewModel
 import dagger.hilt.android.AndroidEntryPoint
@@ -55,6 +56,7 @@ class MainActivity : AppCompatActivity() {
             val eventViewModel: EventViewModel = hiltViewModel()
             val habitViewModel: HabitViewModel = hiltViewModel()
             val todoViewModel: TodoViewModel = hiltViewModel()
+            val journalViewModel: JournalViewModel = hiltViewModel()
 
             // States
             val settings by settingsViewModel.state.collectAsState()
@@ -63,6 +65,7 @@ class MainActivity : AppCompatActivity() {
             val eventState by eventViewModel.state.collectAsStateWithLifecycle()
             val habitState by habitViewModel.state.collectAsStateWithLifecycle()
             val todoState by todoViewModel.state.collectAsStateWithLifecycle()
+            val journalState by journalViewModel.state.collectAsStateWithLifecycle()
 
             // Stop splash screen when settings are loaded
             LaunchedEffect(settings.isLoading) { keepSplashScreen.value = settings.isLoading }
@@ -94,12 +97,14 @@ class MainActivity : AppCompatActivity() {
                             eventViewModel = eventViewModel,
                             habitViewModel = habitViewModel,
                             todoViewModel = todoViewModel,
+                            journalViewModel = journalViewModel,
                             settings = settings,
                             notesState = notesState,
                             workspaceState = workspaceState,
                             eventState = eventState,
                             habitState = habitState,
-                            todoState = todoState
+                            todoState = todoState,
+                            journalState = journalState
                         )
                     }
                 }

@@ -102,7 +102,9 @@ fun EventDetails(
         } }, onDismiss = { showDatePicker=false }) }
 
     if (showTimePicker) {
-        TimePicker(onConfirm = {
+        TimePicker(
+            initialTime = selectedDateTime,
+            onConfirm = {
             val calendar = Calendar.getInstance().apply {
                 timeInMillis = selectedDateTime
                 set(Calendar.HOUR_OF_DAY, it.hour)

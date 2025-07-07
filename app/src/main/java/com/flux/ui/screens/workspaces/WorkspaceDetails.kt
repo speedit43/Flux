@@ -13,12 +13,15 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.automirrored.filled.Notes
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Analytics
+import androidx.compose.material.icons.filled.AutoStories
 import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.EventAvailable
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -50,6 +53,7 @@ import com.flux.data.model.EventInstanceModel
 import com.flux.data.model.EventModel
 import com.flux.data.model.HabitInstanceModel
 import com.flux.data.model.HabitModel
+import com.flux.data.model.JournalModel
 import com.flux.data.model.LabelModel
 import com.flux.data.model.NotesModel
 import com.flux.data.model.TodoModel
@@ -67,19 +71,25 @@ import com.flux.ui.components.NewWorkspaceBottomSheet
 import com.flux.ui.components.SetPasskeyDialog
 import com.flux.ui.components.WorkspaceMore
 import com.flux.ui.events.HabitEvents
+import com.flux.ui.events.JournalEvents
 import com.flux.ui.events.NotesEvents
 import com.flux.ui.events.SettingEvents
 import com.flux.ui.events.TaskEvents
 import com.flux.ui.events.TodoEvents
 import com.flux.ui.events.WorkspaceEvents
+import com.flux.ui.screens.analytics.Analytics
 import com.flux.ui.screens.calender.Calender
 import com.flux.ui.screens.events.EventHome
 import com.flux.ui.screens.habits.HabitsHome
+import com.flux.ui.screens.journal.JournalHome
 import com.flux.ui.screens.notes.NotesHome
 import com.flux.ui.screens.todo.TodoHome
 import com.flux.ui.state.Settings
 import kotlinx.coroutines.launch
 import java.io.FileOutputStream
+import java.time.Instant
+import java.time.LocalDate
+import java.time.ZoneId
 
 data class WorkspaceTab(
     val titleId: Int,
@@ -97,6 +107,8 @@ fun WorkspaceDetails(
     isTodayTaskLoading: Boolean,
     isDatedTaskLoading: Boolean,
     isTodoLoading: Boolean,
+    isJournalEntriesLoading: Boolean,
+    isJournalEntriesLoadingMore: Boolean,
     workspace: WorkspaceModel,
     allEvents: List<EventModel>,
     allNotes: List<NotesModel>,
@@ -104,6 +116,7 @@ fun WorkspaceDetails(
     datedEvents: List<EventModel>,
     allHabits: List<HabitModel>,
     allLists: List<TodoModel>,
+    allEntries: List<JournalModel>,
     allHabitInstances: List<HabitInstanceModel>,
     allEventInstances: List<EventInstanceModel>,
     onWorkspaceEvents: (WorkspaceEvents) -> Unit,
@@ -111,8 +124,10 @@ fun WorkspaceDetails(
     onTaskEvents: (TaskEvents) -> Unit,
     onHabitEvents: (HabitEvents) -> Unit,
     onTodoEvents: (TodoEvents)->Unit,
+    onJournalEvents: (JournalEvents)->Unit,
     onSettingEvents: (SettingEvents) -> Unit,
 ) {
+    val radius= settings.data.cornerRadius
     val workspaceId=workspace.workspaceId
     val context= LocalContext.current
     var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
@@ -144,30 +159,36 @@ fun WorkspaceDetails(
         })
     }
 
-    val tabs = remember(workspace, isNotesLoading, isTodoLoading, isDatedTaskLoading, isTodayTaskLoading, allNotes, allLists, allHabits, allHabitInstances, todayEvents, datedEvents, allEventInstances, settings) {
+    val tabs = remember(workspace, isNotesLoading, isJournalEntriesLoading, isJournalEntriesLoadingMore, isTodoLoading, isDatedTaskLoading, isTodayTaskLoading, allEntries, allNotes, allLists, allHabits, allHabitInstances, todayEvents, datedEvents, allEventInstances, settings) {
         buildList {
             add(WorkspaceTab(R.string.Home, Icons.Default.Home) { })
             if (workspace.isNotesAdded) add(WorkspaceTab(R.string.Notes, Icons.AutoMirrored.Filled.Notes) {
                 NotesHome(navController, workspaceId, allLabels, settings, isNotesLoading, allNotes, onNotesEvents, onSettingEvents)
             })
+            if (workspace.isJournalAdded) add(WorkspaceTab(R.string.Journal, Icons.Default.AutoStories) {
+                JournalHome(navController, isJournalEntriesLoadingMore, workspaceId, allEntries, onJournalEvents)
+            })
             if (workspace.isTodoAdded) add(WorkspaceTab(R.string.To_Do, Icons.Default.Checklist) {
-                TodoHome(navController, settings.data.cornerRadius, allLists, workspaceId, isTodoLoading, onTodoEvents)
+                TodoHome(navController, radius, allLists, workspaceId, isTodoLoading, onTodoEvents)
             })
             if (workspace.isEventsAdded) add(WorkspaceTab(R.string.Events, Icons.Default.Event) {
-                EventHome(navController, settings.data.cornerRadius, isTodayTaskLoading, todayEvents, allEventInstances, workspaceId, onTaskEvents)
+                EventHome(navController, radius, isTodayTaskLoading, todayEvents, allEventInstances, workspaceId, onTaskEvents)
             })
             if (workspace.isCalenderAdded) add(WorkspaceTab(R.string.Calender, Icons.Default.CalendarMonth) {
-                Calender(navController, settings.data.cornerRadius, isDatedTaskLoading, workspaceId, settings, datedEvents, allEventInstances, onSettingEvents, onTaskEvents)
+                Calender(navController, radius, isDatedTaskLoading, workspaceId, settings, datedEvents, allEventInstances, onSettingEvents, onTaskEvents)
             })
             if (workspace.isHabitsAdded) add(WorkspaceTab(R.string.Habits, Icons.Default.EventAvailable) {
-                HabitsHome(navController, settings.data.cornerRadius, workspaceId, allHabits, allHabitInstances, onHabitEvents)
+                HabitsHome(navController, radius, workspaceId, allHabits, allHabitInstances, onHabitEvents)
+            })
+            if (workspace.isAnalyticsAdded) add(WorkspaceTab(R.string.Analytics, Icons.Default.Analytics) {
+                Analytics(workspace, radius, allHabitInstances, allHabits.distinctBy { it.habitId }.count(), allNotes.size, allEntries, allEvents, allEventInstances)
             })
         }
     }.toMutableList()
 
     tabs[0] = WorkspaceTab(R.string.Home, Icons.Default.Home) {
         WorkspaceHomeScreen(
-            radius = settings.data.cornerRadius,
+            radius = radius,
             workspace = workspace,
             allEvents = allEvents,
             allHabits = allHabits,
@@ -180,7 +201,8 @@ fun WorkspaceDetails(
             onTaskEvents = onTaskEvents,
             onTodoEvents = onTodoEvents,
             onNotesEvents = onNotesEvents,
-            onHabitEvents = onHabitEvents
+            onHabitEvents = onHabitEvents,
+            onJournalEvents = onJournalEvents
         )
     }
 
@@ -235,11 +257,11 @@ fun WorkspaceDetails(
                 R.string.Events -> {
                     FloatingActionButton(onClick = {
                         if(!canScheduleReminder(context)) {
-                            Toast.makeText(context, "Please turn on Reminders", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, context.getText(R.string.Reminder_Permission), Toast.LENGTH_SHORT).show()
                             requestExactAlarmPermission(context)
                         }
                         if(!isNotificationPermissionGranted(context)) {
-                            Toast.makeText(context, "Please turn on notifications", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, context.getText(R.string.Notification_Permission), Toast.LENGTH_SHORT).show()
                             openAppNotificationSettings(context)
                         }
                         if(canScheduleReminder(context) && isNotificationPermissionGranted(context)){
@@ -252,11 +274,11 @@ fun WorkspaceDetails(
                 R.string.Habits -> {
                     FloatingActionButton(onClick = {
                         if(!canScheduleReminder(context)){
-                            Toast.makeText(context, "Please turn on Reminders", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, context.getText(R.string.Reminder_Permission), Toast.LENGTH_SHORT).show()
                             requestExactAlarmPermission(context)
                         }
                         if(!isNotificationPermissionGranted(context)) {
-                            Toast.makeText(context, "Please turn on notifications", Toast.LENGTH_SHORT).show()
+                            Toast.makeText(context, context.getText(R.string.Notification_Permission), Toast.LENGTH_SHORT).show()
                             openAppNotificationSettings(context)
                         }
                         if(canScheduleReminder(context) && isNotificationPermissionGranted(context)){
@@ -272,6 +294,16 @@ fun WorkspaceDetails(
                         navController.navigate(NavRoutes.TodoDetail.withArgs(workspaceId, -1))
                     }) {
                         Icon(Icons.Default.Add, null)
+                    }
+                }
+                R.string.Journal -> {
+                    if(allEntries.none{
+                        LocalDate.now() == Instant.ofEpochMilli(it.dateTime).atZone(ZoneId.systemDefault()).toLocalDate() }){
+                        ExtendedFloatingActionButton(
+                            onClick = {navController.navigate(NavRoutes.EditJournal.withArgs(workspaceId, -1)) },
+                            icon = { Icon(Icons.Filled.Add, "Extended floating action button.") },
+                            text = { Text(stringResource(R.string.Today_Entry)) },
+                        )
                     }
                 }
             }
