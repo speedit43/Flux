@@ -1,0 +1,12 @@
+Flux – Flow Through Your Workspace with Ease
+
+Experience the power of continuity and simplicity. Flux helps you stay organized with a modern design and focused workflow.
+
+🎉 Features
+
+📝 Sleek, Minimalistic Design powered by Material UI (Material 3)
+🌟 Workspace Templates: Structure your work with custom workspaces
+🔐 Biometric App Lock to keep your data secure
+🚀 Frequent Updates & Improvements to enhance your flow
+
+Stay in control, stay in motion — download Flux and experience seamless productivity.

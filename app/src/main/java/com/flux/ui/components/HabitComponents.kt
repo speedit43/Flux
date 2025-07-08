@@ -46,6 +46,7 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.Paint
+import androidx.compose.ui.graphics.drawscope.drawIntoCanvas
 import androidx.compose.ui.graphics.nativeCanvas
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.res.stringResource
@@ -472,16 +473,21 @@ fun HabitBarChart(
                     cornerRadius = CornerRadius(x = 16.dp.toPx(), y = 16.dp.toPx())
                 )
 
-                drawContext.canvas.nativeCanvas.drawText(
-                    weekLabels[index],
-                    x + barWidth / 2,
-                    size.height + 40f,
-                    android.graphics.Paint().apply {
-                        color = android.graphics.Color.BLACK
+                drawIntoCanvas { canvas ->
+                    val paint = Paint().asFrameworkPaint().apply {
+                        isAntiAlias = true
+                        color = primaryColor.toArgb()
                         textSize = 30f
                         textAlign = android.graphics.Paint.Align.CENTER
                     }
-                )
+
+                    canvas.nativeCanvas.drawText(
+                        weekLabels[index],
+                        x + barWidth / 2,
+                        size.height + 40f,
+                        paint
+                    )
+                }
             }
 
             for (i in 1..maxDaysPerWeek) {

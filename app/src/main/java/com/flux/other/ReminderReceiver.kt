@@ -11,8 +11,10 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
+import android.os.Build
 import android.provider.Settings
 import android.widget.Toast
+import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
@@ -62,6 +64,7 @@ class ReminderReceiver : BroadcastReceiver() {
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 fun createNotificationChannel(context: Context) {
     if(!isNotificationPermissionGranted(context)){ requestNotificationPermission(context as Activity) }
 
@@ -71,6 +74,7 @@ fun createNotificationChannel(context: Context) {
     manager.createNotificationChannel(channel)
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 fun requestExactAlarmPermission(context: Context) {
     val intent = Intent(Settings.ACTION_REQUEST_SCHEDULE_EXACT_ALARM).apply {
         data = "package:${context.packageName}".toUri()
@@ -87,7 +91,11 @@ fun requestExactAlarmPermission(context: Context) {
 
 fun canScheduleReminder(context: Context): Boolean{
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-    return alarmManager.canScheduleExactAlarms()
+    return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+        alarmManager.canScheduleExactAlarms()
+    } else {
+        true
+    }
 }
 
 fun scheduleReminder(
@@ -162,10 +170,12 @@ fun cancelReminder(context: Context, id: Long, type: String, title: String, desc
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 fun isNotificationPermissionGranted(context: Context): Boolean {
     return ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
 }
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 fun requestNotificationPermission(activity: Activity, requestCode: Int = 1001) {
     ActivityCompat.requestPermissions(
         activity,

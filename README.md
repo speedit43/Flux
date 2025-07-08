@@ -12,10 +12,10 @@
 
 </div>
 
-|    ![Image 1](metadata/Preview.png)     | ![Image 2](metadata/organizeYourself.png) |
+|    ![Image 1](metadata/en-US/images/phoneScreenshots/Preview.png)     | ![Image 2](metadata/en-US/images/phoneScreenshots/organizeYourself.png) |
 |:---------------------------------------:|:-----------------------------------------:|
-| ![Image 3](metadata/NoteEverything.png) |   ![Image 4](metadata/TrackHabits.png)    |
-|   ![Image 5](metadata/Analytics.png)    |    ![Image 6](metadata/Customize.png)     |
+| ![Image 3](metadata/en-US/images/phoneScreenshots/NoteEverything.png) |   ![Image 4](metadata/en-US/images/phoneScreenshots/TrackHabits.png)    |
+|   ![Image 5](metadata/en-US/images/phoneScreenshots/Analytics.png)    |    ![Image 6](metadata/en-US/images/phoneScreenshots/Customize.png)     |
 ---
 
 ## 🎉 Features
