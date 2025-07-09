@@ -7,7 +7,7 @@ import com.flux.data.dao.TodoDao
 import com.flux.data.model.Converter
 import com.flux.data.model.TodoModel
 
-@Database(entities = [TodoModel::class], version = 1, exportSchema = false)
+@Database(entities = [TodoModel::class], version = 2, exportSchema = false)
 @TypeConverters(Converter::class)
 abstract class TodoDatabase : RoomDatabase() {
     abstract val dao: TodoDao

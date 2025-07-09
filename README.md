@@ -6,7 +6,7 @@
 # Flux
 **A lightweight Android productivity app built with Material 3.**
 
-[<img src="/metadata/get-github.png" alt="Get it on GitHub" height="55">](https://github.com/chindaronit/Flux/releases/) 
+[<img src="/metadata/en-US/images/phoneScreenshots/get-github.png" alt="Get it on GitHub" height="55">](https://github.com/chindaronit/Flux/releases/) 
 
 ---
 

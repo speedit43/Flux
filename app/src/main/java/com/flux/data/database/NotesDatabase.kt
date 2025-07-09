@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.flux.data.model.Converter
 
-@Database(entities = [NotesModel::class], version = 1, exportSchema = false)
+@Database(entities = [NotesModel::class], version = 2, exportSchema = false)
 @TypeConverters(Converter::class)
 abstract class NotesDatabase : RoomDatabase() {
     abstract val dao: NotesDao

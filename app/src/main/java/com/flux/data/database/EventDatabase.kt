@@ -7,7 +7,7 @@ import com.flux.data.dao.EventDao
 import com.flux.data.model.Converter
 import com.flux.data.model.EventModel
 
-@Database(entities = [EventModel::class], version = 1, exportSchema = false)
+@Database(entities = [EventModel::class], version = 2, exportSchema = false)
 @TypeConverters(Converter::class)
 abstract class EventDatabase : RoomDatabase() {
     abstract val dao: EventDao

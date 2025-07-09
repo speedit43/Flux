@@ -8,7 +8,7 @@ import com.flux.data.model.Converter
 import com.flux.data.model.JournalModel
 
 
-@Database(entities = [JournalModel::class], version = 1, exportSchema = false)
+@Database(entities = [JournalModel::class], version = 2, exportSchema = false)
 @TypeConverters(Converter::class)
 abstract class JournalDatabase : RoomDatabase() {
     abstract val dao: JournalDao
