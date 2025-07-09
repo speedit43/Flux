@@ -6,16 +6,16 @@
 # Flux
 **A lightweight Android productivity app built with Material 3.**
 
-[<img src="/metadata/en-US/images/phoneScreenshots/get-github.png" alt="Get it on GitHub" height="55">](https://github.com/chindaronit/Flux/releases/) 
+[<img src=".github/get-github.png" alt="Get it on GitHub" height="55">](https://github.com/chindaronit/Flux/releases/) 
 
 ---
 
 </div>
 
-|    ![Image 1](fastlane/metadata/android/en-US/images/phoneScreenshots/1.png)     | ![Image 2](fastlane/metadata/android/en-US/images/phoneScreenshots/3.png) |
+|    ![Image 1](metadata/en-US/images/phoneScreenshots/screenshot1.png)     | ![Image 2](metadata/en-US/images/phoneScreenshots/screenshot3.png) |
 |:---------------------------------------:|:-----------------------------------------:|
-| ![Image 3](fastlane/metadata/android/en-US/images/phoneScreenshots/2.png) |   ![Image 4](fastlane/metadata/android/en-US/images/phoneScreenshots/4.png)    |
-|   ![Image 5](fastlane/metadata/android/en-US/images/phoneScreenshots/5.png)    |    ![Image 6](fastlane/metadata/android/en-US/images/phoneScreenshots/6.png)     |
+| ![Image 3](metadata/en-US/images/phoneScreenshots/screenshot2.png) |   ![Image 4](metadata/en-US/images/phoneScreenshots/screenshot4.png)    |
+|   ![Image 5](metadata/en-US/images/phoneScreenshots/screenshot5.png)    |    ![Image 6](metadata/en-US/images/phoneScreenshots/screenshot6.png)     |
 ---
 
 ## 🎉 Features
