@@ -12,10 +12,10 @@
 
 </div>
 
-|    ![Image 1](metadata/en-US/images/phoneScreenshots/screenshot1.png)     | ![Image 2](metadata/en-US/images/phoneScreenshots/screenshot3.png) |
+|    ![Image 1](metadata/com.flux/images/phoneScreenshots/screenshot1.png)     | ![Image 2](metadata/com.flux/images/phoneScreenshots/screenshot3.png) |
 |:---------------------------------------:|:-----------------------------------------:|
-| ![Image 3](metadata/en-US/images/phoneScreenshots/screenshot2.png) |   ![Image 4](metadata/en-US/images/phoneScreenshots/screenshot4.png)    |
-|   ![Image 5](metadata/en-US/images/phoneScreenshots/screenshot5.png)    |    ![Image 6](metadata/en-US/images/phoneScreenshots/screenshot6.png)     |
+| ![Image 3](metadata/com.flux/images/phoneScreenshots/screenshot2.png) |   ![Image 4](metadata/com.flux/images/phoneScreenshots/screenshot4.png)    |
+|   ![Image 5](metadata/com.flux/images/phoneScreenshots/screenshot5.png)    |    ![Image 6](metadata/com.flux/images/phoneScreenshots/screenshot6.png)     |
 ---
 
 ## 🎉 Features

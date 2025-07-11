@@ -18,6 +18,13 @@ android {
         versionName = "1.0.0"
     }
 
+    dependenciesInfo {
+        // Disables dependency metadata when building APKs.
+        includeInApk = false
+        // Disables dependency metadata when building Android App Bundles.
+        includeInBundle = false
+    }
+
     signingConfigs {
         create("release") {
             keyAlias = project.findProperty("signingKeyAlias") as String? ?: "release"
