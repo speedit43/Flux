@@ -1,7 +1,9 @@
 package com.flux.ui.theme
 
 import android.app.Activity
+import android.os.Build
 import android.view.WindowManager
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.ColorScheme
 import androidx.compose.material3.MaterialTheme
@@ -244,6 +246,7 @@ private val highContrastDarkColorScheme = darkColorScheme(
     surfaceContainerHighest = surfaceContainerHighestDarkHighContrast,
 )
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun getColorScheme(
     darkTheme: Boolean,
@@ -277,6 +280,7 @@ fun getColorScheme(
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.S)
 @Composable
 fun FluxTheme(
     settings: Settings,
