@@ -1,6 +1,7 @@
 package com.flux.ui.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -12,20 +13,19 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.GridItemSpan
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
+import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
+import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -337,6 +337,7 @@ fun RichTextStyleButton(
     ) { Icon(icon, icon.name) }
 }
 
+@OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun NotesPreviewGrid(
     radius: Int,
@@ -348,75 +349,92 @@ fun NotesPreviewGrid(
     onClick: (Long) -> Unit,
     onLongPressed: (NotesModel) -> Unit
 ) {
-    val columns = if (isGridView) GridCells.Fixed(2) else GridCells.Fixed(1)
-    val showPinnedText=!pinnedNotes.isEmpty()
+    val notesToShow = buildList {
+        if (pinnedNotes.isNotEmpty()) {
+            add(null) // Marker for "Pinned"
+            addAll(pinnedNotes)
+            if (unPinnedNotes.isNotEmpty()) {
+                add(null) // Marker for "Others"
+                addAll(unPinnedNotes)
+            }
+        } else {
+            addAll(unPinnedNotes)
+        }
+    }
 
-    LazyVerticalGrid(
-        columns = columns,
-        modifier = Modifier.padding(8.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp),
-        horizontalArrangement = Arrangement.spacedBy(8.dp)
-    ) {
-        if (showPinnedText) {
-            item(span = { GridItemSpan(maxLineSpan) }) {
-                Text(
-                    stringResource(R.string.Pinned),
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp) .padding(top = 16.dp)
-                )
+    if (isGridView) {
+        LazyVerticalStaggeredGrid(
+            columns = StaggeredGridCells.Fixed(2),
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalItemSpacing = 8.dp
+        ) {
+            itemsIndexed(notesToShow) { index, note ->
+                if (note == null) {
+                    val label = when (index) {
+                        0 -> stringResource(R.string.Pinned)
+                        else -> stringResource(R.string.Others)
+                    }
+                        Text(
+                            text = label,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 4.dp)
+                        )
+                } else {
+                        val isSelected = selectedNotes.contains(note)
+                        NotesPreviewCard(
+                            radius = radius,
+                            isSelected = isSelected,
+                            note = note,
+                            labels = allLabels.filter { note.labels.contains(it.labelId) }.map { it.value },
+                            onClick = onClick,
+                            onLongPressed = { onLongPressed(note) },
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                }
             }
         }
-
-        if(!showPinnedText){
-            item(span = { GridItemSpan(maxLineSpan) }) { Spacer(Modifier.height(8.dp)) }
-        }
-
-        items(
-            items = pinnedNotes,
-            key = { it.notesId }
-        ) { note ->
-            val isSelected = selectedNotes.contains(note)
-
-            NotesPreviewCard(
-                radius = radius,
-                isSelected = isSelected,
-                isGridView = isGridView,
-                note = note,
-                onClick = onClick,
-                labels = allLabels.filter { note.labels.contains(it.labelId) }.map { it.value },
-                onLongPressed = { onLongPressed(note) }
-            )
-        }
-
-        if (showPinnedText) {
-            item(span = { GridItemSpan(maxLineSpan) }) {
-                Text(
-                    stringResource(R.string.Others),
-                    color = MaterialTheme.colorScheme.primary,
-                    fontWeight = FontWeight.Bold,
-                    fontSize = 16.sp,
-                    modifier = Modifier.padding(horizontal = 16.dp, vertical = 2.dp)
-                )
+    } else {
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            itemsIndexed(notesToShow) { index, note ->
+                if (note == null) {
+                    val label = when (index) {
+                        0 -> stringResource(R.string.Pinned)
+                        else -> stringResource(R.string.Others)
+                    }
+                        Text(
+                            text = label,
+                            color = MaterialTheme.colorScheme.primary,
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 16.sp,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp, vertical = 4.dp)
+                        )
+                } else {
+                    val isSelected = selectedNotes.contains(note)
+                    NotesPreviewCard(
+                        radius = radius,
+                        isSelected = isSelected,
+                        note = note,
+                        labels = allLabels.filter { note.labels.contains(it.labelId) }.map { it.value },
+                        onClick = onClick,
+                        onLongPressed = { onLongPressed(note) },
+                        modifier = Modifier.fillMaxWidth()
+                    )
+                }
             }
-        }
-
-        items(
-            items = unPinnedNotes,
-            key = { it.notesId }
-        ) { note ->
-            val isSelected = selectedNotes.contains(note)
-
-            NotesPreviewCard(
-                radius = radius,
-                isSelected = isSelected,
-                isGridView = isGridView,
-                note = note,
-                labels = allLabels.filter { note.labels.contains(it.labelId) }.map { it.value },
-                onClick = onClick,
-                onLongPressed = { onLongPressed(note) }
-            )
         }
     }
 }
@@ -424,17 +442,15 @@ fun NotesPreviewGrid(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotesPreviewCard(
+    modifier: Modifier=Modifier,
     radius: Int,
     isSelected: Boolean,
-    isGridView: Boolean,
     note: NotesModel,
     labels: List<String>,
     onClick: (Long) -> Unit,
     onLongPressed: () -> Unit
 ) {
-    val modifier = if (!isGridView) Modifier.fillMaxWidth() else Modifier
     val richTextState = rememberRichTextState()
-
     val scrollState = rememberScrollState()
 
     LaunchedEffect(note.description) {
