@@ -23,6 +23,7 @@ fun NoteDetailsTopBar(
     canRedo: Boolean,
     isPinned: Boolean,
     onBackPressed: () -> Unit,
+    onDone: ()->Unit,
     onDelete: () -> Unit,
     onAddLabel: () -> Unit,
     onTogglePinned: () -> Unit,
@@ -40,7 +41,10 @@ fun NoteDetailsTopBar(
         colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
         navigationIcon = { IconButton(onClick = onBackPressed) { Icon(Icons.AutoMirrored.Default.ArrowBack, null) }},
         actions = {
-            IconButton(onClick = onBackPressed) { Icon(Icons.Outlined.Check, null) }
+            IconButton(onClick = {
+                onDone()
+                onBackPressed()
+            }) { Icon(Icons.Outlined.Check, null) }
             DropdownMenuWithDetails(isPinned, onTogglePinned, onAddLabel, onAboutClicked, onDelete)
         }
     )

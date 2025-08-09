@@ -10,6 +10,7 @@ interface HabitRepository {
     suspend fun deleteAllWorkspaceHabit(workspaceId: Long)
     suspend fun deleteInstance(habitInstance: HabitInstanceModel)
     suspend fun upsertHabitInstance(habitInstance: HabitInstanceModel)
-    fun loadAllHabits(workspaceId: Long): Flow<List<HabitModel>>
+    suspend fun loadAllHabits(): List<HabitModel>
+    fun loadAllHabitsOfWorkspace(workspaceId: Long): Flow<List<HabitModel>>
     fun loadAllHabitInstance(workspaceId: Long): Flow<List<HabitInstanceModel>>
 }

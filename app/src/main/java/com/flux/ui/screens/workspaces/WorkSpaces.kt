@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
@@ -95,101 +94,103 @@ fun WorkSpaces(
         }) { lockedWorkspace=null }
     }
 
+    fun handleWorkspaceClick(space: WorkspaceModel) {
+        if (space.passKey.isNotBlank()) {
+            lockedWorkspace = space
+        } else {
+            onNotesEvents(NotesEvents.LoadAllNotes(space.workspaceId))
+            onNotesEvents(NotesEvents.LoadAllLabels(space.workspaceId))
+            onTaskEvents(TaskEvents.LoadAllInstances(space.workspaceId))
+            onTaskEvents(TaskEvents.LoadAllTask(space.workspaceId))
+            onTaskEvents(TaskEvents.LoadTodayTask(space.workspaceId))
+            onHabitEvents(HabitEvents.LoadAllHabits(space.workspaceId))
+            onHabitEvents(HabitEvents.LoadAllInstances(space.workspaceId))
+            onTodoEvents(TodoEvents.LoadAllLists(space.workspaceId))
+            onJournalEvents(JournalEvents.LoadInitialEntries(space.workspaceId))
+            navController.navigate(NavRoutes.WorkspaceHome.withArgs(space.workspaceId))
+        }
+    }
+
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
         floatingActionButton = { FloatingActionButton(onClick = { addWorkspace=true } ) { Icon(Icons.Default.Add, null) } },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { innerPadding->
-        Column(Modifier.padding(innerPadding)) {
-            WorkspaceSearchBar(
-                TextFieldState(query),
-                { query = it },
-                allSpaces.filter { it.title.contains(query, ignoreCase = true) || it.description.contains(query, ignoreCase = true) },
-                { navController.navigate(NavRoutes.Settings.route) },
-                { query = "" },
-                onWorkSpaceEvents,
-                onClick = { space->
-                    if (space.passKey.isNotBlank()) { lockedWorkspace = space }
-                    else {
-                        onNotesEvents(NotesEvents.LoadAllNotes(space.workspaceId))
-                        onNotesEvents(NotesEvents.LoadAllLabels(space.workspaceId))
-                        onTaskEvents(TaskEvents.LoadAllInstances(space.workspaceId))
-                        onTaskEvents(TaskEvents.LoadAllTask(space.workspaceId))
-                        onTaskEvents(TaskEvents.LoadTodayTask(space.workspaceId))
-                        onHabitEvents(HabitEvents.LoadAllHabits(space.workspaceId))
-                        onHabitEvents(HabitEvents.LoadAllInstances(space.workspaceId))
-                        onTodoEvents(TodoEvents.LoadAllLists(space.workspaceId))
-                        onJournalEvents(JournalEvents.LoadInitialEntries(space.workspaceId))
-                        navController.navigate(NavRoutes.WorkspaceHome.withArgs(space.workspaceId))
-                    }
+        if(allSpaces.isEmpty()){ EmptySpaces() }
+        else{
+            LazyColumn(Modifier.padding(innerPadding)) {
+                item {
+                    WorkspaceSearchBar(
+                        textFieldState = TextFieldState(query),
+                        onSearch = { query = it },
+                        searchResults = allSpaces.filter {
+                            it.title.contains(query, ignoreCase = true) || it.description.contains(query, ignoreCase = true)
+                        },
+                        onSettingsClicked = { navController.navigate(NavRoutes.Settings.route) },
+                        onCloseClicked = { query = "" },
+                        onWorkspaceEvents = onWorkSpaceEvents,
+                        onClick = { space -> handleWorkspaceClick(space) }
+                    )
                 }
-            )
-            if(allSpaces.isEmpty()){ EmptySpaces() }
-            else {
-                if(allSpaces.any { it.isPinned }){ Text(stringResource(R.string.Pinned), modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp).padding(top = 8.dp), fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary) }
-                LazyRow(Modifier.padding(horizontal = 16.dp, vertical = 8.dp), horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                    items(allSpaces.filter { it.isPinned }) { space->
-                        PinnedSpacesCard(
-                            radius, space.passKey.isNotBlank(), space.cover, space.title,
-                            onClick = {
-                                if(space.passKey.isNotBlank()){ lockedWorkspace=space }
-                                else{
-                                    onNotesEvents(NotesEvents.LoadAllNotes(space.workspaceId))
-                                    onNotesEvents(NotesEvents.LoadAllLabels(space.workspaceId))
-                                    onTaskEvents(TaskEvents.LoadAllInstances(space.workspaceId))
-                                    onTaskEvents(TaskEvents.LoadAllTask(space.workspaceId))
-                                    onTaskEvents(TaskEvents.LoadTodayTask(space.workspaceId))
-                                    onHabitEvents(HabitEvents.LoadAllHabits(space.workspaceId))
-                                    onHabitEvents(HabitEvents.LoadAllInstances(space.workspaceId))
-                                    onTodoEvents(TodoEvents.LoadAllLists(space.workspaceId))
-                                    onJournalEvents(JournalEvents.LoadInitialEntries(space.workspaceId))
-                                    navController.navigate(NavRoutes.WorkspaceHome.withArgs(space.workspaceId))
-                                }
-                            }
+
+                if (allSpaces.any { it.isPinned }) {
+                    item {
+                        Text(
+                            stringResource(R.string.Pinned),
+                            modifier = Modifier
+                                .padding(horizontal = 16.dp, vertical = 8.dp)
+                                .padding(top = 8.dp),
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
                         )
                     }
+                    item {
+                        LazyRow(
+                            Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            items(allSpaces.filter { it.isPinned }) { space ->
+                                PinnedSpacesCard(
+                                    radius = radius,
+                                    isLocked = space.passKey.isNotBlank(),
+                                    cover = space.cover,
+                                    title = space.title,
+                                    onClick = { handleWorkspaceClick(space) }
+                                )
+                            }
+                        }
+                    }
                 }
-                ElevatedCard(
-                    shape = shapeManager(radius=radius*2),
-                    modifier = Modifier.padding(16.dp),
-                    colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
-                ) {
-                    LazyColumn {
-                        itemsIndexed(allSpaces) { index, space ->
-                            WorkSpacesCard(
-                                workspace = space,
-                                onClick = {
-                                    if (space.passKey.isNotBlank()) { lockedWorkspace = space }
-                                    else {
-                                        onJournalEvents(JournalEvents.LoadInitialEntries(space.workspaceId))
-                                        onNotesEvents(NotesEvents.LoadAllNotes(space.workspaceId))
-                                        onNotesEvents(NotesEvents.LoadAllLabels(space.workspaceId))
-                                        onTaskEvents(TaskEvents.LoadAllInstances(space.workspaceId))
-                                        onTaskEvents(TaskEvents.LoadAllTask(space.workspaceId))
-                                        onTaskEvents(TaskEvents.LoadTodayTask(space.workspaceId))
-                                        onHabitEvents(HabitEvents.LoadAllHabits(space.workspaceId))
-                                        onHabitEvents(HabitEvents.LoadAllInstances(space.workspaceId))
-                                        onTodoEvents(TodoEvents.LoadAllLists(space.workspaceId))
-                                        navController.navigate(NavRoutes.WorkspaceHome.withArgs(space.workspaceId))
-                                    }
-                                },
-                                onWorkspaceEvents = onWorkSpaceEvents
-                            )
-                            if (index != allSpaces.lastIndex) {
-                                HorizontalDivider(modifier = Modifier.alpha(0.4f))
+
+                item {
+                    ElevatedCard(
+                        shape = shapeManager(radius = radius * 2),
+                        modifier = Modifier.padding(16.dp),
+                        colors = CardDefaults.elevatedCardColors(
+                            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)
+                        )
+                    ) {
+                        Column {
+                            allSpaces.forEachIndexed { index, space ->
+                                WorkSpacesCard(
+                                    workspace = space,
+                                    onClick = { handleWorkspaceClick(space) },
+                                    onWorkspaceEvents = onWorkSpaceEvents
+                                )
+                                if (index != allSpaces.lastIndex) {
+                                    HorizontalDivider(modifier = Modifier.alpha(0.4f))
+                                }
                             }
                         }
                     }
                 }
             }
         }
-
-        NewWorkspaceBottomSheet(isVisible = addWorkspace, sheetState = sheetState, onDismiss = {
-            scope.launch { sheetState.hide() }.invokeOnCompletion {
-                if (!sheetState.isVisible) {
-                    addWorkspace=false
-                }
-            }
-        }, onConfirm = { onWorkSpaceEvents(WorkspaceEvents.UpsertSpace(it)) })
     }
+
+    NewWorkspaceBottomSheet(isVisible = addWorkspace, sheetState = sheetState, onDismiss = {
+        scope.launch { sheetState.hide() }.invokeOnCompletion {
+            if (!sheetState.isVisible) { addWorkspace=false }
+        }
+    }, onConfirm = { onWorkSpaceEvents(WorkspaceEvents.UpsertSpace(it)) })
 }

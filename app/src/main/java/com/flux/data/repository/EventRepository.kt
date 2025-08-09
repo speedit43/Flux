@@ -9,6 +9,7 @@ interface EventRepository {
     suspend fun deleteEvent(event: EventModel)
     suspend fun deleteAllWorkspaceEvent(workspaceId: Long)
     suspend fun toggleStatus(eventInstance: EventInstanceModel)
-    fun loadAllEvents(workspaceId: Long): Flow<List<EventModel>>
+    suspend fun loadAllEvents(): List<EventModel>
+    fun loadAllWorkspaceEvents(workspaceId: Long): Flow<List<EventModel>>
     fun loadAllEventInstances(workspaceId: Long): Flow<List<EventInstanceModel>>
 }

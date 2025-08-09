@@ -62,7 +62,7 @@ class HabitViewModel @Inject constructor(private val repository: HabitRepository
     }
     private suspend fun loadAllHabits(workspaceId: Long) {
         updateState { it.copy(isLoading = true) }
-        repository.loadAllHabits(workspaceId)
+        repository.loadAllHabitsOfWorkspace(workspaceId)
             .distinctUntilChanged()
             .collect { data ->
                 val sortedData = data.sortedBy { it.startDateTime }

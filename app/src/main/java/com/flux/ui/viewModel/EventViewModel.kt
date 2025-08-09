@@ -23,6 +23,7 @@ import java.time.Instant
 import java.time.LocalDate
 import java.time.ZoneId
 import javax.inject.Inject
+import kotlin.collections.sortedBy
 
 @HiltViewModel
 class EventViewModel @Inject constructor (
@@ -67,66 +68,60 @@ class EventViewModel @Inject constructor (
     }
     private fun toggleStatus(data: EventInstanceModel) { viewModelScope.launch(Dispatchers.IO) { repository.toggleStatus(data) } }
     private fun deleteWorkspaceEvents(workspaceId: Long) { viewModelScope.launch(Dispatchers.IO) { repository.deleteAllWorkspaceEvent(workspaceId) } }
-    private suspend fun loadTodayEvents(workspaceId: Long) {
-        val date = LocalDate.now()
-        safeUpdateState { it.copy(isTodayEventLoading = true) }
-        repository.loadAllEvents(workspaceId)
+    private fun filterEventsByDate(
+        events: List<EventModel>,
+        date: LocalDate
+    ): List<EventModel> {
+        return events.filter { task ->
+            val taskStartDate = Instant.ofEpochMilli(task.startDateTime)
+                .atZone(ZoneId.systemDefault())
+                .toLocalDate()
+
+            when (task.repetition) {
+                Repetition.NONE -> taskStartDate == date
+                Repetition.DAILY -> !date.isBefore(taskStartDate)
+                Repetition.WEEKLY -> !date.isBefore(taskStartDate) &&
+                        date.dayOfWeek == taskStartDate.dayOfWeek
+                Repetition.MONTHLY -> !date.isBefore(taskStartDate) &&
+                        date.dayOfMonth == taskStartDate.dayOfMonth
+                Repetition.YEARLY -> !date.isBefore(taskStartDate) &&
+                        date.dayOfYear == taskStartDate.dayOfYear
+            }
+        }
+    }
+
+    private suspend fun collectWorkspaceEvents(
+        workspaceId: Long,
+        onEvents: suspend (List<EventModel>) -> Unit
+    ) {
+        repository.loadAllWorkspaceEvents(workspaceId)
             .distinctUntilChanged()
-            .collect { data ->
-                val filteredData = data.filter { task ->
-                    val taskStartDate = Instant.ofEpochMilli(task.startDateTime)
-                        .atZone(ZoneId.systemDefault())
-                        .toLocalDate()
+            .collect { events -> onEvents(events) }
+    }
 
-                    when (task.repetition) {
-                        Repetition.NONE -> taskStartDate == date
-                        Repetition.DAILY -> !date.isBefore(taskStartDate)
-                        Repetition.WEEKLY -> !date.isBefore(taskStartDate) &&
-                                date.dayOfWeek == taskStartDate.dayOfWeek
+    private suspend fun loadTodayEvents(workspaceId: Long) {
+        val today = LocalDate.now()
+        safeUpdateState { it.copy(isTodayEventLoading = true) }
 
-                        Repetition.MONTHLY -> !date.isBefore(taskStartDate) &&
-                                date.dayOfMonth == taskStartDate.dayOfMonth
-
-                        Repetition.YEARLY -> !date.isBefore(taskStartDate) &&
-                                date.dayOfYear == taskStartDate.dayOfYear
-                    }
-                }
-                safeUpdateState { it.copy(isTodayEventLoading = false, todayEvents = filteredData) }
+        collectWorkspaceEvents(workspaceId) { events ->
+            val filtered = filterEventsByDate(events, today)
+            safeUpdateState { it.copy(isTodayEventLoading = false, todayEvents = filtered) }
         }
     }
 
     private suspend fun loadDateEvents(workspaceId: Long, date: LocalDate) {
         safeUpdateState { it.copy(isDatedEventLoading = true) }
-            repository.loadAllEvents(workspaceId)
-                .distinctUntilChanged()
-                .collect { data ->
-                    val filteredData = data.filter { task ->
-                        val taskStartDate = Instant.ofEpochMilli(task.startDateTime)
-                            .atZone(ZoneId.systemDefault())
-                            .toLocalDate()
 
-                        when (task.repetition) {
-                            Repetition.NONE -> taskStartDate == date
-                            Repetition.DAILY -> !date.isBefore(taskStartDate)
-                            Repetition.WEEKLY -> !date.isBefore(taskStartDate) &&
-                                    date.dayOfWeek == taskStartDate.dayOfWeek
-                            Repetition.MONTHLY -> !date.isBefore(taskStartDate) &&
-                                    date.dayOfMonth == taskStartDate.dayOfMonth
-                            Repetition.YEARLY -> !date.isBefore(taskStartDate) &&
-                                    date.dayOfYear == taskStartDate.dayOfYear
-                        }
-                    }
-                    safeUpdateState { it.copy(isDatedEventLoading = false, datedEvents = filteredData) }
+        collectWorkspaceEvents(workspaceId) { events ->
+            val filtered = filterEventsByDate(events, date)
+            safeUpdateState { it.copy(isDatedEventLoading = false, datedEvents = filtered) }
         }
     }
 
     private suspend fun loadAllEvents(workspaceId: Long) {
-        repository.loadAllEvents(workspaceId)
-            .distinctUntilChanged()
-            .collect { data ->
-                val sortedData = data.sortedBy { it.startDateTime }
-                safeUpdateState { it.copy(allEvent = sortedData) }
-            }
+        collectWorkspaceEvents(workspaceId) { events ->
+            safeUpdateState { it.copy(allEvent = events.sortedBy { it.startDateTime }) }
+        }
     }
 
     private suspend fun loadAllEventsInstances(workspaceId: Long) {

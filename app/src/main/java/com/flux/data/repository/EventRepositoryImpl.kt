@@ -17,7 +17,8 @@ class EventRepositoryImpl @Inject constructor(
 ): EventRepository {
     override suspend fun upsertEvent(event: EventModel): Long { return withContext(ioDispatcher) { eventDao.upsertEvent(event) } }
     override suspend fun toggleStatus(eventInstance: EventInstanceModel) { return withContext(ioDispatcher) { eventInstanceDao.upsertEventInstance(eventInstance) } }
-    override fun loadAllEvents(workspaceId: Long): Flow<List<EventModel>> { return eventDao.loadAllEvents(workspaceId) }
+    override suspend fun loadAllEvents(): List<EventModel> { return eventDao.loadAllEvents() }
+    override fun loadAllWorkspaceEvents(workspaceId: Long): Flow<List<EventModel>> { return eventDao.loadAllEvents(workspaceId) }
     override fun loadAllEventInstances(workspaceId: Long): Flow<List<EventInstanceModel>> { return eventInstanceDao.loadAllInstances(workspaceId) }
     override suspend fun deleteEvent(event: EventModel) { return withContext(ioDispatcher) {
         eventInstanceDao.deleteAllEventInstance(event.eventId)

@@ -90,7 +90,7 @@ fun EventDetails(
     var showNotificationDialog by remember { mutableStateOf(false) }
     var notificationOffset by remember { mutableLongStateOf(event.notificationOffset) }
     var selectedDateTime by remember { mutableLongStateOf(event.startDateTime) }
-    val isPending=status== EventStatus.PENDING
+    val isPending=status==EventStatus.PENDING
 
     if(showCustomNotificationDialog){ CustomNotificationDialog({showCustomNotificationDialog=false}) { offset-> notificationOffset=offset } }
     if(showNotificationDialog) { EventNotificationDialog(currentOffset = notificationOffset, onChange = {offset-> notificationOffset=offset }, onCustomClick = { showCustomNotificationDialog=true }) { showNotificationDialog=false } }

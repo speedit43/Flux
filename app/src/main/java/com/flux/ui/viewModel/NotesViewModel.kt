@@ -81,7 +81,7 @@ class NotesViewModel @Inject constructor(
 
     private fun updateNotes(data: NotesModel) {
         val isNewNote = state.value.allNotes.none { it.notesId == data.notesId }
-        val isBlankNote = data.title.isBlank() && data.description.isBlank() && data.labels.isEmpty()
+        val isBlankNote = data.title.trim().isBlank() && data.description.trim()=="<br>" && data.labels.isEmpty()
         if (isNewNote && isBlankNote) return
 
         viewModelScope.launch(Dispatchers.IO) { repository.upsertNote(data) }

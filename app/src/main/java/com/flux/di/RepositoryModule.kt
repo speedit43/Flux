@@ -22,7 +22,7 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(SingletonComponent::class)
-abstract class RepositoryBindingModule {
+abstract class RepositoryModule {
 
     @Binds
     @Singleton

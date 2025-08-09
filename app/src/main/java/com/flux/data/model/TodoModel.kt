@@ -13,6 +13,6 @@ data class TodoModel (
 )
 
 data class TodoItem(
-    var value: String="Title",
+    var value: String="",
     var isChecked: Boolean=false
 )

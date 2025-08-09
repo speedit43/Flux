@@ -1,6 +1,5 @@
 package com.flux.ui.screens.notes
 
-import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -203,11 +202,6 @@ fun NoteDetails(
         )
     }
 
-    BackHandler {
-        onSaveNote()
-        navController.popBackStack()
-    }
-
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
         topBar = {
@@ -215,10 +209,8 @@ fun NoteDetails(
                 canUndo = actionHistory.isNotEmpty(),
                 canRedo = redoHistory.isNotEmpty(),
                 isPinned = isPinned,
-                onBackPressed = {
-                    onSaveNote()
-                    navController.popBackStack()
-                },
+                onBackPressed = { navController.popBackStack() },
+                onDone = { onSaveNote() },
                 onTogglePinned = { isPinned = !isPinned },
                 onDelete = {
                     onNotesEvents(NotesEvents.DeleteNote(note))

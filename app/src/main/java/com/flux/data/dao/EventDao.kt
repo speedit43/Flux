@@ -21,4 +21,7 @@ interface EventDao {
 
     @Query("SELECT * FROM EventModel WHERE workspaceId = :workspaceId")
     fun loadAllEvents(workspaceId: Long): Flow<List<EventModel>>
+
+    @Query("SELECT * FROM EventModel")
+    suspend fun loadAllEvents(): List<EventModel>
 }

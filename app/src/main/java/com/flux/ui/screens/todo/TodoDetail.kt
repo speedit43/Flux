@@ -97,7 +97,7 @@ fun TodoDetail(
 
             items(itemList) { item ->
             Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
+                    Row(modifier = Modifier.weight(0.85f), verticalAlignment = Alignment.CenterVertically) {
                         Checkbox(item.isChecked, onCheckedChange = { checked ->
                             val index = itemList.indexOf(item)
                             if (index != -1) {
@@ -126,7 +126,6 @@ fun TodoDetail(
                                 focusedPlaceholderColor = MaterialTheme.colorScheme.primary
                             )
                         )
-
                     }
                     IconButton({itemList.remove(item)}) { Icon(Icons.Default.Remove, null, tint = MaterialTheme.colorScheme.error) }
                 }

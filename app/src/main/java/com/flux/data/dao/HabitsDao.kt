@@ -20,5 +20,8 @@ interface HabitsDao {
     suspend fun deleteAllWorkspaceHabit(workspaceId: Long)
 
     @Query("SELECT * FROM HabitModel WHERE workspaceId = :workspaceId")
-    fun loadAllHabits(workspaceId: Long): Flow<List<HabitModel>>
+    fun loadAllHabitsOfWorkspace(workspaceId: Long): Flow<List<HabitModel>>
+
+    @Query("Select * FROM HabitModel")
+    suspend fun loadAllHabits(): List<HabitModel>
 }

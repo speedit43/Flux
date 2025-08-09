@@ -209,6 +209,7 @@ fun HabitBottomSheet(
                     initialTime = newHabitTime,
                     onConfirm = {
                         val habitCalendar = Calendar.getInstance().apply {
+                            timeInMillis = newHabitTime
                             set(Calendar.HOUR_OF_DAY, it.hour)
                             set(Calendar.MINUTE, it.minute)
                             set(Calendar.SECOND, 0)
