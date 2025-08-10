@@ -118,73 +118,73 @@ fun WorkSpaces(
     ) { innerPadding->
         if(allSpaces.isEmpty()){ EmptySpaces() }
         else{
-            LazyColumn(Modifier.padding(innerPadding)) {
-                item {
-                    WorkspaceSearchBar(
-                        textFieldState = TextFieldState(query),
-                        onSearch = { query = it },
-                        searchResults = allSpaces.filter {
-                            it.title.contains(query, ignoreCase = true) || it.description.contains(query, ignoreCase = true)
-                        },
-                        onSettingsClicked = { navController.navigate(NavRoutes.Settings.route) },
-                        onCloseClicked = { query = "" },
-                        onWorkspaceEvents = onWorkSpaceEvents,
-                        onClick = { space -> handleWorkspaceClick(space) }
-                    )
-                }
+            Column(Modifier.padding(innerPadding)) {
+                WorkspaceSearchBar(
+                    textFieldState = TextFieldState(query),
+                    onSearch = { query = it },
+                    searchResults = allSpaces.filter {
+                        it.title.contains(query, ignoreCase = true) || it.description.contains(query, ignoreCase = true)
+                    },
+                    onSettingsClicked = { navController.navigate(NavRoutes.Settings.route) },
+                    onCloseClicked = { query = "" },
+                    onWorkspaceEvents = onWorkSpaceEvents,
+                    onClick = { space -> handleWorkspaceClick(space) }
+                )
 
-                if (allSpaces.any { it.isPinned }) {
-                    item {
-                        Text(
-                            stringResource(R.string.Pinned),
-                            modifier = Modifier
-                                .padding(horizontal = 16.dp, vertical = 8.dp)
-                                .padding(top = 8.dp),
-                            fontWeight = FontWeight.Bold,
-                            color = MaterialTheme.colorScheme.primary
-                        )
-                    }
-                    item {
-                        LazyRow(
-                            Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                            horizontalArrangement = Arrangement.spacedBy(4.dp)
-                        ) {
-                            items(allSpaces.filter { it.isPinned }) { space ->
-                                PinnedSpacesCard(
-                                    radius = radius,
-                                    isLocked = space.passKey.isNotBlank(),
-                                    cover = space.cover,
-                                    title = space.title,
-                                    onClick = { handleWorkspaceClick(space) }
-                                )
+                LazyColumn {
+                    if (allSpaces.any { it.isPinned }) {
+                        item {
+                            Text(
+                                stringResource(R.string.Pinned),
+                                modifier = Modifier
+                                    .padding(horizontal = 16.dp, vertical = 8.dp),
+                                fontWeight = FontWeight.Bold,
+                                color = MaterialTheme.colorScheme.primary
+                            )
+                        }
+                        item {
+                            LazyRow(
+                                Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                                horizontalArrangement = Arrangement.spacedBy(4.dp)
+                            ) {
+                                items(allSpaces.filter { it.isPinned }) { space ->
+                                    PinnedSpacesCard(
+                                        radius = radius,
+                                        isLocked = space.passKey.isNotBlank(),
+                                        cover = space.cover,
+                                        title = space.title,
+                                        onClick = { handleWorkspaceClick(space) }
+                                    )
+                                }
                             }
                         }
                     }
-                }
 
-                item {
-                    ElevatedCard(
-                        shape = shapeManager(radius = radius * 2),
-                        modifier = Modifier.padding(16.dp),
-                        colors = CardDefaults.elevatedCardColors(
-                            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)
-                        )
-                    ) {
-                        Column {
-                            allSpaces.forEachIndexed { index, space ->
-                                WorkSpacesCard(
-                                    workspace = space,
-                                    onClick = { handleWorkspaceClick(space) },
-                                    onWorkspaceEvents = onWorkSpaceEvents
-                                )
-                                if (index != allSpaces.lastIndex) {
-                                    HorizontalDivider(modifier = Modifier.alpha(0.4f))
+                    item {
+                        ElevatedCard(
+                            shape = shapeManager(radius = radius * 2),
+                            modifier = Modifier.padding(16.dp),
+                            colors = CardDefaults.elevatedCardColors(
+                                containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)
+                            )
+                        ) {
+                            Column {
+                                allSpaces.forEachIndexed { index, space ->
+                                    WorkSpacesCard(
+                                        workspace = space,
+                                        onClick = { handleWorkspaceClick(space) },
+                                        onWorkspaceEvents = onWorkSpaceEvents
+                                    )
+                                    if (index != allSpaces.lastIndex) {
+                                        HorizontalDivider(modifier = Modifier.alpha(0.4f))
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
+
         }
     }
 
