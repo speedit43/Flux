@@ -21,7 +21,6 @@ import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.EventAvailable
 import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material.icons.filled.RemoveCircle
-import androidx.compose.material.icons.filled.Workspaces
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
@@ -52,6 +51,7 @@ import com.flux.data.model.EventModel
 import com.flux.data.model.HabitModel
 import com.flux.data.model.WorkspaceModel
 import com.flux.other.cancelReminder
+import com.flux.other.icons
 import com.flux.ui.components.CircleWrapper
 import com.flux.ui.components.DeleteAlert
 import com.flux.ui.components.shapeManager
@@ -158,7 +158,7 @@ fun WorkspaceHomeScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
-                        Icon(Icons.Default.Workspaces, null, modifier = Modifier.size(32.dp))
+                        Icon(icons[workspace.icon], null, modifier = Modifier.size(32.dp))
                         Text(
                             workspace.title,
                             style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.SemiBold)

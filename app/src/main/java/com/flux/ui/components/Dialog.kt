@@ -275,7 +275,7 @@ fun SelectLabelDialog(
 
     AlertDialog(
         icon = { CircleWrapper(MaterialTheme.colorScheme.primary) { Icon(Icons.AutoMirrored.Filled.Label, contentDescription = "Label Icon", tint = MaterialTheme.colorScheme.onPrimary) } },
-        title = { Text(text = stringResource(R.string.Select_radius)) },
+        title = { Text(text = stringResource(R.string.Select_Label)) },
         text = { LabelCheckBoxList(selectedLabel, labels, onChecked = {selectedLabel.add(it)}, onAddLabel = {
             onAddLabel()
             onDismissRequest()

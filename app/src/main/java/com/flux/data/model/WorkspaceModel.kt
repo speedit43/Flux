@@ -11,7 +11,7 @@ data class WorkspaceModel(
     val description: String="",
     val colorInd: Int=0,
     val cover: String="",
-    val icon: Int=0,
+    val icon: Int=48,
     val passKey: String="",
     val isPinned: Boolean=false,
     val isNotesAdded: Boolean=false,

@@ -3,9 +3,11 @@ package com.flux.ui.screens.workspaces
 import java.io.File
 import android.content.Context
 import android.net.Uri
+import android.os.Build
 import android.widget.Toast
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.widthIn
@@ -65,6 +67,7 @@ import com.flux.other.isNotificationPermissionGranted
 import com.flux.other.openAppNotificationSettings
 import com.flux.other.requestExactAlarmPermission
 import com.flux.ui.components.AddSpacesDialog
+import com.flux.ui.components.ChangeIconBottomSheet
 import com.flux.ui.components.DeleteAlert
 import com.flux.ui.components.HabitBottomSheet
 import com.flux.ui.components.NewWorkspaceBottomSheet
@@ -97,6 +100,7 @@ data class WorkspaceTab(
     val content: @Composable () -> Unit
 )
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun WorkspaceDetails(
@@ -132,6 +136,7 @@ fun WorkspaceDetails(
     val context= LocalContext.current
     var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
     var editWorkspaceDialog by remember { mutableStateOf(false) }
+    var editIconSheet by remember { mutableStateOf(false) }
     var addSpaceDialog by remember { mutableStateOf(false) }
     var showDeleteWorkspaceDialog by remember { mutableStateOf(false) }
     var showHabitDialog by remember { mutableStateOf(false) }
@@ -238,6 +243,7 @@ fun WorkspaceDetails(
                         onDelete = { showDeleteWorkspaceDialog=true },
                         onEditDetails = { editWorkspaceDialog = true },
                         onEditLabel = { navController.navigate(NavRoutes.EditLabels.withArgs(workspaceId)) },
+                        onEditIcon = { editIconSheet = true },
                         onAddCover = { imagePickerLauncher.launch("image/*") },
                         onTogglePinned = { onWorkspaceEvents(WorkspaceEvents.UpsertSpace(workspace.copy(isPinned = !workspace.isPinned))) },
                         onToggleLock = { if(workspace.passKey.isNotBlank()) onWorkspaceEvents(WorkspaceEvents.UpsertSpace(workspace.copy(passKey = ""))) else showLockDialog=true }
@@ -328,33 +334,46 @@ fun WorkspaceDetails(
 
             tabs[selectedTabIndex].content()
         }
-
-        // Edit Workspace Sheet
-        NewWorkspaceBottomSheet(
-            isEditing = true,
-            workspace = workspace,
-            isVisible = editWorkspaceDialog,
-            sheetState = sheetState,
-            onDismiss = { scope.launch { sheetState.hide() }.invokeOnCompletion { editWorkspaceDialog = false } },
-            onConfirm = {
-                onWorkspaceEvents(WorkspaceEvents.UpsertSpace(it))
-                scope.launch { sheetState.hide() }.invokeOnCompletion {
-                    editWorkspaceDialog = false
-                }
-            }
-        )
-
-        // Habit Bottom Sheet — always composed
-        HabitBottomSheet(
-            isVisible = showHabitDialog,
-            sheetState = sheetState,
-            onDismissRequest = { scope.launch { sheetState.hide() }.invokeOnCompletion { showHabitDialog = false } },
-            onConfirm = { newHabit, adjustedTime->
-                onHabitEvents(HabitEvents.UpsertHabit(context, newHabit.copy(workspaceId = workspaceId), adjustedTime))
-                scope.launch { sheetState.hide() }.invokeOnCompletion { showHabitDialog = false }
-            }
-        )
     }
+
+    // Edit Workspace Sheet
+    NewWorkspaceBottomSheet(
+        isEditing = true,
+        workspace = workspace,
+        isVisible = editWorkspaceDialog,
+        sheetState = sheetState,
+        onDismiss = { scope.launch { sheetState.hide() }.invokeOnCompletion { editWorkspaceDialog = false } },
+        onConfirm = {
+            onWorkspaceEvents(WorkspaceEvents.UpsertSpace(it))
+            scope.launch { sheetState.hide() }.invokeOnCompletion {
+                editWorkspaceDialog = false
+            }
+        }
+    )
+
+    // Habit Bottom Sheet — always composed
+    HabitBottomSheet(
+        isVisible = showHabitDialog,
+        sheetState = sheetState,
+        onDismissRequest = { scope.launch { sheetState.hide() }.invokeOnCompletion { showHabitDialog = false } },
+        onConfirm = { newHabit, adjustedTime->
+            onHabitEvents(HabitEvents.UpsertHabit(context, newHabit.copy(workspaceId = workspaceId), adjustedTime))
+            scope.launch { sheetState.hide() }.invokeOnCompletion { showHabitDialog = false }
+        }
+    )
+
+    // Edit Workspace Sheet
+    ChangeIconBottomSheet(
+        isVisible = editIconSheet,
+        sheetState = sheetState,
+        onDismiss = { scope.launch { sheetState.hide() }.invokeOnCompletion { editIconSheet = false } },
+        onConfirm = {index->
+            scope.launch { sheetState.hide() }.invokeOnCompletion {
+                onWorkspaceEvents(WorkspaceEvents.UpsertSpace(workspace.copy(icon = index)))
+                editIconSheet = false
+            }
+        }
+    )
 }
 
 fun copyToInternalStorage(context: Context, uri: Uri): String? {

@@ -14,6 +14,7 @@ import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.LockOpen
 import androidx.compose.material.icons.outlined.PhotoSizeSelectActual
 import androidx.compose.material.icons.outlined.PushPin
+import androidx.compose.material.icons.outlined.Workspaces
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
@@ -92,6 +93,7 @@ fun WorkspaceMore(
     isPinned: Boolean,
     onEditDetails: ()->Unit,
     onEditLabel: ()->Unit,
+    onEditIcon: ()-> Unit,
     onAddCover: ()->Unit,
     onDelete: ()->Unit,
     onTogglePinned: () -> Unit,
@@ -124,6 +126,15 @@ fun WorkspaceMore(
             )
             HorizontalDivider()
             DropdownMenuItem(
+                text = { Text(stringResource(R.string.Change_Icon)) },
+                leadingIcon = { Icon(Icons.Outlined.Workspaces, contentDescription = null) },
+                onClick = {
+                    expanded=false
+                    onEditIcon()
+                }
+            )
+            HorizontalDivider()
+            DropdownMenuItem(
                 text = { Text(stringResource(R.string.Change_Cover)) },
                 leadingIcon = { Icon(Icons.Outlined.PhotoSizeSelectActual, contentDescription = null) },
                 onClick = {
@@ -131,6 +142,7 @@ fun WorkspaceMore(
                     onAddCover()
                 }
             )
+
             if(showEditLabel){
                 HorizontalDivider()
                 DropdownMenuItem(

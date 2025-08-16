@@ -2,14 +2,18 @@ package com.flux.ui.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
@@ -22,6 +26,7 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
+import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
@@ -49,6 +54,8 @@ import androidx.compose.ui.unit.dp
 import com.flux.R
 import com.flux.data.model.HabitModel
 import com.flux.data.model.WorkspaceModel
+import com.flux.other.icons
+import com.flux.other.workspaceIconList
 import com.flux.ui.screens.events.toFormattedTime
 import java.util.Calendar
 
@@ -356,6 +363,34 @@ fun NewWorkspaceBottomSheet(
                         }
                     ) {
                         Text(stringResource(R.string.Confirm))
+                    }
+                }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun ChangeIconBottomSheet(
+    isVisible: Boolean,
+    sheetState: SheetState,
+    onDismiss: () -> Unit,
+    onConfirm: (Int) -> Unit
+){
+    if (isVisible) {
+        ModalBottomSheet(
+            onDismissRequest = { onDismiss() },
+            sheetState = sheetState,
+            containerColor = MaterialTheme.colorScheme.surfaceContainer
+        ) {
+            LazyColumn(Modifier.fillMaxWidth().heightIn(max = 500.dp)) {
+                items(workspaceIconList) { item->
+                    Text(item.title, modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp), style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold))
+                    FlowRow(modifier = Modifier.padding(horizontal = 8.dp), horizontalArrangement = Arrangement.spacedBy(2.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
+                        item.icons.forEach { index->
+                            IconButton({onConfirm(index)}) { Icon(icons[index], null) }
+                        }
                     }
                 }
             }

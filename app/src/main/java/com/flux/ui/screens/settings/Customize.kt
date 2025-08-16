@@ -90,27 +90,25 @@ fun Customize(
             }
 
             item{
-                val isAutomatic=settings.data.isAutomaticTheme
                 SettingOption(
                     title = stringResource(R.string.Dark_theme),
                     description = stringResource(R.string.Dark_theme_desc),
                     icon = Icons.Filled.DarkMode,
-                    radius = shapeManager(radius = settings.data.cornerRadius, isLast = isAutomatic),
+                    radius = shapeManager(radius = settings.data.cornerRadius),
                     actionType = ActionType.RADIOBUTTON,
                     variable = !settings.data.isAutomaticTheme && settings.data.isDarkMode,
                     switchEnabled = { onSettingsEvents(SettingEvents.UpdateSettings(settings.data.copy(isAutomaticTheme = false, isDarkMode = true))) }
                 )
             }
+
             item{
-                val isEnabled=!settings.data.isAutomaticTheme
-                val isLightMode=!settings.data.isDarkMode && !settings.data.isAutomaticTheme
+                val isLast=settings.data.isAutomaticTheme || !settings.data.isDarkMode
                 SettingOption(
                     title = stringResource(R.string.Dynamic_theme),
                     description = stringResource(R.string.Dynamic_theme_desc),
                     icon = Icons.Filled.Colorize,
-                    radius = shapeManager(radius = settings.data.cornerRadius, isLast = isLightMode),
+                    radius = shapeManager(radius = settings.data.cornerRadius, isLast = isLast),
                     actionType = ActionType.SWITCH,
-                    isEnabled = isEnabled,
                     variable = settings.data.dynamicTheme,
                     switchEnabled = { onSettingsEvents(SettingEvents.UpdateSettings(settings.data.copy(dynamicTheme = it))) },
                 )
@@ -176,6 +174,7 @@ fun Customize(
                     switchEnabled = { onSettingsEvents(SettingEvents.UpdateSettings(settings.data.copy(isGridView = it))) },
                 )
             }
+
             item{
                 SettingOption(
                     title = stringResource(R.string.Monthly_View),

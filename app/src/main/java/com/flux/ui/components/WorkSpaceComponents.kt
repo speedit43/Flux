@@ -29,7 +29,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
-import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextOverflow
@@ -39,11 +38,11 @@ import androidx.core.net.toUri
 import coil.compose.AsyncImage
 import com.flux.R
 import com.flux.data.model.WorkspaceModel
+import com.flux.other.icons
 import com.flux.ui.events.WorkspaceEvents
 
 @Composable
 fun WorkSpacesCard(
-    icon: ImageVector=Icons.Default.Workspaces,
     workspace: WorkspaceModel,
     onClick: ()->Unit,
     onWorkspaceEvents: (WorkspaceEvents)->Unit
@@ -62,7 +61,7 @@ fun WorkSpacesCard(
     Row(modifier = Modifier.clickable{onClick()}) {
         Row(Modifier.padding(start = 12.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
             Row(modifier = Modifier.fillMaxWidth().weight(1f), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Icon(icon, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(24.dp))
+                Icon(icons[workspace.icon], null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(24.dp))
                 if(workspace.passKey.isNotBlank()) Icon(Icons.Default.Lock, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(24.dp))
                 Text(workspace.title, color = MaterialTheme.colorScheme.primary, maxLines = 1, modifier = Modifier.alpha(0.90f), overflow = TextOverflow.Ellipsis, fontSize = 18.sp)
             }
@@ -81,7 +80,7 @@ fun PinnedSpacesCard(
     isLocked: Boolean=false,
     cover: String,
     title: String,
-    icon: ImageVector=Icons.Default.Workspaces,
+    iconIndex: Int,
     onClick: ()->Unit
 ){
     ElevatedCard(
@@ -100,7 +99,7 @@ fun PinnedSpacesCard(
                     AsyncImage(model = cover.toUri(), modifier = Modifier.height(80.dp).alpha(0.8f), contentDescription = null, contentScale = ContentScale.Crop)
                 }
                 Row(modifier = Modifier.align(Alignment.BottomStart).padding(top = 70.dp, start = 2.dp)) {
-                    Icon(icon, null)
+                    Icon(icons[iconIndex], null)
                     if(isLocked) Icon(Icons.Default.Lock, null)
                 }
 

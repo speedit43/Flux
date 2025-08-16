@@ -149,6 +149,7 @@ fun WorkSpaces(
                             ) {
                                 items(allSpaces.filter { it.isPinned }) { space ->
                                     PinnedSpacesCard(
+                                        iconIndex = space.icon,
                                         radius = radius,
                                         isLocked = space.passKey.isNotBlank(),
                                         cover = space.cover,

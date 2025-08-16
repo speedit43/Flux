@@ -118,6 +118,7 @@
     <string name="Add_Space">स्पेस जोड़ें</string>
     <string name="Home">होम</string>
     <string name="Empty_Workspace">कोई वर्कस्पेस नहीं मिला</string>
+    <string name="Change_Icon">Change Icon</string>
 
     <!-- Events -->
     <string name="Events">इवेंट्स</string>

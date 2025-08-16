@@ -113,6 +113,7 @@
     <string name="Delete_Workspace">Delete Workspace</string>
     <string name="Edit_Details">Edit Details</string>
     <string name="Change_Cover">Change Cover</string>
+    <string name="Change_Icon">Change Icon</string>
     <string name="Lock_Workspace">Lock Workspace</string>
     <string name="Unlock_Workspace">Unlock Workspace</string>
     <string name="Add_Spaces">Add Spaces</string>
