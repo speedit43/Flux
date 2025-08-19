@@ -225,7 +225,7 @@ fun MonthlyViewCalendar(
             Box(modifier = Modifier.weight(1f), contentAlignment = Alignment.Center) {
                 Text(
                     text = currentMonth.month.name.lowercase()
-                        .replaceFirstChar { it.uppercaseChar() } + ", ${'$'}{currentMonth.year}",
+                        .replaceFirstChar { it.uppercaseChar() } + ", ${currentMonth.year}",
                     style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
                     color = MaterialTheme.colorScheme.primary
                 )
