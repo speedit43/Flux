@@ -45,6 +45,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -67,7 +68,6 @@ import com.flux.ui.events.TaskEvents
 import com.flux.ui.theme.completed
 import com.flux.ui.theme.pending
 import java.util.Calendar
-import androidx.compose.ui.platform.LocalConfiguration
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -75,9 +75,9 @@ fun EventDetails(
     navController: NavController,
     event: EventModel,
     eventInstance: EventInstanceModel,
-    onTaskEvents: (TaskEvents)->Unit
-){
-    val context= LocalContext.current
+    onTaskEvents: (TaskEvents) -> Unit
+) {
+    val context = LocalContext.current
     var title by remember { mutableStateOf(event.title) }
     var description by remember { mutableStateOf(event.description) }
     var status by remember { mutableStateOf(eventInstance.status) }
@@ -90,30 +90,48 @@ fun EventDetails(
     var showNotificationDialog by remember { mutableStateOf(false) }
     var notificationOffset by remember { mutableLongStateOf(event.notificationOffset) }
     var selectedDateTime by remember { mutableLongStateOf(event.startDateTime) }
-    val isPending=status==EventStatus.PENDING
+    val isPending = status == EventStatus.PENDING
 
-    if(showCustomNotificationDialog){ CustomNotificationDialog({showCustomNotificationDialog=false}) { offset-> notificationOffset=offset } }
-    if(showNotificationDialog) { EventNotificationDialog(currentOffset = notificationOffset, onChange = {offset-> notificationOffset=offset }, onCustomClick = { showCustomNotificationDialog=true }) { showNotificationDialog=false } }
-    if(showRepetitionDialog){ TaskRepetitionDialog(eventRepetition, { eventRepetition=it }) { showRepetitionDialog=false } }
-    if(showDatePicker){ DatePickerModal(onDateSelected = { newDateMillis ->
-        if (newDateMillis != null) {
-            val timeOfDay = selectedDateTime % DateUtils.DAY_IN_MILLIS
-            selectedDateTime = newDateMillis + timeOfDay
-        } }, onDismiss = { showDatePicker=false }) }
+    if (showCustomNotificationDialog) {
+        CustomNotificationDialog({
+            showCustomNotificationDialog = false
+        }) { offset -> notificationOffset = offset }
+    }
+    if (showNotificationDialog) {
+        EventNotificationDialog(
+            currentOffset = notificationOffset,
+            onChange = { offset -> notificationOffset = offset },
+            onCustomClick = { showCustomNotificationDialog = true }) {
+            showNotificationDialog = false
+        }
+    }
+    if (showRepetitionDialog) {
+        TaskRepetitionDialog(eventRepetition, { eventRepetition = it }) {
+            showRepetitionDialog = false
+        }
+    }
+    if (showDatePicker) {
+        DatePickerModal(onDateSelected = { newDateMillis ->
+            if (newDateMillis != null) {
+                val timeOfDay = selectedDateTime % DateUtils.DAY_IN_MILLIS
+                selectedDateTime = newDateMillis + timeOfDay
+            }
+        }, onDismiss = { showDatePicker = false })
+    }
 
     if (showTimePicker) {
         TimePicker(
             initialTime = selectedDateTime,
             onConfirm = {
-            val calendar = Calendar.getInstance().apply {
-                timeInMillis = selectedDateTime
-                set(Calendar.HOUR_OF_DAY, it.hour)
-                set(Calendar.MINUTE, it.minute)
-                set(Calendar.SECOND, 0)
-                set(Calendar.MILLISECOND, 0)
-            }
-            selectedDateTime = calendar.timeInMillis
-        }) { showTimePicker = false }
+                val calendar = Calendar.getInstance().apply {
+                    timeInMillis = selectedDateTime
+                    set(Calendar.HOUR_OF_DAY, it.hour)
+                    set(Calendar.MINUTE, it.minute)
+                    set(Calendar.SECOND, 0)
+                    set(Calendar.MILLISECOND, 0)
+                }
+                selectedDateTime = calendar.timeInMillis
+            }) { showTimePicker = false }
     }
 
     Scaffold(
@@ -122,7 +140,14 @@ fun EventDetails(
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(MaterialTheme.colorScheme.surfaceContainerLow),
                 title = { Text(stringResource(R.string.Edit_Event)) },
-                navigationIcon = { IconButton({ navController.popBackStack() }) { Icon(Icons.AutoMirrored.Default.ArrowBack, null) } },
+                navigationIcon = {
+                    IconButton({ navController.popBackStack() }) {
+                        Icon(
+                            Icons.AutoMirrored.Default.ArrowBack,
+                            null
+                        )
+                    }
+                },
                 actions = {
                     IconButton(
                         enabled = title.isNotBlank(),
@@ -132,25 +157,64 @@ fun EventDetails(
                                 offset = notificationOffset,
                                 repetition = eventRepetition
                             )
-                            cancelReminder(context, event.eventId, "EVENT", title, description, event.repetition.toString())
-                        onTaskEvents(TaskEvents.ToggleStatus(eventInstance.copy(status=status)))
-                        onTaskEvents(TaskEvents.UpsertTask(context, event.copy(title = title, description = description, isAllDay = checked, startDateTime = selectedDateTime, repetition = eventRepetition, notificationOffset = notificationOffset), adjustedTime))
-                        navController.popBackStack() })
+                            cancelReminder(
+                                context,
+                                event.eventId,
+                                "EVENT",
+                                title,
+                                description,
+                                event.repetition.toString()
+                            )
+                            onTaskEvents(TaskEvents.ToggleStatus(eventInstance.copy(status = status)))
+                            onTaskEvents(
+                                TaskEvents.UpsertTask(
+                                    context,
+                                    event.copy(
+                                        title = title,
+                                        description = description,
+                                        isAllDay = checked,
+                                        startDateTime = selectedDateTime,
+                                        repetition = eventRepetition,
+                                        notificationOffset = notificationOffset
+                                    ),
+                                    adjustedTime
+                                )
+                            )
+                            navController.popBackStack()
+                        })
                     { Icon(Icons.Default.Check, null) }
                     IconButton({
-                        cancelReminder(context, event.eventId, "EVENT", event.title, event.description, event.repetition.toString())
+                        cancelReminder(
+                            context,
+                            event.eventId,
+                            "EVENT",
+                            event.title,
+                            event.description,
+                            event.repetition.toString()
+                        )
                         navController.popBackStack()
                         onTaskEvents(TaskEvents.DeleteTask(event))
-                    }) { Icon(Icons.Outlined.DeleteOutline, null, tint = MaterialTheme.colorScheme.error) }
+                    }) {
+                        Icon(
+                            Icons.Outlined.DeleteOutline,
+                            null,
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                    }
                 }
             )
         }
-    ){ innerPadding->
-        Column(Modifier.fillMaxSize().padding(innerPadding).verticalScroll(rememberScrollState())) {
+    ) { innerPadding ->
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .verticalScroll(rememberScrollState())
+        ) {
             Column(Modifier.padding(vertical = 8.dp, horizontal = 16.dp)) {
                 TextField(
                     value = title,
-                    onValueChange = { title=it },
+                    onValueChange = { title = it },
                     shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
                     placeholder = { Text(stringResource(R.string.Title)) },
                     textStyle = MaterialTheme.typography.titleLarge,
@@ -167,11 +231,13 @@ fun EventDetails(
                 Spacer(Modifier.height(2.dp))
                 TextField(
                     value = description,
-                    onValueChange = { description=it },
+                    onValueChange = { description = it },
                     placeholder = { Text(stringResource(R.string.Description)) },
                     textStyle = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.ExtraLight),
                     shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp),
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 12.dp),
                     colors = TextFieldDefaults.colors(
                         focusedIndicatorColor = Color.Transparent,
                         unfocusedIndicatorColor = Color.Transparent,
@@ -185,8 +251,17 @@ fun EventDetails(
 
             HorizontalDivider(Modifier.fillMaxWidth())
             Column(Modifier.fillMaxWidth(), verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Row(Modifier.fillMaxWidth().padding(vertical = 8.dp, horizontal = 16.dp), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                    Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp, horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
                         Icon(Icons.Default.AccessTime, null)
                         Text(stringResource(R.string.All_Day))
                     }
@@ -209,32 +284,84 @@ fun EventDetails(
                     )
                 }
 
-                Row(Modifier.fillMaxWidth().padding(vertical = 8.dp, horizontal = 16.dp), horizontalArrangement = Arrangement.SpaceBetween) {
-                    Text(convertMillisToDate(selectedDateTime).toString(), modifier = Modifier.clickable{ showDatePicker=true }.padding(4.dp))
-                    if(!checked){ Text(convertMillisToTime(selectedDateTime), modifier = Modifier.clickable{ showTimePicker=true }.padding(4.dp)) }
+                Row(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 8.dp, horizontal = 16.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Text(
+                        convertMillisToDate(selectedDateTime).toString(),
+                        modifier = Modifier
+                            .clickable { showDatePicker = true }
+                            .padding(4.dp)
+                    )
+                    if (!checked) {
+                        Text(
+                            convertMillisToTime(selectedDateTime),
+                            modifier = Modifier
+                                .clickable { showTimePicker = true }
+                                .padding(4.dp)
+                        )
+                    }
                 }
             }
             HorizontalDivider(Modifier.fillMaxWidth())
-            Row(Modifier.fillMaxWidth().clickable{ showRepetitionDialog=true }.padding(vertical = 18.dp, horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .clickable { showRepetitionDialog = true }
+                    .padding(vertical = 18.dp, horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 Icon(Icons.Default.Repeat, null)
                 Text(getRepetitionText(eventRepetition))
             }
             HorizontalDivider(Modifier.fillMaxWidth())
-            Row(Modifier.fillMaxWidth().clickable{ showNotificationDialog=true }.padding(vertical = 18.dp, horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .clickable { showNotificationDialog = true }
+                    .padding(vertical = 18.dp, horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 Icon(Icons.Outlined.NotificationsActive, null)
                 Text(getNotificationText(notificationOffset))
             }
             HorizontalDivider(Modifier.fillMaxWidth())
-            Row(Modifier.fillMaxWidth().padding(vertical = 18.dp, horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Icon(if(isPending) Icons.Filled.Pending else Icons.Filled.CheckCircle, null, tint = if(isPending) pending else completed)
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(vertical = 18.dp, horizontal = 16.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Icon(
+                    if (isPending) Icons.Filled.Pending else Icons.Filled.CheckCircle,
+                    null,
+                    tint = if (isPending) pending else completed
+                )
                 Text(getStatusText(status))
             }
-            Row(modifier = Modifier.fillMaxWidth().padding(top = 16.dp), horizontalArrangement = Arrangement.Center){
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 16.dp),
+                horizontalArrangement = Arrangement.Center
+            ) {
                 ElevatedButton(
-                    onClick = { status= if(isPending) EventStatus.COMPLETED else EventStatus.PENDING},
+                    onClick = {
+                        status = if (isPending) EventStatus.COMPLETED else EventStatus.PENDING
+                    },
                     colors = ButtonDefaults.buttonColors()
                 ) {
-                    Text(if(isPending) stringResource(R.string.Mark_As_Completed) else stringResource(R.string.Mark_As_Uncompleted), style= MaterialTheme.typography.titleMedium)
+                    Text(
+                        if (isPending) stringResource(R.string.Mark_As_Completed) else stringResource(
+                            R.string.Mark_As_Uncompleted
+                        ), style = MaterialTheme.typography.titleMedium
+                    )
                 }
             }
         }
@@ -242,21 +369,21 @@ fun EventDetails(
 }
 
 @Composable
-fun getStatusText(status: EventStatus): String{
-    return when(status){
+fun getStatusText(status: EventStatus): String {
+    return when (status) {
         EventStatus.PENDING -> stringResource(R.string.Status_Pending)
-        else-> stringResource(R.string.Status_Completed)
+        else -> stringResource(R.string.Status_Completed)
     }
 }
 
 @Composable
-fun getRepetitionText(repetition: Repetition): String{
-    return when(repetition){
+fun getRepetitionText(repetition: Repetition): String {
+    return when (repetition) {
         Repetition.DAILY -> stringResource(R.string.Daily)
         Repetition.WEEKLY -> stringResource(R.string.Weekly)
         Repetition.MONTHLY -> stringResource(R.string.Monthly)
         Repetition.YEARLY -> stringResource(R.string.Yearly)
-        else-> stringResource(R.string.NONE)
+        else -> stringResource(R.string.NONE)
     }
 }
 
@@ -278,12 +405,14 @@ fun getNextValidReminderTime(
             }
             reminderTime
         }
+
         Repetition.WEEKLY -> {
             while (reminderTime <= now) {
                 reminderTime += DateUtils.WEEK_IN_MILLIS
             }
             reminderTime
         }
+
         Repetition.MONTHLY -> {
             val calendar = Calendar.getInstance().apply { timeInMillis = reminderTime }
             while (calendar.timeInMillis <= now) {
@@ -291,6 +420,7 @@ fun getNextValidReminderTime(
             }
             calendar.timeInMillis
         }
+
         Repetition.YEARLY -> {
             val calendar = Calendar.getInstance().apply { timeInMillis = reminderTime }
             while (calendar.timeInMillis <= now) {
@@ -298,6 +428,7 @@ fun getNextValidReminderTime(
             }
             calendar.timeInMillis
         }
+
         Repetition.NONE -> null
     }
 }

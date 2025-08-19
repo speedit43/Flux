@@ -62,52 +62,45 @@ fun EventHome(
     allEvents: List<EventModel>,
     allEventInstances: List<EventInstanceModel>,
     workspaceId: Long,
-    onTaskEvents: (TaskEvents)->Unit
+    onTaskEvents: (TaskEvents) -> Unit
 ) {
-    if(isLoading) { Loader() }
-    else if(allEvents.isEmpty()){ EmptyEvents() }
-    else {
+    if (isLoading) {
+        Loader()
+    } else if (allEvents.isEmpty()) {
+        EmptyEvents()
+    } else {
         val today = LocalDate.now()
 
         val pendingTasks = allEvents.filter { event ->
-            val instance = allEventInstances.find { it.eventId == event.eventId && it.instanceDate == today }
-            instance == null || instance.status== EventStatus.PENDING
+            val instance =
+                allEventInstances.find { it.eventId == event.eventId && it.instanceDate == today }
+            instance == null || instance.status == EventStatus.PENDING
         }
 
         val completedTasks = allEvents.filter { event ->
-            val instance = allEventInstances.find { it.eventId == event.eventId && it.instanceDate == today }
-            instance != null && instance.status== EventStatus.COMPLETED
+            val instance =
+                allEventInstances.find { it.eventId == event.eventId && it.instanceDate == today }
+            instance != null && instance.status == EventStatus.COMPLETED
         }
 
         Column(
-            modifier = Modifier.padding(top = 24.dp, end = 8.dp).verticalScroll(rememberScrollState()),
+            modifier = Modifier
+                .padding(top = 24.dp, end = 8.dp)
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             if (pendingTasks.isNotEmpty()) {
-                pendingTasks.forEach { event->
-                    val instance = allEventInstances.find { it.eventId == event.eventId && it.instanceDate == today }
-                        ?: EventInstanceModel(eventId = event.eventId, instanceDate = today, workspaceId = workspaceId)
+                pendingTasks.forEach { event ->
+                    val instance =
+                        allEventInstances.find { it.eventId == event.eventId && it.instanceDate == today }
+                            ?: EventInstanceModel(
+                                eventId = event.eventId,
+                                instanceDate = today,
+                                workspaceId = workspaceId
+                            )
 
                     EventCard(
-                        radius=radius,
-                        isAllDay = event.isAllDay,
-                        eventInstance = instance,
-                        title = event.title,
-                        timeline = event.startDateTime,
-                        description = event.description,
-                        repeat = event.repetition,
-                        onChangeStatus = { onTaskEvents(TaskEvents.ToggleStatus(it)) },
-                        onClick = { navController.navigate(NavRoutes.EventDetails.withArgs(workspaceId, event.eventId)) }
-                    )
-                }
-            }
-
-            if (completedTasks.isNotEmpty()) {
-                completedTasks.forEach{ event ->
-                    val instance = allEventInstances.find { it.eventId == event.eventId && it.instanceDate == today }!!
-
-                    EventCard(
-                        radius=radius,
+                        radius = radius,
                         isAllDay = event.isAllDay,
                         eventInstance = instance,
                         title = event.title,
@@ -116,7 +109,38 @@ fun EventHome(
                         repeat = event.repetition,
                         onChangeStatus = { onTaskEvents(TaskEvents.ToggleStatus(it)) },
                         onClick = {
-                            navController.navigate(NavRoutes.EventDetails.withArgs(workspaceId, event.eventId))
+                            navController.navigate(
+                                NavRoutes.EventDetails.withArgs(
+                                    workspaceId,
+                                    event.eventId
+                                )
+                            )
+                        }
+                    )
+                }
+            }
+
+            if (completedTasks.isNotEmpty()) {
+                completedTasks.forEach { event ->
+                    val instance =
+                        allEventInstances.find { it.eventId == event.eventId && it.instanceDate == today }!!
+
+                    EventCard(
+                        radius = radius,
+                        isAllDay = event.isAllDay,
+                        eventInstance = instance,
+                        title = event.title,
+                        timeline = event.startDateTime,
+                        description = event.description,
+                        repeat = event.repetition,
+                        onChangeStatus = { onTaskEvents(TaskEvents.ToggleStatus(it)) },
+                        onClick = {
+                            navController.navigate(
+                                NavRoutes.EventDetails.withArgs(
+                                    workspaceId,
+                                    event.eventId
+                                )
+                            )
                         }
                     )
                 }
@@ -126,7 +150,7 @@ fun EventHome(
 }
 
 @Composable
-fun EmptyEvents(){
+fun EmptyEvents() {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -143,13 +167,13 @@ fun EmptyEvents(){
 
 @Composable
 fun IconRadioButton(
-    modifier: Modifier= Modifier,
+    modifier: Modifier = Modifier,
     uncheckedTint: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
     checkedTint: Color = completed,
     selected: Boolean,
     onClick: () -> Unit
 ) {
-    IconButton(modifier=modifier, onClick = onClick) {
+    IconButton(modifier = modifier, onClick = onClick) {
         if (selected) {
             Icon(
                 imageVector = Icons.Default.CheckCircle,
@@ -175,22 +199,25 @@ fun EventCard(
     timeline: Long,
     description: String,
     repeat: Repetition,
-    onChangeStatus: (EventInstanceModel)->Unit,
+    onChangeStatus: (EventInstanceModel) -> Unit,
     onClick: () -> Unit
 ) {
-    val eventStatus=eventInstance.status
+    val eventStatus = eventInstance.status
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         IconRadioButton(
             selected = eventStatus == EventStatus.COMPLETED,
             onClick = {
-                val newStatus = if (eventStatus == EventStatus.COMPLETED) EventStatus.PENDING else EventStatus.COMPLETED
+                val newStatus =
+                    if (eventStatus == EventStatus.COMPLETED) EventStatus.PENDING else EventStatus.COMPLETED
                 onChangeStatus(eventInstance.copy(status = newStatus))
             }
         )
         OutlinedCard(
-            modifier = Modifier.fillMaxWidth().height(if (description.isEmpty()) 55.dp else 76.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(if (description.isEmpty()) 55.dp else 76.dp),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
-            shape = shapeManager(radius=radius*2),
+            shape = shapeManager(radius = radius * 2),
             onClick = onClick
         ) {
             Row(Modifier.fillMaxWidth()) {
@@ -199,27 +226,34 @@ fun EventCard(
                         .width(16.dp)
                         .height(if (description.isEmpty()) 55.dp else 76.dp)
                         .background(
-                            if(eventStatus== EventStatus.PENDING) pending else completed,
+                            if (eventStatus == EventStatus.PENDING) pending else completed,
                             RoundedCornerShape(topStart = 24.dp, bottomStart = 24.dp)
                         )
                 )
 
-                Column(modifier = Modifier.weight(1f).padding(horizontal = 8.dp, vertical = 4.dp)) {
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                ) {
                     Text(title, style = MaterialTheme.typography.titleMedium)
-                    Row(Modifier.padding(vertical = 2.dp), verticalAlignment = Alignment.CenterVertically) {
-                        if(repeat!= Repetition.NONE){
-                                Row(
-                                    modifier = Modifier.padding(end = 6.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(2.dp),
-                                ) {
-                                    Icon(Icons.Default.Repeat, null, modifier = Modifier.size(15.dp))
-                                    Text(
-                                        repeat.toString(),
-                                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-                                        modifier = Modifier.alpha(0.9f)
-                                    )
-                                }
+                    Row(
+                        Modifier.padding(vertical = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (repeat != Repetition.NONE) {
+                            Row(
+                                modifier = Modifier.padding(end = 6.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(2.dp),
+                            ) {
+                                Icon(Icons.Default.Repeat, null, modifier = Modifier.size(15.dp))
+                                Text(
+                                    repeat.toString(),
+                                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
+                                    modifier = Modifier.alpha(0.9f)
+                                )
+                            }
 
                         }
                         Text(

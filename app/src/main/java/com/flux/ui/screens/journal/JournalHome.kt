@@ -69,12 +69,13 @@ fun JournalHome(
     // Grouping entries by Month and Year
     val grouped = remember(allEntries) {
         allEntries.sortedBy { it.dateTime }.groupBy {
-            val date = Instant.ofEpochMilli(it.dateTime).atZone(ZoneId.systemDefault()).toLocalDate()
+            val date =
+                Instant.ofEpochMilli(it.dateTime).atZone(ZoneId.systemDefault()).toLocalDate()
             Pair(date.month, date.year)
         }
     }
 
-    if(allEntries.isEmpty()){
+    if (allEntries.isEmpty()) {
         val currentMonth = LocalDate.now().month
         val currentYear = LocalDate.now().year
         Text(
@@ -142,7 +143,12 @@ fun JournalHome(
 
                 itemsIndexed(entries, key = { _, entry -> entry.journalId }) { index, entry ->
                     JournalPreview(entry, index == entries.lastIndex) {
-                        navController.navigate(NavRoutes.EditJournal.withArgs(workspaceId, entry.journalId))
+                        navController.navigate(
+                            NavRoutes.EditJournal.withArgs(
+                                workspaceId,
+                                entry.journalId
+                            )
+                        )
                     }
                 }
             }
@@ -156,11 +162,11 @@ fun JournalHome(
 }
 
 
-
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun JournalPreview(journalEntry: JournalModel, isLast: Boolean=false, onClick: () -> Unit) {
-    val dateTime = Instant.ofEpochMilli(journalEntry.dateTime).atZone(ZoneId.systemDefault()).toLocalDateTime()
+fun JournalPreview(journalEntry: JournalModel, isLast: Boolean = false, onClick: () -> Unit) {
+    val dateTime =
+        Instant.ofEpochMilli(journalEntry.dateTime).atZone(ZoneId.systemDefault()).toLocalDateTime()
     val dayOfWeek = dateTime.dayOfWeek.name.take(3)
     val dayOfMonth = dateTime.dayOfMonth.toString()
     val timeFormatted = dateTime.format(DateTimeFormatter.ofPattern("h:mm a"))
@@ -172,9 +178,10 @@ fun JournalPreview(journalEntry: JournalModel, isLast: Boolean=false, onClick: (
         scrollState.scrollTo(0)
     }
 
-    Column(Modifier
-        .fillMaxWidth()
-        .clickable { onClick() }) {
+    Column(
+        Modifier
+            .fillMaxWidth()
+            .clickable { onClick() }) {
         Row(
             Modifier.padding(8.dp),
             verticalAlignment = Alignment.CenterVertically,
@@ -183,8 +190,14 @@ fun JournalPreview(journalEntry: JournalModel, isLast: Boolean=false, onClick: (
                 Modifier.padding(start = 8.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Text(dayOfWeek, style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold))
-                Text(dayOfMonth, style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold))
+                Text(
+                    dayOfWeek,
+                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold)
+                )
+                Text(
+                    dayOfMonth,
+                    style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.Bold)
+                )
             }
 
             Row(
@@ -193,10 +206,11 @@ fun JournalPreview(journalEntry: JournalModel, isLast: Boolean=false, onClick: (
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 Column(Modifier.weight(1f)) {
-                    Box(modifier = Modifier
-                        .fillMaxWidth()
-                        .heightIn(max = 100.dp)
-                        .verticalScroll(scrollState)
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .heightIn(max = 100.dp)
+                            .verticalScroll(scrollState)
                     ) {
                         RichTextEditor(
                             state = richTextState,
@@ -210,7 +224,11 @@ fun JournalPreview(journalEntry: JournalModel, isLast: Boolean=false, onClick: (
                             )
                         )
                     }
-                    Row(Modifier.padding(start = 16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+                    Row(
+                        Modifier.padding(start = 16.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.spacedBy(4.dp)
+                    ) {
                         Icon(Icons.Default.Edit, null, modifier = Modifier.size(12.dp))
                         Text(
                             timeFormatted,
@@ -232,9 +250,8 @@ fun JournalPreview(journalEntry: JournalModel, isLast: Boolean=false, onClick: (
                 }
             }
         }
-        if(!isLast){
+        if (!isLast) {
             HorizontalDivider()
-        }
-        else Spacer(Modifier.height(8.dp))
+        } else Spacer(Modifier.height(8.dp))
     }
 }

@@ -3,7 +3,7 @@ package com.flux.ui.state
 import com.flux.data.model.EventInstanceModel
 import com.flux.data.model.EventModel
 
-data class EventState (
+data class EventState(
     val isTodayEventLoading: Boolean = true,
     val isDatedEventLoading: Boolean = true,
     val allEvent: List<EventModel> = emptyList(),

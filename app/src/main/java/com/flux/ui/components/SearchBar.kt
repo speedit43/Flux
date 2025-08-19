@@ -51,26 +51,33 @@ fun WorkspaceSearchBar(
     searchResults: List<WorkspaceModel>,
     onSettingsClicked: () -> Unit,
     onCloseClicked: () -> Unit,
-    onWorkspaceEvents: (WorkspaceEvents)->Unit,
-    onClick: (WorkspaceModel)->Unit
-){
+    onWorkspaceEvents: (WorkspaceEvents) -> Unit,
+    onClick: (WorkspaceModel) -> Unit
+) {
     val query = textFieldState.text.toString()
     var expanded by rememberSaveable { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .semantics { isTraversalGroup = true }) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .semantics { isTraversalGroup = true }) {
         SearchBar(
-            modifier = Modifier.align(Alignment.TopCenter).wrapContentHeight().semantics { traversalIndex = 0f },
+            modifier = Modifier
+                .align(Alignment.TopCenter)
+                .wrapContentHeight()
+                .semantics { traversalIndex = 0f },
             inputField = {
-                WorkspaceSearchInputField(query, expanded,
+                WorkspaceSearchInputField(
+                    query, expanded,
                     onQueryChange = {
                         textFieldState.edit { replace(0, length, it) }
                         onSearch(it)
-                        if (it.isBlank()) { expanded = false }
+                        if (it.isBlank()) {
+                            expanded = false
+                        }
                     },
-                    onSearch={
+                    onSearch = {
                         keyboardController?.hide()
                         onSearch(query)
                     },
@@ -84,25 +91,36 @@ fun WorkspaceSearchBar(
                     onSettingsClicked = onSettingsClicked
                 )
             },
-            colors = SearchBarDefaults.colors(containerColor = if (expanded) MaterialTheme.colorScheme.surfaceContainerLow else MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)),
+            colors = SearchBarDefaults.colors(
+                containerColor = if (expanded) MaterialTheme.colorScheme.surfaceContainerLow else MaterialTheme.colorScheme.surfaceColorAtElevation(
+                    6.dp
+                )
+            ),
             expanded = expanded,
             onExpandedChange = { expanded = it },
         ) {
             ElevatedCard(
                 shape = RoundedCornerShape(16.dp),
                 modifier = Modifier.padding(16.dp),
-                colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
+                colors = CardDefaults.elevatedCardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                        6.dp
+                    )
+                )
             ) {
                 LazyColumn {
                     itemsIndexed(searchResults) { index, space ->
                         WorkSpacesCard(
                             workspace = space,
                             onClick = {
-                                expanded=false
-                                onClick(space) },
+                                expanded = false
+                                onClick(space)
+                            },
                             onWorkspaceEvents = onWorkspaceEvents
                         )
-                        if (index!=searchResults.lastIndex){ HorizontalDivider(modifier = Modifier.alpha(0.4f)) }
+                        if (index != searchResults.lastIndex) {
+                            HorizontalDivider(modifier = Modifier.alpha(0.4f))
+                        }
                     }
                 }
             }
@@ -115,12 +133,12 @@ fun WorkspaceSearchBar(
 fun WorkspaceSearchInputField(
     query: String,
     expanded: Boolean,
-    onQueryChange: (String)->Unit,
-    onSearch: (String)->Unit,
-    onSearchClosed: ()-> Unit,
-    onExpandedChange: (Boolean)->Unit,
-    onSettingsClicked: ()->Unit
-){
+    onQueryChange: (String) -> Unit,
+    onSearch: (String) -> Unit,
+    onSearchClosed: () -> Unit,
+    onExpandedChange: (Boolean) -> Unit,
+    onSettingsClicked: () -> Unit
+) {
     SearchBarDefaults.InputField(
         query = query,
         onQueryChange = onQueryChange,
@@ -130,8 +148,12 @@ fun WorkspaceSearchInputField(
         placeholder = { Text(stringResource(R.string.Search_Workspaces)) },
         leadingIcon = { Icon(Icons.Rounded.Search, "Search") },
         trailingIcon = {
-            Row { if(query.isNotBlank() || expanded) CloseButton(onSearchClosed)
-            if(!expanded) {SettingsButton( onSettingsClicked )} }
+            Row {
+                if (query.isNotBlank() || expanded) CloseButton(onSearchClosed)
+                if (!expanded) {
+                    SettingsButton(onSettingsClicked)
+                }
+            }
         }
     )
 }
@@ -145,34 +167,43 @@ fun NotesSearchBar(
     searchResults: List<NotesModel>,
     allLabels: List<LabelModel>,
     onCloseClicked: () -> Unit,
-    onSettingsEvents: (SettingEvents)->Unit,
+    onSettingsEvents: (SettingEvents) -> Unit,
     selectedNotes: List<NotesModel>,
-    onNotesClick: (Long)->Unit,
-    onNotesLongPress: (NotesModel)->Unit
-){
+    onNotesClick: (Long) -> Unit,
+    onNotesLongPress: (NotesModel) -> Unit
+) {
     val query = textFieldState.text.toString()
     var expanded by rememberSaveable { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
-    val radius=settings.data.cornerRadius
-    val isGridView=settings.data.isGridView
-    val filteredResults=searchResults.filter { it.title.contains(query, ignoreCase = true) || it.description.contains(query, ignoreCase = true) }
-    val pinnedNotes=filteredResults.filter { it.isPinned }
-    val unPinnedNotes=filteredResults.filter { !it.isPinned }
+    val radius = settings.data.cornerRadius
+    val isGridView = settings.data.isGridView
+    val filteredResults = searchResults.filter {
+        it.title.contains(
+            query,
+            ignoreCase = true
+        ) || it.description.contains(query, ignoreCase = true)
+    }
+    val pinnedNotes = filteredResults.filter { it.isPinned }
+    val unPinnedNotes = filteredResults.filter { !it.isPinned }
 
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .semantics { isTraversalGroup = true }) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .semantics { isTraversalGroup = true }) {
         SearchBar(
             modifier = Modifier
                 .align(Alignment.TopCenter)
                 .wrapContentHeight()
                 .semantics { traversalIndex = 0f },
             inputField = {
-                NotesSearchInputField(isGridView, query, expanded,
+                NotesSearchInputField(
+                    isGridView, query, expanded,
                     {
                         textFieldState.edit { replace(0, length, it) }
                         onSearch(it)
-                        if (it.isBlank()) { expanded = false }
+                        if (it.isBlank()) {
+                            expanded = false
+                        }
                     }, {
                         keyboardController?.hide()
                         onSearch(query)
@@ -183,15 +214,31 @@ fun NotesSearchBar(
                         expanded = false
                     },
                     { expanded = it },
-                    { onSettingsEvents(SettingEvents.UpdateSettings(settings.data.copy(isGridView=!isGridView))) }
+                    { onSettingsEvents(SettingEvents.UpdateSettings(settings.data.copy(isGridView = !isGridView))) }
                 )
             },
-            colors = SearchBarDefaults.colors(containerColor = if (expanded) MaterialTheme.colorScheme.surfaceContainerLow else MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)),
+            colors = SearchBarDefaults.colors(
+                containerColor = if (expanded) MaterialTheme.colorScheme.surfaceContainerLow else MaterialTheme.colorScheme.surfaceColorAtElevation(
+                    6.dp
+                )
+            ),
             expanded = expanded,
             onExpandedChange = { expanded = it },
         ) {
-            if (pinnedNotes.isEmpty() && unPinnedNotes.isEmpty()){ EmptyNotes() }
-            else{ NotesPreviewGrid(radius, isGridView, allLabels, pinnedNotes, unPinnedNotes, selectedNotes, onNotesClick, onNotesLongPress) }
+            if (pinnedNotes.isEmpty() && unPinnedNotes.isEmpty()) {
+                EmptyNotes()
+            } else {
+                NotesPreviewGrid(
+                    radius,
+                    isGridView,
+                    allLabels,
+                    pinnedNotes,
+                    unPinnedNotes,
+                    selectedNotes,
+                    onNotesClick,
+                    onNotesLongPress
+                )
+            }
         }
     }
 }
@@ -202,12 +249,12 @@ fun NotesSearchInputField(
     isGridView: Boolean,
     query: String,
     expanded: Boolean,
-    onQueryChange: (String)->Unit,
-    onSearch: (String)->Unit,
-    onSearchClosed: ()-> Unit,
-    onExpandedChange: (Boolean)->Unit,
-    onGridViewChange: ()->Unit
-){
+    onQueryChange: (String) -> Unit,
+    onSearch: (String) -> Unit,
+    onSearchClosed: () -> Unit,
+    onExpandedChange: (Boolean) -> Unit,
+    onGridViewChange: () -> Unit
+) {
     SearchBarDefaults.InputField(
         query = query,
         onQueryChange = onQueryChange,
@@ -216,9 +263,13 @@ fun NotesSearchInputField(
         onExpandedChange = onExpandedChange,
         placeholder = { Text(stringResource(R.string.Search_Notes)) },
         leadingIcon = { Icon(Icons.Rounded.Search, "Search") },
-        trailingIcon = { Row {
-            if (query.isNotBlank()) { CloseButton(onSearchClosed) }
-            GridViewButton(isGridView, onGridViewChange)
-        } }
+        trailingIcon = {
+            Row {
+                if (query.isNotBlank()) {
+                    CloseButton(onSearchClosed)
+                }
+                GridViewButton(isGridView, onGridViewChange)
+            }
+        }
     )
 }

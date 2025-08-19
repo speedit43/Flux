@@ -55,11 +55,14 @@ fun SettingCategory(
                 action()
             },
         colors = CardDefaults.elevatedCardColors(
-            containerColor =MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)
+            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)
         )
     ) {
         Row(
-            modifier = Modifier.clip(shape).fillMaxSize().padding(16.dp),
+            modifier = Modifier
+                .clip(shape)
+                .fillMaxSize()
+                .padding(16.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             RenderCategoryIcon(icon = icon)
@@ -73,8 +76,13 @@ fun SettingCategory(
     Spacer(modifier = Modifier.height(if (isLast) 24.dp else 2.dp))
 }
 
-fun shapeManager(isBoth: Boolean = false, isLast: Boolean = false, isFirst: Boolean = false, radius: Int): RoundedCornerShape {
-    val smallerRadius: Dp = (radius/5).dp
+fun shapeManager(
+    isBoth: Boolean = false,
+    isLast: Boolean = false,
+    isFirst: Boolean = false,
+    radius: Int
+): RoundedCornerShape {
+    val smallerRadius: Dp = (radius / 5).dp
     val defaultRadius: Dp = radius.dp
 
     return when {

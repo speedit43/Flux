@@ -9,6 +9,6 @@ import com.flux.data.model.EventInstanceModel
 
 @Database(entities = [EventInstanceModel::class], version = 2, exportSchema = false)
 @TypeConverters(Converter::class)
-abstract class EventInstanceDatabase: RoomDatabase() {
+abstract class EventInstanceDatabase : RoomDatabase() {
     abstract val dao: EventInstanceDao
 }

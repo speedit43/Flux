@@ -70,7 +70,7 @@ import java.time.format.TextStyle
 import java.util.Locale
 
 @Composable
-fun EmptyHabits(){
+fun EmptyHabits() {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -152,10 +152,10 @@ fun HabitPreviewCard(
     val (currentStreak, _) = calculateStreaks(instances)
 
     Card(
-        onClick = {onToggleDone(today)},
+        onClick = { onToggleDone(today) },
         modifier = Modifier.fillMaxWidth(),
         colors = CardDefaults.cardColors(containerColor = if (isTodayDone) MaterialTheme.colorScheme.primaryContainer else MaterialTheme.colorScheme.tertiaryContainer),
-        shape = shapeManager(radius=radius*2)
+        shape = shapeManager(radius = radius * 2)
     ) {
         Column {
             Card(
@@ -164,9 +164,13 @@ fun HabitPreviewCard(
                     containerColor = if (isTodayDone) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.tertiary,
                     contentColor = MaterialTheme.colorScheme.onTertiary
                 ),
-                shape = shapeManager(radius=radius*2)
+                shape = shapeManager(radius = radius * 2)
             ) {
-                Column(Modifier.fillMaxWidth().padding(8.dp)) {
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                ) {
                     Row(
                         Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
@@ -179,7 +183,12 @@ fun HabitPreviewCard(
                                 uncheckedTint = MaterialTheme.colorScheme.onTertiary
                             ) { onToggleDone(today) }
                             Column {
-                                Text(habit.title, fontWeight = FontWeight.SemiBold, maxLines = 1, overflow = TextOverflow.Ellipsis)
+                                Text(
+                                    habit.title,
+                                    fontWeight = FontWeight.SemiBold,
+                                    maxLines = 1,
+                                    overflow = TextOverflow.Ellipsis
+                                )
                                 Text(
                                     habit.startDateTime.toFormattedTime(),
                                     style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.ExtraLight),
@@ -198,12 +207,21 @@ fun HabitPreviewCard(
             }
 
             Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 4.dp, vertical = 12.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 4.dp, vertical = 12.dp),
                 horizontalArrangement = Arrangement.spacedBy(2.dp)
             ) {
                 weekDates.forEach { date ->
                     val isDone = instances.any { it.instanceDate == date }
-                    HabitDateCard(radius, isDone, isTodayDone, date.dayOfWeek.name.take(3), date.dayOfMonth, Modifier.weight(1f))
+                    HabitDateCard(
+                        radius,
+                        isDone,
+                        isTodayDone,
+                        date.dayOfWeek.name.take(3),
+                        date.dayOfMonth,
+                        Modifier.weight(1f)
+                    )
                 }
             }
         }
@@ -211,8 +229,17 @@ fun HabitPreviewCard(
 }
 
 @Composable
-fun HabitCalenderCard(radius: Int, habitId: Long, workspaceId: Long, startDateTime: Long, habitInstances: List<HabitInstanceModel>, onHabitEvents: (HabitEvents)->Unit){
-    val habitStartMonth = Instant.ofEpochMilli(startDateTime).atZone(ZoneId.systemDefault()).toLocalDate().let { YearMonth.of(it.year, it.month) }
+fun HabitCalendarCard(
+    radius: Int,
+    habitId: Long,
+    workspaceId: Long,
+    startDateTime: Long,
+    habitInstances: List<HabitInstanceModel>,
+    onHabitEvents: (HabitEvents) -> Unit
+) {
+    val habitStartMonth =
+        Instant.ofEpochMilli(startDateTime).atZone(ZoneId.systemDefault()).toLocalDate()
+            .let { YearMonth.of(it.year, it.month) }
     var currentMonth by remember { mutableStateOf(YearMonth.now()) }
     val currentYearMonth = YearMonth.now()
     val endOfYear = YearMonth.of(currentYearMonth.year, 12)
@@ -224,14 +251,22 @@ fun HabitCalenderCard(radius: Int, habitId: Long, workspaceId: Long, startDateTi
     val daysOfWeek = listOf("Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat")
 
     Card(
-        modifier = Modifier.fillMaxWidth().height(330.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .height(330.dp),
         onClick = {},
-        shape = shapeManager(radius = radius*2),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
+        shape = shapeManager(radius = radius * 2),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                2.dp
+            )
+        )
     ) {
         Column(Modifier.padding(16.dp)) {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(4.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(4.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
@@ -247,7 +282,12 @@ fun HabitCalenderCard(radius: Int, habitId: Long, workspaceId: Long, startDateTi
                             .size(16.dp)
                     )
                 }
-                Text(text = currentMonth.month.getDisplayName(TextStyle.FULL, Locale.getDefault()) + " ${currentMonth.year}", style = MaterialTheme.typography.titleMedium)
+                Text(
+                    text = currentMonth.month.getDisplayName(
+                        TextStyle.FULL,
+                        Locale.getDefault()
+                    ) + " ${currentMonth.year}", style = MaterialTheme.typography.titleMedium
+                )
                 IconButton(
                     onClick = { if (canGoForward) currentMonth = currentMonth.plusMonths(1) },
                     enabled = canGoForward
@@ -287,9 +327,13 @@ fun HabitCalenderCard(radius: Int, habitId: Long, workspaceId: Long, startDateTi
                 items(dates) { date ->
                     val instance = habitInstances.find { it.instanceDate == date }
                     val isMarked = instance != null
-                    val backgroundColor = if (isMarked) MaterialTheme.colorScheme.primary.copy(alpha = 0.8f) else Color.Transparent
-                    val textColor = if (isMarked) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
-                    val habitStartDate = Instant.ofEpochMilli(startDateTime).atZone(ZoneId.systemDefault()).toLocalDate()
+                    val backgroundColor =
+                        if (isMarked) MaterialTheme.colorScheme.primary.copy(alpha = 0.8f) else Color.Transparent
+                    val textColor =
+                        if (isMarked) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+                    val habitStartDate =
+                        Instant.ofEpochMilli(startDateTime).atZone(ZoneId.systemDefault())
+                            .toLocalDate()
                     val isBeforeStart = date.isBefore(habitStartDate)
                     val dateAlpha = if (isBeforeStart) 0.2f else 1f
 
@@ -300,8 +344,19 @@ fun HabitCalenderCard(radius: Int, habitId: Long, workspaceId: Long, startDateTi
                             .background(backgroundColor)
                             .alpha(dateAlpha)
                             .clickable(enabled = !isBeforeStart) {
-                                if (isMarked) { onHabitEvents(HabitEvents.MarkUndone(instance)) }
-                                else { onHabitEvents(HabitEvents.MarkDone(HabitInstanceModel(habitId = habitId, instanceDate = date, workspaceId = workspaceId))) }
+                                if (isMarked) {
+                                    onHabitEvents(HabitEvents.MarkUndone(instance))
+                                } else {
+                                    onHabitEvents(
+                                        HabitEvents.MarkDone(
+                                            HabitInstanceModel(
+                                                habitId = habitId,
+                                                instanceDate = date,
+                                                workspaceId = workspaceId
+                                            )
+                                        )
+                                    )
+                                }
                             },
                         contentAlignment = Alignment.Center
                     ) {
@@ -314,42 +369,76 @@ fun HabitCalenderCard(radius: Int, habitId: Long, workspaceId: Long, startDateTi
 }
 
 @Composable
-fun HabitStreakCard(currentStreak: Int, bestStreak: Int, radius: Int){
+fun HabitStreakCard(currentStreak: Int, bestStreak: Int, radius: Int) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         onClick = {},
-        shape = shapeManager(radius = radius*2),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
+        shape = shapeManager(radius = radius * 2),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                2.dp
+            )
+        )
     ) {
-        Row(Modifier.fillMaxWidth().padding(16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
             Column {
-                Text("${stringResource(R.string.Current_Streak)} $currentStreak days", modifier = Modifier.alpha(0.85f))
-                Text("${stringResource(R.string.Best_Streak)} $bestStreak days", fontWeight = FontWeight.SemiBold)
+                Text(
+                    "${stringResource(R.string.Current_Streak)} $currentStreak days",
+                    modifier = Modifier.alpha(0.85f)
+                )
+                Text(
+                    "${stringResource(R.string.Best_Streak)} $bestStreak days",
+                    fontWeight = FontWeight.SemiBold
+                )
             }
             CircleWrapper(MaterialTheme.colorScheme.primary) {
-                Icon(Icons.Default.LocalFireDepartment, null, modifier = Modifier.size(40.dp), tint = MaterialTheme.colorScheme.onPrimary)
+                Icon(
+                    Icons.Default.LocalFireDepartment,
+                    null,
+                    modifier = Modifier.size(40.dp),
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
             }
         }
     }
 }
 
 @Composable
-fun HabitStartCard(startDateTime: Long, radius: Int){
+fun HabitStartCard(startDateTime: Long, radius: Int) {
     Card(
         modifier = Modifier.fillMaxWidth(),
         onClick = {},
-        shape = shapeManager(radius=radius*2),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(2.dp))
+        shape = shapeManager(radius = radius * 2),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                2.dp
+            )
+        )
     ) {
-        Row(Modifier
-            .fillMaxWidth()
-            .padding(16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+        Row(
+            Modifier
+                .fillMaxWidth()
+                .padding(16.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
             Column {
                 Text(stringResource(R.string.Started), modifier = Modifier.alpha(0.85f))
                 Text(startDateTime.toFormattedDate(), fontWeight = FontWeight.SemiBold)
             }
             CircleWrapper(MaterialTheme.colorScheme.primary) {
-                Icon(Icons.Default.Flag, null, modifier = Modifier.size(40.dp), tint = MaterialTheme.colorScheme.onPrimary)
+                Icon(
+                    Icons.Default.Flag,
+                    null,
+                    modifier = Modifier.size(40.dp),
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
             }
         }
     }
@@ -400,7 +489,11 @@ fun MonthlyHabitAnalyticsCard(radius: Int, habitInstances: List<HabitInstanceMod
         ),
         onClick = {}
     ) {
-        Column(Modifier.fillMaxSize().padding(12.dp)) {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(12.dp)
+        ) {
             Text(
                 text = stringResource(R.string.This_Month),
                 style = MaterialTheme.typography.titleMedium,
@@ -431,9 +524,19 @@ fun HabitBarChart(
     val yLabels = (maxDaysPerWeek downTo 1).toList()
     val primaryColor = MaterialTheme.colorScheme.primary // ← get color in @Composable scope
 
-    Row(modifier = modifier.fillMaxWidth().height(220.dp).padding(bottom = 16.dp)) {
+    Row(
+        modifier = modifier
+            .fillMaxWidth()
+            .height(220.dp)
+            .padding(bottom = 16.dp)
+    ) {
         // Y-axis labels
-        Box(modifier = Modifier.width(20.dp).padding(end = 8.dp).fillMaxHeight()) {
+        Box(
+            modifier = Modifier
+                .width(20.dp)
+                .padding(end = 8.dp)
+                .fillMaxHeight()
+        ) {
             Canvas(modifier = Modifier.fillMaxSize()) {
                 val stepHeight = size.height / maxDaysPerWeek
                 val textPaint = Paint().asFrameworkPaint().apply {
@@ -456,7 +559,11 @@ fun HabitBarChart(
         }
 
         // Bar chart canvas
-        Canvas(modifier = Modifier.weight(1f).fillMaxHeight()) {
+        Canvas(
+            modifier = Modifier
+                .weight(1f)
+                .fillMaxHeight()
+        ) {
             val barWidth = size.width / (weekCounts.size * 2 + 1)
             val spacing = barWidth
             val stepHeight = size.height / maxDaysPerWeek

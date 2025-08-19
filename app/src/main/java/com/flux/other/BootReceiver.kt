@@ -24,7 +24,8 @@ class BootReceiver : BroadcastReceiver() {
             CoroutineScope(Dispatchers.IO).launch {
                 val reminders = getStoredReminders(context)
                 for (reminder in reminders) {
-                    val timeInMillis = getNextValidTimeFromOriginal(reminder.timeInMillis, reminder.repeat)
+                    val timeInMillis =
+                        getNextValidTimeFromOriginal(reminder.timeInMillis, reminder.repeat)
                     if (timeInMillis != -1L) {
                         scheduleReminder(
                             context = context,
@@ -56,15 +57,18 @@ class BootReceiver : BroadcastReceiver() {
                 val diff = ((now - originalTime) / (1000 * 60 * 60 * 24)).toInt() + 1
                 calendar.add(Calendar.DAY_OF_YEAR, diff)
             }
+
             "WEEKLY" -> {
                 val diff = ((now - originalTime) / (1000 * 60 * 60 * 24 * 7)).toInt() + 1
                 calendar.add(Calendar.WEEK_OF_YEAR, diff)
             }
+
             "MONTHLY" -> {
                 val start = Calendar.getInstance().apply { timeInMillis = originalTime }
                 val diff = (now to start).monthDiff() + 1
                 calendar.add(Calendar.MONTH, diff)
             }
+
             "YEARLY" -> {
                 val start = Calendar.getInstance().apply { timeInMillis = originalTime }
                 val diff = (now to start).yearDiff() + 1
@@ -92,7 +96,8 @@ class BootReceiver : BroadcastReceiver() {
     fun Pair<Long, Calendar>.yearDiff(): Int = first.yearDiffFrom(second)
 
     private suspend fun getStoredReminders(context: Context): List<Reminder> {
-        val entryPoint = EntryPointAccessors.fromApplication(context, BootReceiverEntryPoint::class.java)
+        val entryPoint =
+            EntryPointAccessors.fromApplication(context, BootReceiverEntryPoint::class.java)
         val habitRepository = entryPoint.habitRepository()
         val eventRepository = entryPoint.eventRepository()
 
@@ -117,7 +122,7 @@ class BootReceiver : BroadcastReceiver() {
                 id = it.eventId,
                 type = "EVENT",
                 repeat = it.repetition.toString(),
-                timeInMillis = it.startDateTime-it.notificationOffset,
+                timeInMillis = it.startDateTime - it.notificationOffset,
                 title = it.title,
                 description = it.description
             )

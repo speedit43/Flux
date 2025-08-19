@@ -1,10 +1,15 @@
 package com.flux.ui.screens.notes
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.text.input.TextFieldState
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -31,7 +36,7 @@ fun NotesHome(
     isLoading: Boolean,
     allNotes: List<NotesModel>,
     onNotesEvents: (NotesEvents) -> Unit,
-    onSettingEvents: (SettingEvents)->Unit
+    onSettingEvents: (SettingEvents) -> Unit
 ) {
     val selectedNotes = remember { mutableStateListOf<NotesModel>() }
     val pinnedNotes = allNotes.filter { it.isPinned }
@@ -46,7 +51,7 @@ fun NotesHome(
             isLoading -> Loader()
             else ->
                 Column {
-                    if(selectedNotes.isNotEmpty()){
+                    if (selectedNotes.isNotEmpty()) {
                         NotesSelectedBar(
                             totalSelectedNotes = selectedNotes.size,
                             isAllSelected = selectedNotes.size == allNotes.size,
@@ -56,35 +61,42 @@ fun NotesHome(
                                 allNotes.forEach { selectedNotes.add(it) }
                             },
                             onClose = { selectedNotes.clear() },
-                            onPinClicked ={
+                            onPinClicked = {
                                 onNotesEvents(NotesEvents.TogglePinMultiple(selectedNotes.toList()))
                                 selectedNotes.clear()
-                                          },
+                            },
                             onDelete = {
                                 onNotesEvents(NotesEvents.DeleteNotes(selectedNotes.toList()))
                                 selectedNotes.clear()
                             }
                         )
-                    }
-                    else{
+                    } else {
                         NotesSearchBar(
-                            settings=settings,
+                            settings = settings,
                             textFieldState = TextFieldState(query),
                             onSearch = { query = it },
                             searchResults = allNotes,
-                            allLabels=allLabels,
+                            allLabels = allLabels,
                             onCloseClicked = { query = "" },
                             onSettingsEvents = onSettingEvents,
-                            selectedNotes=selectedNotes,
-                            onNotesClick = { navController.navigate(NavRoutes.NoteDetails.withArgs(workspaceId, it)) },
+                            selectedNotes = selectedNotes,
+                            onNotesClick = {
+                                navController.navigate(
+                                    NavRoutes.NoteDetails.withArgs(
+                                        workspaceId,
+                                        it
+                                    )
+                                )
+                            },
                             onNotesLongPress = {
                                 if (selectedNotes.contains(it)) selectedNotes.remove(it)
                                 else selectedNotes.add(it)
                             }
                         )
                     }
-                    if (pinnedNotes.isEmpty() && unPinnedNotes.isEmpty()){ EmptyNotes() }
-                    else{
+                    if (pinnedNotes.isEmpty() && unPinnedNotes.isEmpty()) {
+                        EmptyNotes()
+                    } else {
                         NotesPreviewGrid(
                             radius,
                             isGridView,
@@ -92,7 +104,14 @@ fun NotesHome(
                             pinnedNotes,
                             unPinnedNotes,
                             selectedNotes,
-                            onClick = { navController.navigate(NavRoutes.NoteDetails.withArgs(workspaceId, it)) },
+                            onClick = {
+                                navController.navigate(
+                                    NavRoutes.NoteDetails.withArgs(
+                                        workspaceId,
+                                        it
+                                    )
+                                )
+                            },
                             onLongPressed = {
                                 if (selectedNotes.contains(it)) selectedNotes.remove(it)
                                 else selectedNotes.add(it)

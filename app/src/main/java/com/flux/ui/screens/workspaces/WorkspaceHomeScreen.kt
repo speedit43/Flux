@@ -70,15 +70,15 @@ fun WorkspaceHomeScreen(
     allEvents: List<EventModel>,
     allHabits: List<HabitModel>,
     navigateToTab: (Int) -> Unit,
-    onNotesEvents: (NotesEvents)->Unit,
-    onTaskEvents: (TaskEvents)->Unit,
-    onHabitEvents: (HabitEvents)-> Unit,
-    onTodoEvents: (TodoEvents)->Unit,
-    onJournalEvents: (JournalEvents)->Unit,
+    onNotesEvents: (NotesEvents) -> Unit,
+    onTaskEvents: (TaskEvents) -> Unit,
+    onHabitEvents: (HabitEvents) -> Unit,
+    onTodoEvents: (TodoEvents) -> Unit,
+    onJournalEvents: (JournalEvents) -> Unit,
     onWorkspaceEvents: (WorkspaceEvents) -> Unit,
 ) {
-    val context= LocalContext.current
-    val workspaceId=workspace.workspaceId
+    val context = LocalContext.current
+    val workspaceId = workspace.workspaceId
     var updatedWorkspace by remember { mutableStateOf(workspace) }
     var showRemoveDialog by remember { mutableStateOf(false) }
     var isNotesRemoved by remember { mutableStateOf(!workspace.isNotesAdded) }
@@ -87,22 +87,47 @@ fun WorkspaceHomeScreen(
     var isTodoRemoved by remember { mutableStateOf(!workspace.isTodoAdded) }
     var isJournalRemoved by remember { mutableStateOf(!workspace.isJournalAdded) }
 
-    if(showRemoveDialog){
+    if (showRemoveDialog) {
         DeleteAlert(
             icon = Icons.Default.RemoveCircle,
             dialogTitle = stringResource(R.string.removeDialogTitle),
             dialogText = stringResource(R.string.removeDialogText),
             onConfirmation = {
-                if(isNotesRemoved){ onNotesEvents(NotesEvents.DeleteAllWorkspaceNotes(workspaceId)) }
-                if(isTodoRemoved) { onTodoEvents(TodoEvents.DeleteAllWorkspaceLists(workspaceId)) }
-                if(isEventsRemoved) {
-                    allEvents.forEach { event-> cancelReminder(context, event.eventId, "EVENT", event.title, event.description, event.repetition.toString()) }
-                    onTaskEvents(TaskEvents.DeleteAllWorkspaceEvents(workspaceId)) }
-                if(isHabitRemoved) {
-                    allHabits.forEach { habit-> cancelReminder(context, habit.habitId, "HABIT", habit.title, habit.description, "DAILY") }
+                if (isNotesRemoved) {
+                    onNotesEvents(NotesEvents.DeleteAllWorkspaceNotes(workspaceId))
+                }
+                if (isTodoRemoved) {
+                    onTodoEvents(TodoEvents.DeleteAllWorkspaceLists(workspaceId))
+                }
+                if (isEventsRemoved) {
+                    allEvents.forEach { event ->
+                        cancelReminder(
+                            context,
+                            event.eventId,
+                            "EVENT",
+                            event.title,
+                            event.description,
+                            event.repetition.toString()
+                        )
+                    }
+                    onTaskEvents(TaskEvents.DeleteAllWorkspaceEvents(workspaceId))
+                }
+                if (isHabitRemoved) {
+                    allHabits.forEach { habit ->
+                        cancelReminder(
+                            context,
+                            habit.habitId,
+                            "HABIT",
+                            habit.title,
+                            habit.description,
+                            "DAILY"
+                        )
+                    }
                     onHabitEvents(HabitEvents.DeleteAllWorkspaceHabits(workspaceId))
                 }
-                if(isJournalRemoved){ onJournalEvents(JournalEvents.DeleteWorkspaceEntries(workspaceId)) }
+                if (isJournalRemoved) {
+                    onJournalEvents(JournalEvents.DeleteWorkspaceEntries(workspaceId))
+                }
 
                 onWorkspaceEvents(WorkspaceEvents.UpsertSpace(updatedWorkspace))
                 showRemoveDialog = false
@@ -112,20 +137,30 @@ fun WorkspaceHomeScreen(
     }
 
     ElevatedCard(
-        shape = shapeManager(radius=radius*2),
-        modifier = Modifier.padding(16.dp).fillMaxWidth(),
+        shape = shapeManager(radius = radius * 2),
+        modifier = Modifier
+            .padding(16.dp)
+            .fillMaxWidth(),
         onClick = {},
-        colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)),
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                6.dp
+            )
+        ),
     ) {
         LazyColumn(
-            Modifier.fillMaxWidth().padding(bottom = 16.dp),
+            Modifier
+                .fillMaxWidth()
+                .padding(bottom = 16.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             if (workspace.cover.isNotBlank()) {
-                item{
-                    Box(modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)) {
+                item {
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(200.dp)
+                    ) {
                         AsyncImage(
                             model = workspace.cover.toUri(),
                             contentDescription = null,
@@ -134,7 +169,15 @@ fun WorkspaceHomeScreen(
                         )
 
                         IconButton(
-                            onClick = { onWorkspaceEvents(WorkspaceEvents.UpsertSpace(workspace.copy(cover = ""))) },
+                            onClick = {
+                                onWorkspaceEvents(
+                                    WorkspaceEvents.UpsertSpace(
+                                        workspace.copy(
+                                            cover = ""
+                                        )
+                                    )
+                                )
+                            },
                             modifier = Modifier
                                 .align(Alignment.TopEnd)
                                 .padding(8.dp),
@@ -149,10 +192,15 @@ fun WorkspaceHomeScreen(
                 }
             }
             item {
-                Column(Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(top = if (workspace.cover.isNotBlank()) 0.dp else 16.dp, bottom = 8.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Column(
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .padding(
+                            top = if (workspace.cover.isNotBlank()) 0.dp else 16.dp,
+                            bottom = 8.dp
+                        ), verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
                     Row(
                         Modifier.fillMaxWidth(),
                         verticalAlignment = Alignment.CenterVertically,
@@ -173,14 +221,14 @@ fun WorkspaceHomeScreen(
             if (workspace.isNotesAdded) {
                 item {
                     SpacesCard(
-                        radius=radius,
+                        radius = radius,
                         title = stringResource(R.string.Notes),
                         icon = Icons.AutoMirrored.Default.Notes,
                         onClick = { navigateToTab(R.string.Notes) },
                         onRemove = {
-                            isNotesRemoved=true
-                            updatedWorkspace=updatedWorkspace.copy(isNotesAdded = false)
-                            showRemoveDialog=true
+                            isNotesRemoved = true
+                            updatedWorkspace = updatedWorkspace.copy(isNotesAdded = false)
+                            showRemoveDialog = true
                         }
                     )
                 }
@@ -188,14 +236,14 @@ fun WorkspaceHomeScreen(
             if (workspace.isJournalAdded) {
                 item {
                     SpacesCard(
-                        radius=radius,
+                        radius = radius,
                         title = stringResource(R.string.Journal),
                         icon = Icons.Default.AutoStories,
                         onClick = { navigateToTab(R.string.Journal) },
                         onRemove = {
-                            isJournalRemoved=true
-                            updatedWorkspace=updatedWorkspace.copy(isJournalAdded = false)
-                            showRemoveDialog=true
+                            isJournalRemoved = true
+                            updatedWorkspace = updatedWorkspace.copy(isJournalAdded = false)
+                            showRemoveDialog = true
                         }
                     )
                 }
@@ -203,14 +251,14 @@ fun WorkspaceHomeScreen(
             if (workspace.isTodoAdded) {
                 item {
                     SpacesCard(
-                        radius=radius,
+                        radius = radius,
                         title = stringResource(R.string.To_Do),
                         icon = Icons.Default.Checklist,
                         onClick = { navigateToTab(R.string.To_Do) },
                         onRemove = {
-                            isTodoRemoved=true
-                            updatedWorkspace=workspace.copy(isTodoAdded = false)
-                            showRemoveDialog=true
+                            isTodoRemoved = true
+                            updatedWorkspace = workspace.copy(isTodoAdded = false)
+                            showRemoveDialog = true
                         }
                     )
                 }
@@ -218,28 +266,28 @@ fun WorkspaceHomeScreen(
             if (workspace.isEventsAdded) {
                 item {
                     SpacesCard(
-                        radius=radius,
+                        radius = radius,
                         title = stringResource(R.string.Events),
                         icon = Icons.Default.Event,
                         onClick = { navigateToTab(R.string.Events) },
                         onRemove = {
-                            isEventsRemoved=true
-                            updatedWorkspace=updatedWorkspace.copy(isEventsAdded = false)
-                            showRemoveDialog=true
+                            isEventsRemoved = true
+                            updatedWorkspace = updatedWorkspace.copy(isEventsAdded = false)
+                            showRemoveDialog = true
                         }
                     )
                 }
             }
-            if (workspace.isCalenderAdded) {
+            if (workspace.isCalendarAdded) {
                 item {
                     SpacesCard(
-                        radius=radius,
-                        title = stringResource(R.string.Calender),
+                        radius = radius,
+                        title = stringResource(R.string.Calendar),
                         icon = Icons.Default.CalendarMonth,
-                        onClick = { navigateToTab(R.string.Calender) },
+                        onClick = { navigateToTab(R.string.Calendar) },
                         onRemove = {
-                            updatedWorkspace=updatedWorkspace.copy(isCalenderAdded = false)
-                            showRemoveDialog=true
+                            updatedWorkspace = updatedWorkspace.copy(isCalendarAdded = false)
+                            showRemoveDialog = true
                         }
                     )
                 }
@@ -247,14 +295,14 @@ fun WorkspaceHomeScreen(
             if (workspace.isHabitsAdded) {
                 item {
                     SpacesCard(
-                        radius=radius,
+                        radius = radius,
                         title = stringResource(R.string.Habits),
                         icon = Icons.Default.EventAvailable,
                         onClick = { navigateToTab(R.string.Habits) },
                         onRemove = {
-                            isHabitRemoved=true
-                            updatedWorkspace=updatedWorkspace.copy(isHabitsAdded = false)
-                            showRemoveDialog=true
+                            isHabitRemoved = true
+                            updatedWorkspace = updatedWorkspace.copy(isHabitsAdded = false)
+                            showRemoveDialog = true
                         }
                     )
                 }
@@ -262,21 +310,21 @@ fun WorkspaceHomeScreen(
             if (workspace.isAnalyticsAdded) {
                 item {
                     SpacesCard(
-                        radius=radius,
+                        radius = radius,
                         title = stringResource(R.string.Analytics),
                         icon = Icons.Default.Analytics,
                         onClick = { navigateToTab(R.string.Analytics) },
                         onRemove = {
-                            updatedWorkspace=updatedWorkspace.copy(isAnalyticsAdded = false)
-                            showRemoveDialog=true
+                            updatedWorkspace = updatedWorkspace.copy(isAnalyticsAdded = false)
+                            showRemoveDialog = true
                         }
                     )
                 }
             }
-            if (!workspace.isNotesAdded || !workspace.isTodoAdded || !workspace.isCalenderAdded || !workspace.isHabitsAdded || !workspace.isEventsAdded || !workspace.isAnalyticsAdded ||  !workspace.isJournalAdded) {
+            if (!workspace.isNotesAdded || !workspace.isTodoAdded || !workspace.isCalendarAdded || !workspace.isHabitsAdded || !workspace.isEventsAdded || !workspace.isAnalyticsAdded || !workspace.isJournalAdded) {
                 item {
                     SpacesCard(
-                        radius=radius,
+                        radius = radius,
                         title = stringResource(R.string.Add_Space),
                         icon = Icons.Default.Add,
                         isAddNewSpace = true,
@@ -294,12 +342,12 @@ fun SpacesCard(
     radius: Int,
     title: String,
     icon: ImageVector,
-    isAddNewSpace: Boolean=false,
-    onRemove: ()->Unit,
-    onClick: ()->Unit
-){
+    isAddNewSpace: Boolean = false,
+    onRemove: () -> Unit,
+    onClick: () -> Unit
+) {
     Card(
-        shape = shapeManager(radius=radius*2),
+        shape = shapeManager(radius = radius * 2),
         onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
@@ -322,7 +370,7 @@ fun SpacesCard(
                 }
                 Text(text = title, fontWeight = FontWeight.Bold)
             }
-            if (!isAddNewSpace){
+            if (!isAddNewSpace) {
                 IconButton(onClick = onRemove) {
                     Icon(Icons.Default.Remove, null, tint = MaterialTheme.colorScheme.error)
                 }

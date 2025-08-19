@@ -48,8 +48,8 @@ fun TodoDetail(
     navController: NavController,
     list: TodoModel,
     workspaceId: Long,
-    onTodoEvents: (TodoEvents)->Unit
-){
+    onTodoEvents: (TodoEvents) -> Unit
+) {
     var title by remember { mutableStateOf(list.title) }
     val itemList = remember { list.items.toMutableStateList() }
 
@@ -59,28 +59,49 @@ fun TodoDetail(
             CenterAlignedTopAppBar(
                 colors = TopAppBarDefaults.topAppBarColors(MaterialTheme.colorScheme.surfaceContainerLow),
                 title = { Text(stringResource(R.string.Edit_list)) },
-                navigationIcon = { IconButton({navController.popBackStack()}) { Icon(Icons.AutoMirrored.Default.ArrowBack, null) } },
+                navigationIcon = {
+                    IconButton({ navController.popBackStack() }) {
+                        Icon(
+                            Icons.AutoMirrored.Default.ArrowBack,
+                            null
+                        )
+                    }
+                },
                 actions = {
                     IconButton(
                         enabled = title.isNotBlank(),
                         onClick = {
-                        navController.popBackStack()
-                        onTodoEvents(TodoEvents.UpsertList(list.copy(title=title, items = itemList.toList(), workspaceId = workspaceId)))
-                    }) { Icon(Icons.Default.Check, null) }
+                            navController.popBackStack()
+                            onTodoEvents(
+                                TodoEvents.UpsertList(
+                                    list.copy(
+                                        title = title,
+                                        items = itemList.toList(),
+                                        workspaceId = workspaceId
+                                    )
+                                )
+                            )
+                        }) { Icon(Icons.Default.Check, null) }
                     IconButton({
                         navController.popBackStack()
                         onTodoEvents(TodoEvents.DeleteList(list))
-                    }) { Icon(Icons.Default.DeleteOutline, null, tint = MaterialTheme.colorScheme.error) }
+                    }) {
+                        Icon(
+                            Icons.Default.DeleteOutline,
+                            null,
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                    }
                 }
             )
         },
-    ){ innerPadding->
+    ) { innerPadding ->
         LazyColumn(Modifier.padding(innerPadding)) {
             item {
                 TextField(
                     value = title,
                     singleLine = true,
-                    onValueChange = { title=it },
+                    onValueChange = { title = it },
                     placeholder = { Text(stringResource(R.string.Title)) },
                     textStyle = MaterialTheme.typography.titleLarge,
                     modifier = Modifier.fillMaxWidth(),
@@ -96,8 +117,17 @@ fun TodoDetail(
             }
 
             items(itemList) { item ->
-            Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-                    Row(modifier = Modifier.weight(0.85f), verticalAlignment = Alignment.CenterVertically) {
+                Row(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.SpaceBetween
+                ) {
+                    Row(
+                        modifier = Modifier.weight(0.85f),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
                         Checkbox(item.isChecked, onCheckedChange = { checked ->
                             val index = itemList.indexOf(item)
                             if (index != -1) {
@@ -127,7 +157,13 @@ fun TodoDetail(
                             )
                         )
                     }
-                    IconButton({itemList.remove(item)}) { Icon(Icons.Default.Remove, null, tint = MaterialTheme.colorScheme.error) }
+                    IconButton({ itemList.remove(item) }) {
+                        Icon(
+                            Icons.Default.Remove,
+                            null,
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                    }
                 }
             }
 

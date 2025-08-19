@@ -11,7 +11,12 @@ import javax.inject.Inject
 class SettingsRepositoryImpl @Inject constructor(
     private val dao: SettingsDao,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
-): SettingsRepository{
-    override suspend fun upsertSettings(settings: SettingsModel) { return withContext(ioDispatcher) { dao.upsertSettings(settings) } }
-    override fun loadSettings(): Flow<SettingsModel?> { return dao.loadSettings() }
+) : SettingsRepository {
+    override suspend fun upsertSettings(settings: SettingsModel) {
+        return withContext(ioDispatcher) { dao.upsertSettings(settings) }
+    }
+
+    override fun loadSettings(): Flow<SettingsModel?> {
+        return dao.loadSettings()
+    }
 }

@@ -176,10 +176,12 @@ fun NotesInputCard(
 
         if (isFocused.value) {
             RichTextStyleRow(
-                modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
                 state = richTextState,
                 isAddImage = false,
-            ){}
+            ) {}
         }
     }
 }
@@ -189,23 +191,34 @@ fun NotesInputCard(
 fun NotesSelectedBar(
     totalSelectedNotes: Int,
     isAllSelected: Boolean,
-    isAllPinned: Boolean=false,
-    onSelectAll: ()->Unit,
-    onPinClicked: ()->Unit,
+    isAllPinned: Boolean = false,
+    onSelectAll: () -> Unit,
+    onPinClicked: () -> Unit,
     onClose: () -> Unit,
     onDelete: () -> Unit
 ) {
-    Row(Modifier
-        .fillMaxWidth()
-        .padding(top = 46.5.dp, bottom = 12.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(top = 46.5.dp, bottom = 12.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
         Row(verticalAlignment = Alignment.CenterVertically) {
             IconButton(onClick = onClose) { Icon(Icons.Default.Close, null) }
             Text(totalSelectedNotes.toString(), style = MaterialTheme.typography.titleLarge)
         }
 
         Row(verticalAlignment = Alignment.CenterVertically) {
-            if(!isAllSelected){ IconButton(onClick = onSelectAll ) { Icon(Icons.Default.SelectAll, null) } }
-            IconButton(onClick = onPinClicked) { Icon(if(isAllPinned) Icons.Filled.PushPin else Icons.Outlined.PushPin, null)  }
+            if (!isAllSelected) {
+                IconButton(onClick = onSelectAll) { Icon(Icons.Default.SelectAll, null) }
+            }
+            IconButton(onClick = onPinClicked) {
+                Icon(
+                    if (isAllPinned) Icons.Filled.PushPin else Icons.Outlined.PushPin,
+                    null
+                )
+            }
             IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, null) }
         }
     }
@@ -216,14 +229,14 @@ fun NotesSelectedBar(
 fun RichTextStyleRow(
     modifier: Modifier = Modifier,
     state: RichTextState,
-    isAddImage: Boolean=false,
-    onAddImageClicked: ()->Unit
+    isAddImage: Boolean = false,
+    onAddImageClicked: () -> Unit
 ) {
     LazyRow(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
     ) {
-        if(isAddImage){
+        if (isAddImage) {
             item {
                 RichTextStyleButton(
                     onClick = onAddImageClicked,
@@ -332,7 +345,11 @@ fun RichTextStyleButton(
     IconButton(
         onClick = onClick,
         colors = IconButtonDefaults.iconButtonColors(
-            containerColor = if (isSelected) { MaterialTheme.colorScheme.onSurface.copy(0.1f) } else { MaterialTheme.colorScheme.surfaceContainerLow },
+            containerColor = if (isSelected) {
+                MaterialTheme.colorScheme.onSurface.copy(0.1f)
+            } else {
+                MaterialTheme.colorScheme.surfaceContainerLow
+            },
         )
     ) { Icon(icon, icon.name) }
 }
@@ -377,26 +394,27 @@ fun NotesPreviewGrid(
                         0 -> stringResource(R.string.Pinned)
                         else -> stringResource(R.string.Others)
                     }
-                        Text(
-                            text = label,
-                            color = MaterialTheme.colorScheme.primary,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp, vertical = 4.dp)
-                        )
+                    Text(
+                        text = label,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 4.dp)
+                    )
                 } else {
-                        val isSelected = selectedNotes.contains(note)
-                        NotesPreviewCard(
-                            radius = radius,
-                            isSelected = isSelected,
-                            note = note,
-                            labels = allLabels.filter { note.labels.contains(it.labelId) }.map { it.value },
-                            onClick = onClick,
-                            onLongPressed = { onLongPressed(note) },
-                            modifier = Modifier.fillMaxWidth()
-                        )
+                    val isSelected = selectedNotes.contains(note)
+                    NotesPreviewCard(
+                        radius = radius,
+                        isSelected = isSelected,
+                        note = note,
+                        labels = allLabels.filter { note.labels.contains(it.labelId) }
+                            .map { it.value },
+                        onClick = onClick,
+                        onLongPressed = { onLongPressed(note) },
+                        modifier = Modifier.fillMaxWidth()
+                    )
                 }
             }
         }
@@ -413,22 +431,23 @@ fun NotesPreviewGrid(
                         0 -> stringResource(R.string.Pinned)
                         else -> stringResource(R.string.Others)
                     }
-                        Text(
-                            text = label,
-                            color = MaterialTheme.colorScheme.primary,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp, vertical = 4.dp)
-                        )
+                    Text(
+                        text = label,
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 16.sp,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(horizontal = 16.dp, vertical = 4.dp)
+                    )
                 } else {
                     val isSelected = selectedNotes.contains(note)
                     NotesPreviewCard(
                         radius = radius,
                         isSelected = isSelected,
                         note = note,
-                        labels = allLabels.filter { note.labels.contains(it.labelId) }.map { it.value },
+                        labels = allLabels.filter { note.labels.contains(it.labelId) }
+                            .map { it.value },
                         onClick = onClick,
                         onLongPressed = { onLongPressed(note) },
                         modifier = Modifier.fillMaxWidth()
@@ -442,7 +461,7 @@ fun NotesPreviewGrid(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotesPreviewCard(
-    modifier: Modifier=Modifier,
+    modifier: Modifier = Modifier,
     radius: Int,
     isSelected: Boolean,
     note: NotesModel,
@@ -487,7 +506,12 @@ fun NotesPreviewCard(
             )
 
 
-            Box(modifier = Modifier.fillMaxWidth().heightIn(max = 300.dp).verticalScroll(scrollState)) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 300.dp)
+                    .verticalScroll(scrollState)
+            ) {
                 RichTextEditor(
                     state = richTextState,
                     enabled = false,
@@ -563,7 +587,7 @@ fun NotesPreviewCard(
 
 
 @Composable
-fun EmptyNotes(){
+fun EmptyNotes() {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -579,7 +603,7 @@ fun EmptyNotes(){
 }
 
 @Composable
-fun EmptyLabels(){
+fun EmptyLabels() {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,

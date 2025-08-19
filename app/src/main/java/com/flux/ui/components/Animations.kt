@@ -8,9 +8,9 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.scaleIn
 import androidx.compose.animation.scaleOut
 import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideInVertically
 import androidx.compose.animation.slideOutHorizontally
-
-import androidx.compose.animation.*
+import androidx.compose.animation.slideOutVertically
 
 // Common constants
 private const val DEFAULT_FADE_DURATION = 200
@@ -64,4 +64,3 @@ fun slideToBottomExit(): ExitTransition {
         animationSpec = tween(300)
     )
 }
-

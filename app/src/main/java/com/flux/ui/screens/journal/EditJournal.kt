@@ -67,8 +67,10 @@ fun EditJournal(
     navController: NavController,
     journal: JournalModel,
     onJournalEvents: (JournalEvents) -> Unit
-){
-    val isToday = LocalDate.now() == Instant.ofEpochMilli(journal.dateTime).atZone(ZoneId.systemDefault()).toLocalDate()
+) {
+    val isToday =
+        LocalDate.now() == Instant.ofEpochMilli(journal.dateTime).atZone(ZoneId.systemDefault())
+            .toLocalDate()
     val context = LocalContext.current
     val richTextState = rememberRichTextState()
     val interactionSource = remember { MutableInteractionSource() }
@@ -78,13 +80,25 @@ fun EditJournal(
 
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
-        onResult = { uri: Uri? -> uri?.let { pickedImages.add(copyToInternalStorage(context, uri).toString()) } }
+        onResult = { uri: Uri? ->
+            uri?.let {
+                pickedImages.add(
+                    copyToInternalStorage(
+                        context,
+                        uri
+                    ).toString()
+                )
+            }
+        }
     )
 
-    if(showDatePicker){ DatePickerModal(onDateSelected = { newDateMillis ->
-        if (newDateMillis != null) {
-            selectedDateTime=newDateMillis
-        } }, onDismiss = { showDatePicker=false }) }
+    if (showDatePicker) {
+        DatePickerModal(onDateSelected = { newDateMillis ->
+            if (newDateMillis != null) {
+                selectedDateTime = newDateMillis
+            }
+        }, onDismiss = { showDatePicker = false })
+    }
 
     LaunchedEffect(journal.journalId) { richTextState.setHtml(journal.text) }
 
@@ -96,10 +110,25 @@ fun EditJournal(
                     containerColor = MaterialTheme.colorScheme.surfaceContainerLow
                 ),
                 title = { Text(selectedDateTime.toFormattedDate()) },
-                navigationIcon = { IconButton({ navController.popBackStack() }) { Icon(Icons.AutoMirrored.Default.ArrowBack, null) } },
+                navigationIcon = {
+                    IconButton({ navController.popBackStack() }) {
+                        Icon(
+                            Icons.AutoMirrored.Default.ArrowBack,
+                            null
+                        )
+                    }
+                },
                 actions = {
                     IconButton({
-                        onJournalEvents(JournalEvents.UpsertEntry(journal.copy(text = richTextState.toHtml(), images = pickedImages.toList(), dateTime = if(isToday) System.currentTimeMillis() else journal.dateTime)))
+                        onJournalEvents(
+                            JournalEvents.UpsertEntry(
+                                journal.copy(
+                                    text = richTextState.toHtml(),
+                                    images = pickedImages.toList(),
+                                    dateTime = if (isToday) System.currentTimeMillis() else journal.dateTime
+                                )
+                            )
+                        )
                         navController.popBackStack()
                     }) {
                         Icon(Icons.Default.Check, null)
@@ -108,14 +137,23 @@ fun EditJournal(
                         navController.popBackStack()
                         onJournalEvents(JournalEvents.DeleteEntry(journal))
                     }) {
-                        Icon(Icons.Default.DeleteOutline, null, tint = MaterialTheme.colorScheme.error)
+                        Icon(
+                            Icons.Default.DeleteOutline,
+                            null,
+                            tint = MaterialTheme.colorScheme.error
+                        )
                     }
                 }
             )
         }
     ) { innerPadding ->
-        Column(modifier = Modifier.fillMaxSize().padding(innerPadding).imePadding()) {
-            Carousel(pickedImages){ pickedImages.remove(it) }
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .imePadding()
+        ) {
+            Carousel(pickedImages) { pickedImages.remove(it) }
 
             RichTextEditor(
                 state = richTextState,
@@ -139,7 +177,7 @@ fun EditJournal(
                     modifier = Modifier.fillMaxWidth(),
                     state = richTextState,
                     isAddImage = true
-                ){
+                ) {
                     imagePickerLauncher.launch("image/*")
                 }
             }
@@ -149,17 +187,24 @@ fun EditJournal(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Carousel(items: List<String>, onItemRemoved: (String)->Unit) {
-    if(items.isNotEmpty()){
+fun Carousel(items: List<String>, onItemRemoved: (String) -> Unit) {
+    if (items.isNotEmpty()) {
         HorizontalMultiBrowseCarousel(
             state = rememberCarouselState { items.count() },
-            modifier = Modifier.fillMaxWidth().wrapContentHeight().padding(top = 9.dp, bottom = 8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .wrapContentHeight()
+                .padding(top = 9.dp, bottom = 8.dp),
             preferredItemWidth = 160.dp,
             itemSpacing = 8.dp,
             contentPadding = PaddingValues(horizontal = 16.dp)
         ) { i ->
             val item = items[i]
-            Box(modifier = Modifier.height(160.dp).maskClip(MaterialTheme.shapes.extraLarge)) {
+            Box(
+                modifier = Modifier
+                    .height(160.dp)
+                    .maskClip(MaterialTheme.shapes.extraLarge)
+            ) {
                 AsyncImage(
                     model = item,
                     contentDescription = null,
@@ -169,7 +214,9 @@ fun Carousel(items: List<String>, onItemRemoved: (String)->Unit) {
 
                 IconButton(
                     onClick = { onItemRemoved(item) },
-                    modifier = Modifier.align(Alignment.TopEnd).padding(4.dp),
+                    modifier = Modifier
+                        .align(Alignment.TopEnd)
+                        .padding(4.dp),
                     colors = IconButtonDefaults.iconButtonColors(
                         containerColor = Color.White.copy(alpha = 0.8f),
                         contentColor = MaterialTheme.colorScheme.error

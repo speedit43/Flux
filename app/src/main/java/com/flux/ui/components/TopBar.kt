@@ -23,23 +23,42 @@ fun NoteDetailsTopBar(
     canRedo: Boolean,
     isPinned: Boolean,
     onBackPressed: () -> Unit,
-    onDone: ()->Unit,
+    onDone: () -> Unit,
     onDelete: () -> Unit,
     onAddLabel: () -> Unit,
     onTogglePinned: () -> Unit,
-    onAboutClicked: ()->Unit,
-    onUndo: ()->Unit,
-    onRedo: ()->Unit
-){
+    onAboutClicked: () -> Unit,
+    onUndo: () -> Unit,
+    onRedo: () -> Unit
+) {
     CenterAlignedTopAppBar(
         title = {
             Row {
-                IconButton(onClick = { if(canUndo) onUndo() }) { Icon(Icons.AutoMirrored.Filled.Undo, null, modifier = Modifier.alpha(if(canUndo) 1f else 0.5f)) }
-                IconButton(onClick = { if(canRedo) onRedo() }) { Icon(Icons.AutoMirrored.Filled.Redo, null, modifier = Modifier.alpha(if(canRedo) 1f else 0.5f)) }
+                IconButton(onClick = { if (canUndo) onUndo() }) {
+                    Icon(
+                        Icons.AutoMirrored.Filled.Undo,
+                        null,
+                        modifier = Modifier.alpha(if (canUndo) 1f else 0.5f)
+                    )
+                }
+                IconButton(onClick = { if (canRedo) onRedo() }) {
+                    Icon(
+                        Icons.AutoMirrored.Filled.Redo,
+                        null,
+                        modifier = Modifier.alpha(if (canRedo) 1f else 0.5f)
+                    )
+                }
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
-        navigationIcon = { IconButton(onClick = onBackPressed) { Icon(Icons.AutoMirrored.Default.ArrowBack, null) }},
+        navigationIcon = {
+            IconButton(onClick = onBackPressed) {
+                Icon(
+                    Icons.AutoMirrored.Default.ArrowBack,
+                    null
+                )
+            }
+        },
         actions = {
             IconButton(onClick = {
                 onDone()

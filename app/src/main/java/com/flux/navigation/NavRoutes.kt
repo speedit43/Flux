@@ -27,19 +27,17 @@ import com.flux.ui.screens.workspaces.WorkspaceDetails
 import com.flux.ui.state.States
 import com.flux.ui.viewModel.ViewModels
 import java.time.LocalDate
-import kotlin.String
-import kotlin.Unit
 
 sealed class NavRoutes(val route: String) {
     // auth screen
-    data object AuthScreen: NavRoutes("biometric")
+    data object AuthScreen : NavRoutes("biometric")
 
     // workspaces
-    data object Workspace : NavRoutes ("workspace")
-    data object WorkspaceHome : NavRoutes ("workspace/details")
+    data object Workspace : NavRoutes("workspace")
+    data object WorkspaceHome : NavRoutes("workspace/details")
 
     //Labels
-    data object EditLabels : NavRoutes ("workspace/labels/edit")
+    data object EditLabels : NavRoutes("workspace/labels/edit")
 
     // Notes
     data object NoteDetails : NavRoutes("workspace/note/details")
@@ -84,33 +82,60 @@ val AuthScreen =
 val NotesScreens =
     mapOf<String, @Composable (navController: NavController, notesId: Long, workspaceId: Long, states: States, viewModels: ViewModels) -> Unit>(
         NavRoutes.NoteDetails.route + "/{workspaceId}" + "/{notesId}" to { navController, notesId, workspaceId, states, viewModel ->
-            NoteDetails(navController, workspaceId, states.notesState.allNotes.find { it.notesId==notesId }?: NotesModel(workspaceId=workspaceId), states.notesState.allLabels.filter { it.workspaceId==workspaceId }, viewModel.notesViewModel::onEvent)
+            NoteDetails(
+                navController,
+                workspaceId,
+                states.notesState.allNotes.find { it.notesId == notesId }
+                    ?: NotesModel(workspaceId = workspaceId),
+                states.notesState.allLabels.filter { it.workspaceId == workspaceId },
+                viewModel.notesViewModel::onEvent
+            )
         }
     )
 
 val HabitScreens =
     mapOf<String, @Composable (navController: NavController, habitId: Long, workspaceId: Long, states: States, viewModels: ViewModels) -> Unit>(
         NavRoutes.HabitDetails.route + "/{workspaceId}" + "/{habitId}" to { navController, habitId, workspaceId, states, viewModel ->
-            HabitDetails(navController, states.settings.data.cornerRadius, workspaceId, states.habitState.allHabits.find { it.habitId==habitId }?: HabitModel(workspaceId=workspaceId), states.habitState.allInstances.filter { it.habitId==habitId }, viewModel.habitViewModel::onEvent)
+            HabitDetails(
+                navController,
+                states.settings.data.cornerRadius,
+                workspaceId,
+                states.habitState.allHabits.find { it.habitId == habitId }
+                    ?: HabitModel(workspaceId = workspaceId),
+                states.habitState.allInstances.filter { it.habitId == habitId },
+                viewModel.habitViewModel::onEvent
+            )
         }
     )
 
 val TodoScreens =
     mapOf<String, @Composable (navController: NavController, listId: Long, workspaceId: Long, states: States, viewModels: ViewModels) -> Unit>(
         NavRoutes.TodoDetail.route + "/{workspaceId}" + "/{listId}" to { navController, listId, workspaceId, states, viewModel ->
-            TodoDetail(navController, states.todoState.allLists.find { it.id==listId }?: TodoModel(workspaceId=workspaceId), workspaceId, viewModel.todoViewModel::onEvent)
+            TodoDetail(
+                navController,
+                states.todoState.allLists.find { it.id == listId }
+                    ?: TodoModel(workspaceId = workspaceId),
+                workspaceId,
+                viewModel.todoViewModel::onEvent
+            )
         }
     )
 
 val JournalScreens =
     mapOf<String, @Composable (navController: NavController, journalId: Long, workspaceId: Long, states: States, viewModels: ViewModels) -> Unit>(
         NavRoutes.EditJournal.route + "/{workspaceId}" + "/{journalId}" to { navController, journalId, workspaceId, states, viewModel ->
-            EditJournal(navController, states.journalState.allEntries.find { it.journalId==journalId }?: JournalModel(workspaceId=workspaceId), viewModel.journalViewModel::onEvent)
+            EditJournal(
+                navController,
+                states.journalState.allEntries.find { it.journalId == journalId } ?: JournalModel(
+                    workspaceId = workspaceId
+                ),
+                viewModel.journalViewModel::onEvent
+            )
         }
     )
 
 val SettingsScreens =
-    mapOf<String, @Composable (navController: NavController, snackbarHostState: SnackbarHostState, states: States, viewModels: ViewModels) -> Unit> (
+    mapOf<String, @Composable (navController: NavController, snackbarHostState: SnackbarHostState, states: States, viewModels: ViewModels) -> Unit>(
         NavRoutes.Settings.route to { navController, _, states, viewModels ->
             Settings(navController, states.settings)
         },
@@ -132,21 +157,39 @@ val SettingsScreens =
     )
 
 val EventScreens =
-    mapOf<String, @Composable (navController: NavController, states: States, viewModels: ViewModels, eventId: Long, workspaceId: Long) -> Unit> (
+    mapOf<String, @Composable (navController: NavController, states: States, viewModels: ViewModels, eventId: Long, workspaceId: Long) -> Unit>(
         NavRoutes.EventDetails.route + "/{workspaceId}" + "/{eventId}" to { navController, states, viewModels, eventId, workspaceId ->
-            EventDetails(navController, states.eventState.allEvent.find { it.eventId==eventId }?: EventModel(workspaceId = workspaceId), states.eventState.allEventInstances.find { it.eventId==eventId && it.instanceDate==LocalDate.now() }?: EventInstanceModel(eventId=eventId, instanceDate = LocalDate.now()), viewModels.eventViewModel::onEvent)
+            EventDetails(
+                navController,
+                states.eventState.allEvent.find { it.eventId == eventId }
+                    ?: EventModel(workspaceId = workspaceId),
+                states.eventState.allEventInstances.find { it.eventId == eventId && it.instanceDate == LocalDate.now() }
+                    ?: EventInstanceModel(eventId = eventId, instanceDate = LocalDate.now()),
+                viewModels.eventViewModel::onEvent
+            )
         }
     )
 
 val WorkspaceScreens =
-    mapOf<String, @Composable (navController: NavController, snackbarHostState: SnackbarHostState, states: States, viewModels: ViewModels, workspaceId: Long) -> Unit> (
+    mapOf<String, @Composable (navController: NavController, snackbarHostState: SnackbarHostState, states: States, viewModels: ViewModels, workspaceId: Long) -> Unit>(
         NavRoutes.Workspace.route to { navController, snackbarHostState, states, viewModels, _ ->
-            WorkSpaces(snackbarHostState, navController, states.settings.data.cornerRadius, states.workspaceState.allSpaces, viewModels.notesViewModel::onEvent, viewModels.eventViewModel::onEvent, viewModels.habitViewModel::onEvent, viewModels.todoViewModel::onEvent, viewModels.workspaceViewModel::onEvent, viewModels.journalViewModel::onEvent)
+            WorkSpaces(
+                snackbarHostState,
+                navController,
+                states.settings.data.cornerRadius,
+                states.workspaceState.allSpaces,
+                viewModels.notesViewModel::onEvent,
+                viewModels.eventViewModel::onEvent,
+                viewModels.habitViewModel::onEvent,
+                viewModels.todoViewModel::onEvent,
+                viewModels.workspaceViewModel::onEvent,
+                viewModels.journalViewModel::onEvent
+            )
         },
         NavRoutes.WorkspaceHome.route + "/{workspaceId}" to { navController, snackbarHostState, states, viewModels, workspaceId ->
             WorkspaceDetails(
                 navController,
-                states.notesState.allLabels.filter { it.workspaceId==workspaceId },
+                states.notesState.allLabels.filter { it.workspaceId == workspaceId },
                 states.settings,
                 states.notesState.isNotesLoading,
                 states.eventState.isTodayEventLoading,
@@ -154,9 +197,9 @@ val WorkspaceScreens =
                 states.todoState.isLoading,
                 states.journalState.isLoading,
                 states.journalState.isLoadingMore,
-                states.workspaceState.allSpaces.first { it.workspaceId==workspaceId },
+                states.workspaceState.allSpaces.first { it.workspaceId == workspaceId },
                 states.eventState.allEvent,
-                states.notesState.allNotes.filter { it.workspaceId==workspaceId },
+                states.notesState.allNotes.filter { it.workspaceId == workspaceId },
                 states.eventState.todayEvents,
                 states.eventState.datedEvents,
                 states.habitState.allHabits,
@@ -170,13 +213,20 @@ val WorkspaceScreens =
                 viewModels.habitViewModel::onEvent,
                 viewModels.todoViewModel::onEvent,
                 viewModels.journalViewModel::onEvent,
-                viewModels.settingsViewModel::onEvent)
+                viewModels.settingsViewModel::onEvent
+            )
         }
     )
 
 val LabelScreens =
-    mapOf<String, @Composable (navController: NavController, states: States, viewModels: ViewModels, workspaceId: Long) -> Unit> (
+    mapOf<String, @Composable (navController: NavController, states: States, viewModels: ViewModels, workspaceId: Long) -> Unit>(
         NavRoutes.EditLabels.route + "/{workspaceId}" to { navController, states, viewModels, workspaceId ->
-            EditLabels(navController, states.notesState.isLabelsLoading, workspaceId, states.notesState.allLabels, viewModels.notesViewModel::onEvent)
+            EditLabels(
+                navController,
+                states.notesState.isLabelsLoading,
+                workspaceId,
+                states.notesState.allLabels,
+                viewModels.notesViewModel::onEvent
+            )
         }
     )

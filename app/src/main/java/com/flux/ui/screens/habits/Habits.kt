@@ -24,8 +24,9 @@ fun HabitsHome(
     allInstances: List<HabitInstanceModel>,
     onHabitEvents: (HabitEvents) -> Unit
 ) {
-    if(allHabits.isEmpty()){ EmptyHabits() }
-    else{
+    if (allHabits.isEmpty()) {
+        EmptyHabits()
+    } else {
         LazyColumn(
             modifier = Modifier.padding(vertical = 16.dp, horizontal = 12.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -38,10 +39,28 @@ fun HabitsHome(
                     instances = habitInstances,
                     onToggleDone = { date ->
                         val existing = habitInstances.find { it.instanceDate == date }
-                        if (existing != null) { onHabitEvents(HabitEvents.MarkUndone(existing)) }
-                        else { onHabitEvents(HabitEvents.MarkDone(HabitInstanceModel(instanceDate = date, habitId = habit.habitId, workspaceId = workspaceId))) }
+                        if (existing != null) {
+                            onHabitEvents(HabitEvents.MarkUndone(existing))
+                        } else {
+                            onHabitEvents(
+                                HabitEvents.MarkDone(
+                                    HabitInstanceModel(
+                                        instanceDate = date,
+                                        habitId = habit.habitId,
+                                        workspaceId = workspaceId
+                                    )
+                                )
+                            )
+                        }
                     },
-                    onAnalyticsClicked = { navController.navigate(NavRoutes.HabitDetails.withArgs(workspaceId, habit.habitId)) }
+                    onAnalyticsClicked = {
+                        navController.navigate(
+                            NavRoutes.HabitDetails.withArgs(
+                                workspaceId,
+                                habit.habitId
+                            )
+                        )
+                    }
                 )
             }
         }

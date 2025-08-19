@@ -9,7 +9,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface EventInstanceDao {
-    @Insert(onConflict=OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertEventInstance(event: EventInstanceModel)
 
     @Query("DELETE FROM EventInstancemodel WHERE eventId IN (:eventId)")

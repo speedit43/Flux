@@ -1,4 +1,4 @@
-package com.flux.ui.screens.calender
+package com.flux.ui.screens.calendar
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -34,8 +34,8 @@ import com.flux.data.model.EventModel
 import com.flux.data.model.EventStatus
 import com.flux.navigation.Loader
 import com.flux.navigation.NavRoutes
-import com.flux.ui.components.DailyViewCalender
-import com.flux.ui.components.MonthlyViewCalender
+import com.flux.ui.components.DailyViewCalendar
+import com.flux.ui.components.MonthlyViewCalendar
 import com.flux.ui.events.SettingEvents
 import com.flux.ui.events.TaskEvents
 import com.flux.ui.screens.events.EmptyEvents
@@ -46,7 +46,7 @@ import java.time.YearMonth
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Calender(
+fun Calendar(
     navController: NavController,
     radius: Int,
     isLoading: Boolean,
@@ -54,66 +54,107 @@ fun Calender(
     settings: Settings,
     datedEvents: List<EventModel>,
     allEventInstances: List<EventInstanceModel>,
-    onSettingEvents: (SettingEvents) ->Unit,
-    onTaskEvents: (TaskEvents)->Unit
+    onSettingEvents: (SettingEvents) -> Unit,
+    onTaskEvents: (TaskEvents) -> Unit
 ) {
     var selectedMonth by remember { mutableStateOf(YearMonth.now()) }
     var selectedDate by remember { mutableStateOf(LocalDate.now()) }
-    val isMonthlyView=settings.data.isCalenderMonthlyView
+    val isMonthlyView = settings.data.isCalendarMonthlyView
 
     val pendingTasks = datedEvents.filter { task ->
-        val instance = allEventInstances.find { it.eventId == task.eventId && it.instanceDate == selectedDate }
-        instance == null || instance.status== EventStatus.PENDING
+        val instance =
+            allEventInstances.find { it.eventId == task.eventId && it.instanceDate == selectedDate }
+        instance == null || instance.status == EventStatus.PENDING
     }
 
     val completedTasks = datedEvents.filter { task ->
-        val instance = allEventInstances.find { it.eventId == task.eventId && it.instanceDate == selectedDate }
-        instance != null && instance.status== EventStatus.COMPLETED
+        val instance =
+            allEventInstances.find { it.eventId == task.eventId && it.instanceDate == selectedDate }
+        instance != null && instance.status == EventStatus.COMPLETED
     }
 
     LaunchedEffect(Unit) { onTaskEvents(TaskEvents.LoadDateTask(workspaceId, selectedDate)) }
 
-    LazyColumn(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-        if(isMonthlyView){
+    LazyColumn(
+        Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        if (isMonthlyView) {
             item {
-                MonthlyViewCalender(selectedMonth, selectedDate, onMonthChange = { selectedMonth=it },
+                MonthlyViewCalendar(
+                    selectedMonth, selectedDate, onMonthChange = { selectedMonth = it },
                     onDateChange = {
                         onTaskEvents(TaskEvents.LoadDateTask(workspaceId, it))
-                        selectedDate=it
-                    }) }
+                        selectedDate = it
+                    })
             }
-        else {
-            item{
-                DailyViewCalender(selectedMonth, selectedDate, onMonthChange = { selectedMonth=it }, onDateChange = {
-                    onTaskEvents(TaskEvents.LoadDateTask(workspaceId, it))
-                    selectedDate=it
-                }) }
+        } else {
+            item {
+                DailyViewCalendar(
+                    selectedMonth,
+                    selectedDate,
+                    onMonthChange = { selectedMonth = it },
+                    onDateChange = {
+                        onTaskEvents(TaskEvents.LoadDateTask(workspaceId, it))
+                        selectedDate = it
+                    })
             }
+        }
         item {
-            Row(Modifier.fillMaxWidth().padding(horizontal = 8.dp), horizontalArrangement = Arrangement.End, verticalAlignment = Alignment.CenterVertically) {
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp),
+                horizontalArrangement = Arrangement.End,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(stringResource(R.string.Monthly_View), fontWeight = FontWeight.Bold, color = MaterialTheme.colorScheme.primary)
+                    Text(
+                        stringResource(R.string.Monthly_View),
+                        fontWeight = FontWeight.Bold,
+                        color = MaterialTheme.colorScheme.primary
+                    )
                     Spacer(Modifier.width(8.dp))
                     Switch(
                         checked = isMonthlyView,
-                        onCheckedChange = { onSettingEvents(SettingEvents.UpdateSettings(settings.data.copy(isCalenderMonthlyView = it))) },
-                        thumbContent = { if(isMonthlyView){ Icon(Icons.Default.Check, null) } }
+                        onCheckedChange = {
+                            onSettingEvents(
+                                SettingEvents.UpdateSettings(
+                                    settings.data.copy(
+                                        isCalendarMonthlyView = it
+                                    )
+                                )
+                            )
+                        },
+                        thumbContent = {
+                            if (isMonthlyView) {
+                                Icon(Icons.Default.Check, null)
+                            }
+                        }
                     )
                 }
             }
         }
         item { HorizontalDivider() }
-        if(isLoading) { item { Loader() } }
-        else if(datedEvents.isEmpty()){ item { EmptyEvents() } }
-        else {
+        if (isLoading) {
+            item { Loader() }
+        } else if (datedEvents.isEmpty()) {
+            item { EmptyEvents() }
+        } else {
             if (pendingTasks.isNotEmpty()) {
                 items(pendingTasks) { task ->
                     val instance =
                         allEventInstances.find { it.eventId == task.eventId && it.instanceDate == selectedDate }
-                            ?: EventInstanceModel(eventId = task.eventId, instanceDate = selectedDate, workspaceId = workspaceId)
+                            ?: EventInstanceModel(
+                                eventId = task.eventId,
+                                instanceDate = selectedDate,
+                                workspaceId = workspaceId
+                            )
 
                     EventCard(
-                        radius=radius,
+                        radius = radius,
                         isAllDay = task.isAllDay,
                         eventInstance = instance,
                         title = task.title,
@@ -134,10 +175,11 @@ fun Calender(
             }
             if (completedTasks.isNotEmpty()) {
                 items(completedTasks) { task ->
-                    val instance = allEventInstances.find { it.eventId == task.eventId && it.instanceDate == selectedDate }!!
+                    val instance =
+                        allEventInstances.find { it.eventId == task.eventId && it.instanceDate == selectedDate }!!
 
                     EventCard(
-                        radius=radius,
+                        radius = radius,
                         isAllDay = task.isAllDay,
                         eventInstance = instance,
                         title = task.title,
@@ -145,7 +187,14 @@ fun Calender(
                         description = task.description,
                         repeat = task.repetition,
                         onChangeStatus = { onTaskEvents(TaskEvents.ToggleStatus(it)) },
-                        onClick = { navController.navigate(NavRoutes.EventDetails.withArgs(workspaceId, task.eventId)) }
+                        onClick = {
+                            navController.navigate(
+                                NavRoutes.EventDetails.withArgs(
+                                    workspaceId,
+                                    task.eventId
+                                )
+                            )
+                        }
                     )
                 }
             }

@@ -13,7 +13,7 @@ import javax.inject.Qualifier
 object DispatcherModule {
     @IODispatcher
     @Provides
-    fun provideIODispatcher(): CoroutineDispatcher=Dispatchers.IO
+    fun provideIODispatcher(): CoroutineDispatcher = Dispatchers.IO
 }
 
 @Retention

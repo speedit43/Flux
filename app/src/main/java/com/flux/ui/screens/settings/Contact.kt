@@ -21,23 +21,30 @@ import com.flux.ui.components.shapeManager
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun Contact(navController: NavController, radius: Int){
+fun Contact(navController: NavController, radius: Int) {
     val context = LocalContext.current
 
     BasicScaffold(
         title = stringResource(R.string.Contact),
         onBackClicked = { navController.popBackStack() }
     ) { innerPadding ->
-        LazyColumn(modifier = Modifier.padding(innerPadding).padding(16.dp, 8.dp, 16.dp)) {
-            item{
+        LazyColumn(
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(16.dp, 8.dp, 16.dp)
+        ) {
+            item {
                 SettingOption(
-                    title =  stringResource(R.string.Contact_desc),
+                    title = stringResource(R.string.Contact_desc),
                     description = stringResource(R.string.Contact_desc2),
                     icon = Icons.Rounded.Feedback,
                     radius = shapeManager(radius = radius, isBoth = true),
                     actionType = ActionType.LINK,
                     linkClicked = {
-                        val intent = Intent(Intent.ACTION_VIEW, "https://github.com/chindaronit/Flux/issues".toUri())
+                        val intent = Intent(
+                            Intent.ACTION_VIEW,
+                            "https://github.com/chindaronit/Flux/issues".toUri()
+                        )
                         context.startActivity(intent)
                     }
                 )

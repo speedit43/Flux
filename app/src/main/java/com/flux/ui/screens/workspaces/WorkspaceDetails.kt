@@ -1,6 +1,5 @@
 package com.flux.ui.screens.workspaces
 
-import java.io.File
 import android.content.Context
 import android.net.Uri
 import android.os.Build
@@ -81,7 +80,7 @@ import com.flux.ui.events.TaskEvents
 import com.flux.ui.events.TodoEvents
 import com.flux.ui.events.WorkspaceEvents
 import com.flux.ui.screens.analytics.Analytics
-import com.flux.ui.screens.calender.Calender
+import com.flux.ui.screens.calendar.Calendar
 import com.flux.ui.screens.events.EventHome
 import com.flux.ui.screens.habits.HabitsHome
 import com.flux.ui.screens.journal.JournalHome
@@ -89,6 +88,7 @@ import com.flux.ui.screens.notes.NotesHome
 import com.flux.ui.screens.todo.TodoHome
 import com.flux.ui.state.Settings
 import kotlinx.coroutines.launch
+import java.io.File
 import java.io.FileOutputStream
 import java.time.Instant
 import java.time.LocalDate
@@ -127,13 +127,13 @@ fun WorkspaceDetails(
     onNotesEvents: (NotesEvents) -> Unit,
     onTaskEvents: (TaskEvents) -> Unit,
     onHabitEvents: (HabitEvents) -> Unit,
-    onTodoEvents: (TodoEvents)->Unit,
-    onJournalEvents: (JournalEvents)->Unit,
+    onTodoEvents: (TodoEvents) -> Unit,
+    onJournalEvents: (JournalEvents) -> Unit,
     onSettingEvents: (SettingEvents) -> Unit,
 ) {
-    val radius= settings.data.cornerRadius
-    val workspaceId=workspace.workspaceId
-    val context= LocalContext.current
+    val radius = settings.data.cornerRadius
+    val workspaceId = workspace.workspaceId
+    val context = LocalContext.current
     var selectedTabIndex by rememberSaveable { mutableIntStateOf(0) }
     var editWorkspaceDialog by remember { mutableStateOf(false) }
     var editIconSheet by remember { mutableStateOf(false) }
@@ -143,51 +143,165 @@ fun WorkspaceDetails(
     var showLockDialog by remember { mutableStateOf(false) }
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
-        onResult = { uri: Uri? -> uri?.let { onWorkspaceEvents(WorkspaceEvents.UpsertSpace(workspace.copy(cover = copyToInternalStorage(context, uri).toString()))) } }
+        onResult = { uri: Uri? ->
+            uri?.let {
+                onWorkspaceEvents(
+                    WorkspaceEvents.UpsertSpace(
+                        workspace.copy(
+                            cover = copyToInternalStorage(context, uri).toString()
+                        )
+                    )
+                )
+            }
+        }
     )
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
 
-    if(showDeleteWorkspaceDialog){
+    if (showDeleteWorkspaceDialog) {
         DeleteAlert(onConfirmation = {
-            showDeleteWorkspaceDialog=false
+            showDeleteWorkspaceDialog = false
             onWorkspaceEvents(WorkspaceEvents.DeleteSpace(workspace))
             navController.popBackStack()
             onNotesEvents(NotesEvents.DeleteAllWorkspaceNotes(workspaceId))
             onTodoEvents(TodoEvents.DeleteAllWorkspaceLists(workspaceId))
-            allEvents.forEach { event-> cancelReminder(context, event.eventId, "EVENT", event.title, event.description, event.repetition.toString()) }
+            allEvents.forEach { event ->
+                cancelReminder(
+                    context,
+                    event.eventId,
+                    "EVENT",
+                    event.title,
+                    event.description,
+                    event.repetition.toString()
+                )
+            }
             onTaskEvents(TaskEvents.DeleteAllWorkspaceEvents(workspaceId))
-            allHabits.forEach { habit-> cancelReminder(context, habit.habitId, "HABIT", habit.title, habit.description, "DAILY") }
+            allHabits.forEach { habit ->
+                cancelReminder(
+                    context,
+                    habit.habitId,
+                    "HABIT",
+                    habit.title,
+                    habit.description,
+                    "DAILY"
+                )
+            }
             onHabitEvents(HabitEvents.DeleteAllWorkspaceHabits(workspaceId))
         }, onDismissRequest = {
-            showDeleteWorkspaceDialog=false
+            showDeleteWorkspaceDialog = false
         })
     }
 
-    val tabs = remember(workspace, isNotesLoading, isJournalEntriesLoading, isJournalEntriesLoadingMore, isTodoLoading, isDatedTaskLoading, isTodayTaskLoading, allEntries, allNotes, allLists, allHabits, allHabitInstances, todayEvents, datedEvents, allEventInstances, settings) {
+    val tabs = remember(
+        workspace,
+        isNotesLoading,
+        isJournalEntriesLoading,
+        isJournalEntriesLoadingMore,
+        isTodoLoading,
+        isDatedTaskLoading,
+        isTodayTaskLoading,
+        allEntries,
+        allNotes,
+        allLists,
+        allHabits,
+        allHabitInstances,
+        todayEvents,
+        datedEvents,
+        allEventInstances,
+        settings
+    ) {
         buildList {
             add(WorkspaceTab(R.string.Home, Icons.Default.Home) { })
-            if (workspace.isNotesAdded) add(WorkspaceTab(R.string.Notes, Icons.AutoMirrored.Filled.Notes) {
-                NotesHome(navController, workspaceId, allLabels, settings, isNotesLoading, allNotes, onNotesEvents, onSettingEvents)
-            })
-            if (workspace.isJournalAdded) add(WorkspaceTab(R.string.Journal, Icons.Default.AutoStories) {
-                JournalHome(navController, isJournalEntriesLoadingMore, workspaceId, allEntries, onJournalEvents)
-            })
+            if (workspace.isNotesAdded) add(
+                WorkspaceTab(
+                    R.string.Notes,
+                    Icons.AutoMirrored.Filled.Notes
+                ) {
+                    NotesHome(
+                        navController,
+                        workspaceId,
+                        allLabels,
+                        settings,
+                        isNotesLoading,
+                        allNotes,
+                        onNotesEvents,
+                        onSettingEvents
+                    )
+                })
+            if (workspace.isJournalAdded) add(
+                WorkspaceTab(
+                    R.string.Journal,
+                    Icons.Default.AutoStories
+                ) {
+                    JournalHome(
+                        navController,
+                        isJournalEntriesLoadingMore,
+                        workspaceId,
+                        allEntries,
+                        onJournalEvents
+                    )
+                })
             if (workspace.isTodoAdded) add(WorkspaceTab(R.string.To_Do, Icons.Default.Checklist) {
                 TodoHome(navController, radius, allLists, workspaceId, isTodoLoading, onTodoEvents)
             })
             if (workspace.isEventsAdded) add(WorkspaceTab(R.string.Events, Icons.Default.Event) {
-                EventHome(navController, radius, isTodayTaskLoading, todayEvents, allEventInstances, workspaceId, onTaskEvents)
+                EventHome(
+                    navController,
+                    radius,
+                    isTodayTaskLoading,
+                    todayEvents,
+                    allEventInstances,
+                    workspaceId,
+                    onTaskEvents
+                )
             })
-            if (workspace.isCalenderAdded) add(WorkspaceTab(R.string.Calender, Icons.Default.CalendarMonth) {
-                Calender(navController, radius, isDatedTaskLoading, workspaceId, settings, datedEvents, allEventInstances, onSettingEvents, onTaskEvents)
-            })
-            if (workspace.isHabitsAdded) add(WorkspaceTab(R.string.Habits, Icons.Default.EventAvailable) {
-                HabitsHome(navController, radius, workspaceId, allHabits, allHabitInstances, onHabitEvents)
-            })
-            if (workspace.isAnalyticsAdded) add(WorkspaceTab(R.string.Analytics, Icons.Default.Analytics) {
-                Analytics(workspace, radius, allHabitInstances, allHabits.distinctBy { it.habitId }.count(), allNotes.size, allEntries, allEvents, allEventInstances)
-            })
+            if (workspace.isCalendarAdded) add(
+                WorkspaceTab(
+                    R.string.Calendar,
+                    Icons.Default.CalendarMonth
+                ) {
+                    Calendar(
+                        navController,
+                        radius,
+                        isDatedTaskLoading,
+                        workspaceId,
+                        settings,
+                        datedEvents,
+                        allEventInstances,
+                        onSettingEvents,
+                        onTaskEvents
+                    )
+                })
+            if (workspace.isHabitsAdded) add(
+                WorkspaceTab(
+                    R.string.Habits,
+                    Icons.Default.EventAvailable
+                ) {
+                    HabitsHome(
+                        navController,
+                        radius,
+                        workspaceId,
+                        allHabits,
+                        allHabitInstances,
+                        onHabitEvents
+                    )
+                })
+            if (workspace.isAnalyticsAdded) add(
+                WorkspaceTab(
+                    R.string.Analytics,
+                    Icons.Default.Analytics
+                ) {
+                    Analytics(
+                        workspace,
+                        radius,
+                        allHabitInstances,
+                        allHabits.distinctBy { it.habitId }.count(),
+                        allNotes.size,
+                        allEntries,
+                        allEvents,
+                        allEventInstances
+                    )
+                })
         }
     }.toMutableList()
 
@@ -219,7 +333,11 @@ fun WorkspaceDetails(
         )
     }
 
-    if(showLockDialog){ SetPasskeyDialog({onWorkspaceEvents(WorkspaceEvents.UpsertSpace(workspace.copy(passKey = it)))}) { showLockDialog=false } }
+    if (showLockDialog) {
+        SetPasskeyDialog({ onWorkspaceEvents(WorkspaceEvents.UpsertSpace(workspace.copy(passKey = it))) }) {
+            showLockDialog = false
+        }
+    }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
@@ -234,19 +352,44 @@ fun WorkspaceDetails(
                         overflow = TextOverflow.Ellipsis
                     )
                 },
-                navigationIcon = { IconButton(onClick = { navController.popBackStack() }) { Icon(Icons.AutoMirrored.Default.ArrowBack, null) } },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            Icons.AutoMirrored.Default.ArrowBack,
+                            null
+                        )
+                    }
+                },
                 actions = {
                     WorkspaceMore(
                         isLocked = workspace.passKey.isNotBlank(),
                         isPinned = workspace.isPinned,
                         showEditLabel = workspace.isNotesAdded,
-                        onDelete = { showDeleteWorkspaceDialog=true },
+                        onDelete = { showDeleteWorkspaceDialog = true },
                         onEditDetails = { editWorkspaceDialog = true },
-                        onEditLabel = { navController.navigate(NavRoutes.EditLabels.withArgs(workspaceId)) },
+                        onEditLabel = {
+                            navController.navigate(
+                                NavRoutes.EditLabels.withArgs(
+                                    workspaceId
+                                )
+                            )
+                        },
                         onEditIcon = { editIconSheet = true },
                         onAddCover = { imagePickerLauncher.launch("image/*") },
-                        onTogglePinned = { onWorkspaceEvents(WorkspaceEvents.UpsertSpace(workspace.copy(isPinned = !workspace.isPinned))) },
-                        onToggleLock = { if(workspace.passKey.isNotBlank()) onWorkspaceEvents(WorkspaceEvents.UpsertSpace(workspace.copy(passKey = ""))) else showLockDialog=true }
+                        onTogglePinned = {
+                            onWorkspaceEvents(
+                                WorkspaceEvents.UpsertSpace(
+                                    workspace.copy(
+                                        isPinned = !workspace.isPinned
+                                    )
+                                )
+                            )
+                        },
+                        onToggleLock = {
+                            if (workspace.passKey.isNotBlank()) onWorkspaceEvents(
+                                WorkspaceEvents.UpsertSpace(workspace.copy(passKey = ""))
+                            ) else showLockDialog = true
+                        }
                     )
                 }
             )
@@ -260,34 +403,52 @@ fun WorkspaceDetails(
                         Icon(Icons.Default.Add, null)
                     }
                 }
+
                 R.string.Events -> {
                     FloatingActionButton(onClick = {
-                        if(!canScheduleReminder(context)) {
-                            Toast.makeText(context, context.getText(R.string.Reminder_Permission), Toast.LENGTH_SHORT).show()
+                        if (!canScheduleReminder(context)) {
+                            Toast.makeText(
+                                context,
+                                context.getText(R.string.Reminder_Permission),
+                                Toast.LENGTH_SHORT
+                            ).show()
                             requestExactAlarmPermission(context)
                         }
-                        if(!isNotificationPermissionGranted(context)) {
-                            Toast.makeText(context, context.getText(R.string.Notification_Permission), Toast.LENGTH_SHORT).show()
+                        if (!isNotificationPermissionGranted(context)) {
+                            Toast.makeText(
+                                context,
+                                context.getText(R.string.Notification_Permission),
+                                Toast.LENGTH_SHORT
+                            ).show()
                             openAppNotificationSettings(context)
                         }
-                        if(canScheduleReminder(context) && isNotificationPermissionGranted(context)){
+                        if (canScheduleReminder(context) && isNotificationPermissionGranted(context)) {
                             navController.navigate(NavRoutes.EventDetails.withArgs(workspaceId, -1))
                         }
                     }) {
                         Icon(Icons.Default.Add, null)
                     }
                 }
+
                 R.string.Habits -> {
                     FloatingActionButton(onClick = {
-                        if(!canScheduleReminder(context)){
-                            Toast.makeText(context, context.getText(R.string.Reminder_Permission), Toast.LENGTH_SHORT).show()
+                        if (!canScheduleReminder(context)) {
+                            Toast.makeText(
+                                context,
+                                context.getText(R.string.Reminder_Permission),
+                                Toast.LENGTH_SHORT
+                            ).show()
                             requestExactAlarmPermission(context)
                         }
-                        if(!isNotificationPermissionGranted(context)) {
-                            Toast.makeText(context, context.getText(R.string.Notification_Permission), Toast.LENGTH_SHORT).show()
+                        if (!isNotificationPermissionGranted(context)) {
+                            Toast.makeText(
+                                context,
+                                context.getText(R.string.Notification_Permission),
+                                Toast.LENGTH_SHORT
+                            ).show()
                             openAppNotificationSettings(context)
                         }
-                        if(canScheduleReminder(context) && isNotificationPermissionGranted(context)){
+                        if (canScheduleReminder(context) && isNotificationPermissionGranted(context)) {
                             showHabitDialog = true
                             scope.launch { sheetState.show() }
                         }
@@ -295,6 +456,7 @@ fun WorkspaceDetails(
                         Icon(Icons.Default.Add, null)
                     }
                 }
+
                 R.string.To_Do -> {
                     FloatingActionButton(onClick = {
                         navController.navigate(NavRoutes.TodoDetail.withArgs(workspaceId, -1))
@@ -302,11 +464,21 @@ fun WorkspaceDetails(
                         Icon(Icons.Default.Add, null)
                     }
                 }
+
                 R.string.Journal -> {
-                    if(allEntries.none{
-                        LocalDate.now() == Instant.ofEpochMilli(it.dateTime).atZone(ZoneId.systemDefault()).toLocalDate() }){
+                    if (allEntries.none {
+                            LocalDate.now() == Instant.ofEpochMilli(it.dateTime)
+                                .atZone(ZoneId.systemDefault()).toLocalDate()
+                        }) {
                         ExtendedFloatingActionButton(
-                            onClick = {navController.navigate(NavRoutes.EditJournal.withArgs(workspaceId, -1)) },
+                            onClick = {
+                                navController.navigate(
+                                    NavRoutes.EditJournal.withArgs(
+                                        workspaceId,
+                                        -1
+                                    )
+                                )
+                            },
                             icon = { Icon(Icons.Filled.Add, "Extended floating action button.") },
                             text = { Text(stringResource(R.string.Today_Entry)) },
                         )
@@ -342,7 +514,9 @@ fun WorkspaceDetails(
         workspace = workspace,
         isVisible = editWorkspaceDialog,
         sheetState = sheetState,
-        onDismiss = { scope.launch { sheetState.hide() }.invokeOnCompletion { editWorkspaceDialog = false } },
+        onDismiss = {
+            scope.launch { sheetState.hide() }.invokeOnCompletion { editWorkspaceDialog = false }
+        },
         onConfirm = {
             onWorkspaceEvents(WorkspaceEvents.UpsertSpace(it))
             scope.launch { sheetState.hide() }.invokeOnCompletion {
@@ -355,9 +529,17 @@ fun WorkspaceDetails(
     HabitBottomSheet(
         isVisible = showHabitDialog,
         sheetState = sheetState,
-        onDismissRequest = { scope.launch { sheetState.hide() }.invokeOnCompletion { showHabitDialog = false } },
-        onConfirm = { newHabit, adjustedTime->
-            onHabitEvents(HabitEvents.UpsertHabit(context, newHabit.copy(workspaceId = workspaceId), adjustedTime))
+        onDismissRequest = {
+            scope.launch { sheetState.hide() }.invokeOnCompletion { showHabitDialog = false }
+        },
+        onConfirm = { newHabit, adjustedTime ->
+            onHabitEvents(
+                HabitEvents.UpsertHabit(
+                    context,
+                    newHabit.copy(workspaceId = workspaceId),
+                    adjustedTime
+                )
+            )
             scope.launch { sheetState.hide() }.invokeOnCompletion { showHabitDialog = false }
         }
     )
@@ -366,8 +548,10 @@ fun WorkspaceDetails(
     ChangeIconBottomSheet(
         isVisible = editIconSheet,
         sheetState = sheetState,
-        onDismiss = { scope.launch { sheetState.hide() }.invokeOnCompletion { editIconSheet = false } },
-        onConfirm = {index->
+        onDismiss = {
+            scope.launch { sheetState.hide() }.invokeOnCompletion { editIconSheet = false }
+        },
+        onConfirm = { index ->
             scope.launch { sheetState.hide() }.invokeOnCompletion {
                 onWorkspaceEvents(WorkspaceEvents.UpsertSpace(workspace.copy(icon = index)))
                 editIconSheet = false

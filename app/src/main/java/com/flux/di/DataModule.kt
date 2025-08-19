@@ -12,14 +12,14 @@ import com.flux.data.dao.NotesDao
 import com.flux.data.dao.SettingsDao
 import com.flux.data.dao.TodoDao
 import com.flux.data.dao.WorkspaceDao
+import com.flux.data.database.EventDatabase
+import com.flux.data.database.EventInstanceDatabase
 import com.flux.data.database.HabitDatabase
 import com.flux.data.database.HabitInstanceDatabase
+import com.flux.data.database.JournalDatabase
 import com.flux.data.database.LabelDatabase
 import com.flux.data.database.NotesDatabase
 import com.flux.data.database.SettingsDatabase
-import com.flux.data.database.EventDatabase
-import com.flux.data.database.EventInstanceDatabase
-import com.flux.data.database.JournalDatabase
 import com.flux.data.database.TodoDatabase
 import com.flux.data.database.WorkspaceDatabase
 import dagger.Module
@@ -28,7 +28,6 @@ import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
-import kotlin.jvm.java
 
 @Module
 @InstallIn(SingletonComponent::class)

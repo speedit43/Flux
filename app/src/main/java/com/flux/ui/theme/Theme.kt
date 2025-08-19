@@ -258,7 +258,8 @@ fun getColorScheme(
 
     return when {
         dynamicColor -> {
-            val base = if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
+            val base =
+                if (darkTheme) dynamicDarkColorScheme(context) else dynamicLightColorScheme(context)
             if (darkTheme && amoledScreen) base.copy(
                 surface = Color.Black,
                 surfaceContainerLow = Color.Black
@@ -286,7 +287,7 @@ fun FluxTheme(
     settings: Settings,
     content: @Composable () -> Unit
 ) {
-    val data=settings.data
+    val data = settings.data
 
     val isSystemInDarkTheme = isSystemInDarkTheme()
     val darkTheme = when {
@@ -295,8 +296,8 @@ fun FluxTheme(
         else -> data.isDarkMode
     }
 
-    val contrast=settings.data.contrast
-    val amoledTheme=settings.data.amoledTheme
+    val contrast = settings.data.contrast
+    val amoledTheme = settings.data.amoledTheme
 
     val activity = LocalView.current.context as Activity
     WindowCompat.getInsetsController(activity.window, activity.window.decorView).apply {

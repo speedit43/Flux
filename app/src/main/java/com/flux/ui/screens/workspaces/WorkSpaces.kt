@@ -62,23 +62,23 @@ fun WorkSpaces(
     navController: NavController,
     radius: Int,
     allSpaces: List<WorkspaceModel>,
-    onNotesEvents: (NotesEvents)->Unit,
-    onTaskEvents: (TaskEvents)->Unit,
-    onHabitEvents: (HabitEvents)->Unit,
-    onTodoEvents: (TodoEvents)->Unit,
+    onNotesEvents: (NotesEvents) -> Unit,
+    onTaskEvents: (TaskEvents) -> Unit,
+    onHabitEvents: (HabitEvents) -> Unit,
+    onTodoEvents: (TodoEvents) -> Unit,
     onWorkSpaceEvents: (WorkspaceEvents) -> Unit,
-    onJournalEvents: (JournalEvents)->Unit
-){
+    onJournalEvents: (JournalEvents) -> Unit
+) {
     var query by rememberSaveable { mutableStateOf("") }
     var addWorkspace by remember { mutableStateOf(false) }
     var lockedWorkspace by remember { mutableStateOf<WorkspaceModel?>(null) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
-    val context= LocalContext.current
+    val context = LocalContext.current
 
     lockedWorkspace?.let { it ->
-        SetPasskeyDialog(onConfirmRequest = {passkey->
-            if(it.passKey==passkey){
+        SetPasskeyDialog(onConfirmRequest = { passkey ->
+            if (it.passKey == passkey) {
                 onNotesEvents(NotesEvents.LoadAllNotes(it.workspaceId))
                 onNotesEvents(NotesEvents.LoadAllLabels(it.workspaceId))
                 onTaskEvents(TaskEvents.LoadAllInstances(it.workspaceId))
@@ -89,9 +89,10 @@ fun WorkSpaces(
                 onTodoEvents(TodoEvents.LoadAllLists(it.workspaceId))
                 onJournalEvents(JournalEvents.LoadInitialEntries(it.workspaceId))
                 navController.navigate(NavRoutes.WorkspaceHome.withArgs(it.workspaceId))
+            } else {
+                Toast.makeText(context, "Wrong Passkey", Toast.LENGTH_SHORT).show()
             }
-            else{ Toast.makeText(context, "Wrong Passkey", Toast.LENGTH_SHORT).show() }
-        }) { lockedWorkspace=null }
+        }) { lockedWorkspace = null }
     }
 
     fun handleWorkspaceClick(space: WorkspaceModel) {
@@ -113,17 +114,28 @@ fun WorkSpaces(
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-        floatingActionButton = { FloatingActionButton(onClick = { addWorkspace=true } ) { Icon(Icons.Default.Add, null) } },
+        floatingActionButton = {
+            FloatingActionButton(onClick = { addWorkspace = true }) {
+                Icon(
+                    Icons.Default.Add,
+                    null
+                )
+            }
+        },
         snackbarHost = { SnackbarHost(snackbarHostState) }
-    ) { innerPadding->
-        if(allSpaces.isEmpty()){ EmptySpaces() }
-        else{
+    ) { innerPadding ->
+        if (allSpaces.isEmpty()) {
+            EmptySpaces()
+        } else {
             Column(Modifier.padding(innerPadding)) {
                 WorkspaceSearchBar(
                     textFieldState = TextFieldState(query),
                     onSearch = { query = it },
                     searchResults = allSpaces.filter {
-                        it.title.contains(query, ignoreCase = true) || it.description.contains(query, ignoreCase = true)
+                        it.title.contains(
+                            query,
+                            ignoreCase = true
+                        ) || it.description.contains(query, ignoreCase = true)
                     },
                     onSettingsClicked = { navController.navigate(NavRoutes.Settings.route) },
                     onCloseClicked = { query = "" },
@@ -191,7 +203,9 @@ fun WorkSpaces(
 
     NewWorkspaceBottomSheet(isVisible = addWorkspace, sheetState = sheetState, onDismiss = {
         scope.launch { sheetState.hide() }.invokeOnCompletion {
-            if (!sheetState.isVisible) { addWorkspace=false }
+            if (!sheetState.isVisible) {
+                addWorkspace = false
+            }
         }
     }, onConfirm = { onWorkSpaceEvents(WorkspaceEvents.UpsertSpace(it)) })
 }

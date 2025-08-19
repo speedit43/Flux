@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface JournalDao {
-    @Insert(onConflict=OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertEntry(entry: JournalModel)
 
     @Delete
@@ -19,13 +19,15 @@ interface JournalDao {
     @Query("Delete FROM JournalModel where workspaceId = :workspaceId")
     suspend fun deleteAllWorkspaceEntries(workspaceId: Long)
 
-    @Query("""
+    @Query(
+        """
         SELECT * FROM JournalModel 
         WHERE workspaceId = :workspaceId
         AND dateTime>= :startOfMonth
         And dateTime<= :endOfMonth
         ORDER BY dateTime ASC
-    """)
+    """
+    )
     fun loadEntriesForMonth(
         workspaceId: Long,
         startOfMonth: Long,

@@ -17,28 +17,32 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.core.net.toUri
 import androidx.navigation.NavController
 import com.flux.BuildConfig
 import com.flux.R
+import com.flux.ui.components.ActionType
 import com.flux.ui.components.BasicScaffold
 import com.flux.ui.components.SettingIcon
+import com.flux.ui.components.SettingOption
 import com.flux.ui.components.SingleSettingOption
 import com.flux.ui.components.shapeManager
-import androidx.core.net.toUri
-import com.flux.ui.components.ActionType
-import com.flux.ui.components.SettingOption
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun About(navController: NavController, radius: Int){
+fun About(navController: NavController, radius: Int) {
     val context = LocalContext.current
 
     BasicScaffold(
         title = stringResource(R.string.About),
         onBackClicked = { navController.popBackStack() }
     ) { innerPadding ->
-        LazyColumn(modifier = Modifier.padding(innerPadding).padding(16.dp, 8.dp, 16.dp)) {
-            item{
+        LazyColumn(
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(16.dp, 8.dp, 16.dp)
+        ) {
+            item {
                 SingleSettingOption(
                     radius,
                     stringResource(R.string.app_name),
@@ -48,7 +52,7 @@ fun About(navController: NavController, radius: Int){
                 ) { }
             }
 
-            item{
+            item {
                 SettingOption(
                     title = stringResource(R.string.Build_type),
                     description = BuildConfig.BUILD_TYPE.uppercase(),
@@ -58,9 +62,9 @@ fun About(navController: NavController, radius: Int){
                 )
             }
 
-            item{
+            item {
                 SettingOption(
-                    title =  stringResource(R.string.Build_version),
+                    title = stringResource(R.string.Build_version),
                     description = BuildConfig.VERSION_NAME,
                     icon = Icons.Rounded.Info,
                     radius = shapeManager(radius = radius, isLast = true),
@@ -68,10 +72,10 @@ fun About(navController: NavController, radius: Int){
                 )
             }
 
-            item{
+            item {
                 Spacer(Modifier.height(24.dp))
                 SettingOption(
-                    title =  stringResource(R.string.Developer),
+                    title = stringResource(R.string.Developer),
                     description = stringResource(R.string.Developer_Name),
                     icon = Icons.Rounded.DeveloperMode,
                     radius = shapeManager(radius = radius, isFirst = true),
@@ -79,15 +83,18 @@ fun About(navController: NavController, radius: Int){
                 )
             }
 
-            item{
+            item {
                 SettingOption(
-                    title =  stringResource(R.string.Source_Code),
+                    title = stringResource(R.string.Source_Code),
                     description = stringResource(R.string.Github_Repository),
                     icon = Icons.Rounded.Code,
                     radius = shapeManager(radius = radius, isLast = true),
                     actionType = ActionType.LINK,
                     linkClicked = {
-                        val intent = Intent(Intent.ACTION_VIEW, "https://github.com/chindaronit/Flux".toUri())
+                        val intent = Intent(
+                            Intent.ACTION_VIEW,
+                            "https://github.com/chindaronit/Flux".toUri()
+                        )
                         context.startActivity(intent)
                     }
                 )

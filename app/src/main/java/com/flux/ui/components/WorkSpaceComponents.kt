@@ -44,31 +44,66 @@ import com.flux.ui.events.WorkspaceEvents
 @Composable
 fun WorkSpacesCard(
     workspace: WorkspaceModel,
-    onClick: ()->Unit,
-    onWorkspaceEvents: (WorkspaceEvents)->Unit
-){
+    onClick: () -> Unit,
+    onWorkspaceEvents: (WorkspaceEvents) -> Unit
+) {
     var showDeleteAlert by remember { mutableStateOf(false) }
 
-    if(showDeleteAlert){
+    if (showDeleteAlert) {
         DeleteAlert(onDismissRequest = {
-            showDeleteAlert=false
+            showDeleteAlert = false
         }, onConfirmation = {
-            showDeleteAlert=false
+            showDeleteAlert = false
             onWorkspaceEvents(WorkspaceEvents.DeleteSpace(workspace))
         })
     }
 
-    Row(modifier = Modifier.clickable{onClick()}) {
-        Row(Modifier.padding(start = 12.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-            Row(modifier = Modifier.fillMaxWidth().weight(1f), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                Icon(icons[workspace.icon], null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(24.dp))
-                if(workspace.passKey.isNotBlank()) Icon(Icons.Default.Lock, null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(24.dp))
-                Text(workspace.title, color = MaterialTheme.colorScheme.primary, maxLines = 1, modifier = Modifier.alpha(0.90f), overflow = TextOverflow.Ellipsis, fontSize = 18.sp)
+    Row(modifier = Modifier.clickable { onClick() }) {
+        Row(
+            Modifier.padding(start = 12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Icon(
+                    icons[workspace.icon],
+                    null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(24.dp)
+                )
+                if (workspace.passKey.isNotBlank()) Icon(
+                    Icons.Default.Lock,
+                    null,
+                    tint = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.size(24.dp)
+                )
+                Text(
+                    workspace.title,
+                    color = MaterialTheme.colorScheme.primary,
+                    maxLines = 1,
+                    modifier = Modifier.alpha(0.90f),
+                    overflow = TextOverflow.Ellipsis,
+                    fontSize = 18.sp
+                )
             }
             WorkspacePreviewMore(
                 isPinned = workspace.isPinned,
-                onDelete = { showDeleteAlert=true },
-                onTogglePinned = { onWorkspaceEvents(WorkspaceEvents.UpsertSpace(workspace.copy(isPinned = !workspace.isPinned))) }
+                onDelete = { showDeleteAlert = true },
+                onTogglePinned = {
+                    onWorkspaceEvents(
+                        WorkspaceEvents.UpsertSpace(
+                            workspace.copy(
+                                isPinned = !workspace.isPinned
+                            )
+                        )
+                    )
+                }
             )
         }
     }
@@ -77,40 +112,68 @@ fun WorkSpacesCard(
 @Composable
 fun PinnedSpacesCard(
     radius: Int,
-    isLocked: Boolean=false,
+    isLocked: Boolean = false,
     cover: String,
     title: String,
     iconIndex: Int,
-    onClick: ()->Unit
-){
+    onClick: () -> Unit
+) {
     ElevatedCard(
-        shape = shapeManager(radius = radius*2),
-        modifier = Modifier.height(160.dp).width(140.dp).padding(2.dp),
+        shape = shapeManager(radius = radius * 2),
+        modifier = Modifier
+            .height(160.dp)
+            .width(140.dp)
+            .padding(2.dp),
         elevation = CardDefaults.cardElevation(2.dp),
         onClick = onClick,
-        colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
+        colors = CardDefaults.elevatedCardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                6.dp
+            )
+        )
     ) {
-        Column(Modifier.fillMaxSize()){
-            Box(modifier = Modifier.fillMaxWidth()){
-                if(cover.isBlank()){
-                    Box(Modifier.fillMaxWidth().height(80.dp).alpha(0.1f).background(MaterialTheme.colorScheme.onSurface))
+        Column(Modifier.fillMaxSize()) {
+            Box(modifier = Modifier.fillMaxWidth()) {
+                if (cover.isBlank()) {
+                    Box(
+                        Modifier
+                            .fillMaxWidth()
+                            .height(80.dp)
+                            .alpha(0.1f)
+                            .background(MaterialTheme.colorScheme.onSurface)
+                    )
+                } else {
+                    AsyncImage(
+                        model = cover.toUri(),
+                        modifier = Modifier
+                            .height(80.dp)
+                            .alpha(0.8f),
+                        contentDescription = null,
+                        contentScale = ContentScale.Crop
+                    )
                 }
-                else{
-                    AsyncImage(model = cover.toUri(), modifier = Modifier.height(80.dp).alpha(0.8f), contentDescription = null, contentScale = ContentScale.Crop)
-                }
-                Row(modifier = Modifier.align(Alignment.BottomStart).padding(top = 70.dp, start = 2.dp)) {
+                Row(
+                    modifier = Modifier
+                        .align(Alignment.BottomStart)
+                        .padding(top = 70.dp, start = 2.dp)
+                ) {
                     Icon(icons[iconIndex], null)
-                    if(isLocked) Icon(Icons.Default.Lock, null)
+                    if (isLocked) Icon(Icons.Default.Lock, null)
                 }
 
             }
-            Text(title, modifier = Modifier.padding(start = 4.dp), maxLines = 2, overflow = TextOverflow.Clip)
+            Text(
+                title,
+                modifier = Modifier.padding(start = 4.dp),
+                maxLines = 2,
+                overflow = TextOverflow.Clip
+            )
         }
     }
 }
 
 @Composable
-fun EmptySpaces(){
+fun EmptySpaces() {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,

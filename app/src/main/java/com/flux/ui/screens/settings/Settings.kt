@@ -33,12 +33,16 @@ fun Settings(
     navController: NavController,
     settings: Settings,
 ) {
-    val context= LocalContext.current
+    val context = LocalContext.current
     BasicScaffold(
         title = stringResource(R.string.Settings),
         onBackClicked = { navController.popBackStack() }
     ) { innerPadding ->
-        LazyColumn(modifier = Modifier.padding(innerPadding).padding(16.dp, 8.dp, 16.dp))
+        LazyColumn(
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(16.dp, 8.dp, 16.dp)
+        )
         {
             item {
                 SingleSettingOption(
@@ -60,7 +64,7 @@ fun Settings(
                     icon = Icons.Rounded.PrivacyTip,
                     shape = shapeManager(radius = settings.data.cornerRadius, isFirst = true),
                     action = {
-                        navController.navigate(NavRoutes.Privacy.route){
+                        navController.navigate(NavRoutes.Privacy.route) {
                             launchSingleTop = true
                             restoreState = true
                         }

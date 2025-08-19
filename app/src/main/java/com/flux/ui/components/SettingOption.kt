@@ -55,8 +55,8 @@ enum class ActionType {
 }
 
 sealed class SettingIcon {
-    data class Vector(val icon: ImageVector): SettingIcon()
-    data class Resource(val resId: Int): SettingIcon()
+    data class Vector(val icon: ImageVector) : SettingIcon()
+    data class Resource(val resId: Int) : SettingIcon()
 }
 
 @Composable
@@ -66,9 +66,9 @@ fun SingleSettingOption(
     description: String? = null,
     trailingIcon: SettingIcon? = null,
     leadingIcon: SettingIcon? = null,
-    textStyle: TextStyle= MaterialTheme.typography.titleMedium,
-    first: Boolean=false,
-    last: Boolean=false,
+    textStyle: TextStyle = MaterialTheme.typography.titleMedium,
+    first: Boolean = false,
+    last: Boolean = false,
     onClick: () -> Unit,
 ) {
     Card(
@@ -77,7 +77,7 @@ fun SingleSettingOption(
             .clip(shapeManager(isBoth = true, radius = radius))
             .background(MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
             .clickable { onClick() },
-        shape = shapeManager(isBoth = true, radius=radius),
+        shape = shapeManager(isBoth = true, radius = radius),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.primary,
             contentColor = MaterialTheme.colorScheme.onPrimary
@@ -95,25 +95,61 @@ fun SingleSettingOption(
                 horizontalArrangement = Arrangement.Start
             ) {
                 leadingIcon?.let {
-                        when (it) {
-                            is SettingIcon.Vector ->  CircleWrapper(size = 12.dp, color = MaterialTheme.colorScheme.surfaceContainerLow) { Icon(imageVector = it.icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary) }
-                            is SettingIcon.Resource -> CircleWrapper(size = 0.dp, color = MaterialTheme.colorScheme.surfaceContainerLow) { Icon(painter = painterResource(it.resId), contentDescription = null, tint = MaterialTheme.colorScheme.primary, modifier = Modifier.size(48.dp)) }
+                    when (it) {
+                        is SettingIcon.Vector -> CircleWrapper(
+                            size = 12.dp,
+                            color = MaterialTheme.colorScheme.surfaceContainerLow
+                        ) {
+                            Icon(
+                                imageVector = it.icon,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary
+                            )
                         }
+
+                        is SettingIcon.Resource -> CircleWrapper(
+                            size = 0.dp,
+                            color = MaterialTheme.colorScheme.surfaceContainerLow
+                        ) {
+                            Icon(
+                                painter = painterResource(it.resId),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary,
+                                modifier = Modifier.size(48.dp)
+                            )
+                        }
+                    }
                 }
                 Spacer(modifier = Modifier.width(12.dp))
                 Text(text, style = textStyle, fontWeight = FontWeight.Bold)
                 Spacer(modifier = Modifier.weight(1f))
 
                 if (description != null) {
-                    Text(description, style = MaterialTheme.typography.labelMedium, fontWeight = FontWeight.ExtraLight)
+                    Text(
+                        description,
+                        style = MaterialTheme.typography.labelMedium,
+                        fontWeight = FontWeight.ExtraLight
+                    )
                     Spacer(modifier = Modifier.width(8.dp))
                 }
 
                 trailingIcon?.let {
-                    CircleWrapper(size = 12.dp, color = MaterialTheme.colorScheme.surfaceContainerLow) {
+                    CircleWrapper(
+                        size = 12.dp,
+                        color = MaterialTheme.colorScheme.surfaceContainerLow
+                    ) {
                         when (it) {
-                            is SettingIcon.Vector -> Icon(imageVector = it.icon, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
-                            is SettingIcon.Resource -> Icon(painter = painterResource(it.resId), contentDescription = null, tint = MaterialTheme.colorScheme.primary)
+                            is SettingIcon.Vector -> Icon(
+                                imageVector = it.icon,
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary
+                            )
+
+                            is SettingIcon.Resource -> Icon(
+                                painter = painterResource(it.resId),
+                                contentDescription = null,
+                                tint = MaterialTheme.colorScheme.primary
+                            )
                         }
                     }
                 }
@@ -195,7 +231,13 @@ fun SettingOption(
                         )
                     }
                 }
-                RenderActionComponent(actionType, variable, switchEnabled, linkClicked, customButton)
+                RenderActionComponent(
+                    actionType,
+                    variable,
+                    switchEnabled,
+                    linkClicked,
+                    customButton
+                )
             }
         }
     }
@@ -267,7 +309,7 @@ private fun RenderSwitch(variable: Boolean?, onSwitchEnabled: (Boolean) -> Unit)
     Switch(
         checked = variable == true,
         onCheckedChange = { onSwitchEnabled(it) },
-        thumbContent = if (variable==true) {
+        thumbContent = if (variable == true) {
             {
                 Icon(
                     imageVector = Icons.Filled.Check,
