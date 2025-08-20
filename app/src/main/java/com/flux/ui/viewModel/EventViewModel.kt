@@ -119,8 +119,10 @@ class EventViewModel @Inject constructor (
     }
 
     private suspend fun loadAllEvents(workspaceId: Long) {
+        safeUpdateState { it.copy(isAllEventsLoading = true) }
+
         collectWorkspaceEvents(workspaceId) { events ->
-            safeUpdateState { it.copy(allEvent = events.sortedBy { it.startDateTime }) }
+            safeUpdateState { it.copy(isAllEventsLoading = false, allEvent = events.sortedBy { it.startDateTime }) }
         }
     }
 

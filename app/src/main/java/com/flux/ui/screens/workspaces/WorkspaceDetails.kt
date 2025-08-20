@@ -108,7 +108,7 @@ fun WorkspaceDetails(
     allLabels: List<LabelModel>,
     settings: Settings,
     isNotesLoading: Boolean,
-    isTodayTaskLoading: Boolean,
+    isAllEventsLoading: Boolean,
     isDatedTaskLoading: Boolean,
     isTodoLoading: Boolean,
     isJournalEntriesLoading: Boolean,
@@ -164,7 +164,7 @@ fun WorkspaceDetails(
         })
     }
 
-    val tabs = remember(workspace, isNotesLoading, isJournalEntriesLoading, isJournalEntriesLoadingMore, isTodoLoading, isDatedTaskLoading, isTodayTaskLoading, allEntries, allNotes, allLists, allHabits, allHabitInstances, todayEvents, datedEvents, allEventInstances, settings) {
+    val tabs = remember(workspace, isNotesLoading, isJournalEntriesLoading, isJournalEntriesLoadingMore, isTodoLoading, isDatedTaskLoading, isAllEventsLoading, allEntries, allNotes, allLists, allHabits, allHabitInstances, todayEvents, datedEvents, allEventInstances, settings) {
         buildList {
             add(WorkspaceTab(R.string.Home, Icons.Default.Home) { })
             if (workspace.isNotesAdded) add(WorkspaceTab(R.string.Notes, Icons.AutoMirrored.Filled.Notes) {
@@ -177,7 +177,7 @@ fun WorkspaceDetails(
                 TodoHome(navController, radius, allLists, workspaceId, isTodoLoading, onTodoEvents)
             })
             if (workspace.isEventsAdded) add(WorkspaceTab(R.string.Events, Icons.Default.Event) {
-                EventHome(navController, radius, isTodayTaskLoading, todayEvents, allEventInstances, workspaceId, onTaskEvents)
+                EventHome(navController, radius, isAllEventsLoading, allEvents, allEventInstances, workspaceId, onTaskEvents)
             })
             if (workspace.isCalenderAdded) add(WorkspaceTab(R.string.Calender, Icons.Default.CalendarMonth) {
                 Calender(navController, radius, isDatedTaskLoading, workspaceId, settings, datedEvents, allEventInstances, onSettingEvents, onTaskEvents)
@@ -304,7 +304,7 @@ fun WorkspaceDetails(
                 }
                 R.string.Journal -> {
                     if(allEntries.none{
-                        LocalDate.now() == Instant.ofEpochMilli(it.dateTime).atZone(ZoneId.systemDefault()).toLocalDate() }){
+                            LocalDate.now() == Instant.ofEpochMilli(it.dateTime).atZone(ZoneId.systemDefault()).toLocalDate() }){
                         ExtendedFloatingActionButton(
                             onClick = {navController.navigate(NavRoutes.EditJournal.withArgs(workspaceId, -1)) },
                             icon = { Icon(Icons.Filled.Add, "Extended floating action button.") },

@@ -6,6 +6,7 @@ import com.flux.data.model.EventModel
 data class EventState (
     val isTodayEventLoading: Boolean = true,
     val isDatedEventLoading: Boolean = true,
+    val isAllEventsLoading: Boolean = true,
     val allEvent: List<EventModel> = emptyList(),
     val todayEvents: List<EventModel> = emptyList(),
     val datedEvents: List<EventModel> = emptyList(),
