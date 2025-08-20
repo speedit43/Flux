@@ -48,7 +48,9 @@ import com.flux.ui.events.TaskEvents
 import com.flux.ui.theme.completed
 import com.flux.ui.theme.pending
 import java.text.SimpleDateFormat
+import java.time.Instant
 import java.time.LocalDate
+import java.time.ZoneId
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
@@ -69,27 +71,40 @@ fun EventHome(
     else {
         val today = LocalDate.now()
 
-        val pendingTasks = allEvents.filter { event ->
-            val instance = allEventInstances.find { it.eventId == event.eventId && it.instanceDate == today }
-            instance == null || instance.status== EventStatus.PENDING
-        }
+        val todayEvents = allEvents
+            .filter { it.startDateTime.toLocalDate() == today }
+            .sortedBy { event ->
+                allEventInstances
+                    .find { it.eventId == event.eventId && it.instanceDate == today }
+                    ?.status == EventStatus.COMPLETED
+            }
 
-        val completedTasks = allEvents.filter { event ->
-            val instance = allEventInstances.find { it.eventId == event.eventId && it.instanceDate == today }
-            instance != null && instance.status== EventStatus.COMPLETED
-        }
+        val upcomingEvents = allEvents
+            .filter { it.startDateTime.toLocalDate() > today }
+            .sortedBy { event ->
+                allEventInstances
+                    .find { it.eventId == event.eventId && it.instanceDate == today }
+                    ?.status == EventStatus.COMPLETED
+            }
 
         Column(
             modifier = Modifier.padding(top = 24.dp, end = 8.dp).verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            if (pendingTasks.isNotEmpty()) {
-                pendingTasks.forEach { event->
+            if (todayEvents.isNotEmpty()) {
+                Text(
+                    text = stringResource(R.string.Today),
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
+                )
+
+                todayEvents.forEach { event ->
                     val instance = allEventInstances.find { it.eventId == event.eventId && it.instanceDate == today }
                         ?: EventInstanceModel(eventId = event.eventId, instanceDate = today, workspaceId = workspaceId)
 
                     EventCard(
-                        radius=radius,
+                        radius = radius,
                         isAllDay = event.isAllDay,
                         eventInstance = instance,
                         title = event.title,
@@ -102,12 +117,20 @@ fun EventHome(
                 }
             }
 
-            if (completedTasks.isNotEmpty()) {
-                completedTasks.forEach{ event ->
-                    val instance = allEventInstances.find { it.eventId == event.eventId && it.instanceDate == today }!!
+            if (upcomingEvents.isNotEmpty()) {
+                Text(
+                    text = stringResource(R.string.Upcoming),
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp)
+                )
+
+                upcomingEvents.forEach { event ->
+                    val instance = allEventInstances.find { it.eventId == event.eventId && it.instanceDate == today }
+                        ?: EventInstanceModel(eventId = event.eventId, instanceDate = today, workspaceId = workspaceId)
 
                     EventCard(
-                        radius=radius,
+                        radius = radius,
                         isAllDay = event.isAllDay,
                         eventInstance = instance,
                         title = event.title,
@@ -208,18 +231,18 @@ fun EventCard(
                     Text(title, style = MaterialTheme.typography.titleMedium)
                     Row(Modifier.padding(vertical = 2.dp), verticalAlignment = Alignment.CenterVertically) {
                         if(repeat!= Repetition.NONE){
-                                Row(
-                                    modifier = Modifier.padding(end = 6.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(2.dp),
-                                ) {
-                                    Icon(Icons.Default.Repeat, null, modifier = Modifier.size(15.dp))
-                                    Text(
-                                        repeat.toString(),
-                                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-                                        modifier = Modifier.alpha(0.9f)
-                                    )
-                                }
+                            Row(
+                                modifier = Modifier.padding(end = 6.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(2.dp),
+                            ) {
+                                Icon(Icons.Default.Repeat, null, modifier = Modifier.size(15.dp))
+                                Text(
+                                    repeat.toString(),
+                                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
+                                    modifier = Modifier.alpha(0.9f)
+                                )
+                            }
 
                         }
                         Text(
@@ -307,4 +330,10 @@ private fun getDayOfMonthSuffix(day: Int): String {
             else -> "th"
         }
     }
+}
+
+fun Long.toLocalDate(): LocalDate {
+    return Instant.ofEpochMilli(this)
+        .atZone(ZoneId.systemDefault())
+        .toLocalDate()
 }
