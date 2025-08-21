@@ -115,6 +115,11 @@ private fun getLanguageInfo(languageCode: String): LanguageInfo {
             description = "Change your language to English",
             iconRes = R.drawable.english
         )
+        "fr" -> LanguageInfo(
+            displayName = "Français",
+            description = "Changer la langue en français",
+            iconRes = R.drawable.translate
+        )
         "hi" -> LanguageInfo(
             displayName = "हिंदी",
             description = "अपनी भाषा को हिंदी में बदलें",
