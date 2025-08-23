@@ -1,8 +1,11 @@
 package com.flux.ui.screens.settings
 
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.EnhancedEncryption
 import androidx.compose.material.icons.filled.Fingerprint
 import androidx.compose.material.icons.filled.RemoveRedEye
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -60,6 +63,20 @@ fun Privacy(
                     variable = data.isBiometricEnabled,
                     switchEnabled = {
                         onSettingsEvents(SettingEvents.UpdateSettings(data.copy(isBiometricEnabled = it)))
+                    }
+                )
+                Spacer(Modifier.height(16.dp))
+            }
+            item {
+                SettingOption(
+                    title = "Encrypt",
+                    description = "Encrypt your data when backup",
+                    icon = Icons.Filled.EnhancedEncryption,
+                    radius = shapeManager(radius = data.cornerRadius, isBoth = true),
+                    actionType = ActionType.SWITCH,
+                    variable = false,
+                    switchEnabled = {
+//                        onSettingsEvents(SettingEvents.UpdateSettings(data.copy(isBiometricEnabled = it)))
                     }
                 )
             }

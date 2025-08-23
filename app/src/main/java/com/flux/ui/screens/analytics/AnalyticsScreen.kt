@@ -14,7 +14,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -67,8 +67,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 
-@Composable
-fun Analytics(
+fun LazyListScope.analyticsItems(
     workspace: WorkspaceModel,
     radius: Int,
     allHabitInstances: List<HabitInstanceModel>,
@@ -78,12 +77,9 @@ fun Analytics(
     allEvents: List<EventModel>,
     allEventInstances: List<EventInstanceModel>
 ) {
-    if(!workspace.isNotesAdded &&  !workspace.isJournalAdded && !workspace.isEventsAdded && !workspace.isHabitsAdded){ EmptyAnalytics() }
-    LazyColumn(
-        Modifier.padding(vertical = 16.dp, horizontal = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        if (workspace.isNotesAdded){
+    when{
+        workspace.selectedSpaces.isEmpty() -> item { EmptyAnalytics() }
+        else -> {
             item {
                 SettingOption(
                     title = stringResource(R.string.Notes),
@@ -92,11 +88,18 @@ fun Analytics(
                     radius = shapeManager(radius = radius, isBoth = true),
                     actionType = ActionType.None
                 )
+                Spacer(Modifier.height(8.dp))
             }
+            item {
+                JournalAnalytics(radius, journalEntries)
+                Spacer(Modifier.height(8.dp))
+            }
+            item {
+                ChartCirclePie(radius = radius, weeklyEventStats = calculateWeeklyEventStats(allEvents, allEventInstances))
+                Spacer(Modifier.height(8.dp))
+            }
+            item { HabitHeatMap(radius, allHabitInstances, totalHabits) }
         }
-        if(workspace.isJournalAdded){ item { JournalAnalytics(radius, journalEntries) } }
-        if (workspace.isEventsAdded) { item { ChartCirclePie(radius=radius, weeklyEventStats = calculateWeeklyEventStats(allEvents, allEventInstances)) } }
-        if(workspace.isHabitsAdded) item { HabitHeatMap(radius, allHabitInstances, totalHabits) }
     }
 }
 
@@ -400,19 +403,25 @@ private fun ChartCirclePie(
                 )
                 Spacer(Modifier.height(8.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(Modifier.size(width = 30.dp, height = 10.dp).background(pending))
+                    Box(Modifier
+                        .size(width = 30.dp, height = 10.dp)
+                        .background(pending))
                     Spacer(Modifier.width(8.dp))
                     Text("${stringResource(R.string.Upcoming)}: $upcomingEvents", style = MaterialTheme.typography.labelLarge)
                 }
                 Spacer(Modifier.height(4.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(Modifier.size(width = 30.dp, height = 10.dp).background(completed))
+                    Box(Modifier
+                        .size(width = 30.dp, height = 10.dp)
+                        .background(completed))
                     Spacer(Modifier.width(8.dp))
                     Text("${stringResource(R.string.Completed)}: $completedEvents", style = MaterialTheme.typography.labelLarge)
                 }
                 Spacer(Modifier.height(4.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(Modifier.size(width = 30.dp, height = 10.dp).background(failed))
+                    Box(Modifier
+                        .size(width = 30.dp, height = 10.dp)
+                        .background(failed))
                     Spacer(Modifier.width(8.dp))
                     Text("${stringResource(R.string.Failed)}: $failedEvents", style = MaterialTheme.typography.labelLarge)
                 }
@@ -479,12 +488,16 @@ fun JournalAnalyticsCard(
                 strokeCap = StrokeCap.Round,
             )
 
-            Row(Modifier.align(Alignment.Start).padding(start = 8.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            Row(Modifier
+                .align(Alignment.Start)
+                .padding(start = 8.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                 Icon(Icons.Default.AutoStories, null, modifier = Modifier.size(18.dp))
                 Text(stringResource(R.string.journals_written, journalsWritten), style = MaterialTheme.typography.labelMedium)
             }
             Row(
-                Modifier.align(Alignment.Start).padding(start = 8.dp),
+                Modifier
+                    .align(Alignment.Start)
+                    .padding(start = 8.dp),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {

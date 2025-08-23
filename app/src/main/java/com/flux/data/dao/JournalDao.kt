@@ -22,13 +22,7 @@ interface JournalDao {
     @Query("""
         SELECT * FROM JournalModel 
         WHERE workspaceId = :workspaceId
-        AND dateTime>= :startOfMonth
-        And dateTime<= :endOfMonth
-        ORDER BY dateTime ASC
+        ORDER BY dateTime DESC
     """)
-    fun loadEntriesForMonth(
-        workspaceId: Long,
-        startOfMonth: Long,
-        endOfMonth: Long
-    ): Flow<List<JournalModel>>
+    fun loadEntriesForMonth(workspaceId: Long): Flow<List<JournalModel>>
 }

@@ -1,6 +1,5 @@
 package com.flux.data.repository
 
-
 import com.flux.data.dao.JournalDao
 import com.flux.data.model.JournalModel
 import com.flux.di.IODispatcher
@@ -16,5 +15,5 @@ class JournalRepositoryImpl @Inject constructor(
     override suspend fun upsertEntry(entry: JournalModel) { return withContext(ioDispatcher) { dao.upsertEntry(entry) } }
     override suspend fun deleteEntry(entry: JournalModel) { return withContext(ioDispatcher) { dao.deleteEntry(entry) } }
     override suspend fun deleteAllWorkspaceEntry(workspaceId: Long) { return withContext(ioDispatcher) { dao.deleteAllWorkspaceEntries(workspaceId) } }
-    override fun loadEntriesForMonth(workspaceId: Long, startOfMonth: Long, endOfMonth: Long): Flow<List<JournalModel>> { return dao.loadEntriesForMonth(workspaceId, startOfMonth, endOfMonth) }
+    override fun loadAllEntries(workspaceId: Long): Flow<List<JournalModel>> { return dao.loadEntriesForMonth(workspaceId) }
 }

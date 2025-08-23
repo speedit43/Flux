@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.Article
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.rounded.Code
 import androidx.compose.material.icons.rounded.DeveloperMode
@@ -75,6 +76,16 @@ fun About(navController: NavController, radius: Int){
                     description = stringResource(R.string.Developer_Name),
                     icon = Icons.Rounded.DeveloperMode,
                     radius = shapeManager(radius = radius, isFirst = true),
+                    actionType = ActionType.None
+                )
+            }
+
+            item{
+                SettingOption(
+                    title =  "License",
+                    description = "GPL-3.0 Only",
+                    icon = Icons.AutoMirrored.Rounded.Article,
+                    radius = shapeManager(radius = radius),
                     actionType = ActionType.None
                 )
             }

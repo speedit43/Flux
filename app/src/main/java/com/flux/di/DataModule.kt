@@ -20,6 +20,7 @@ import com.flux.data.database.SettingsDatabase
 import com.flux.data.database.EventDatabase
 import com.flux.data.database.EventInstanceDatabase
 import com.flux.data.database.JournalDatabase
+import com.flux.data.database.MIGRATION_2_3
 import com.flux.data.database.TodoDatabase
 import com.flux.data.database.WorkspaceDatabase
 import dagger.Module
@@ -84,7 +85,7 @@ object DataModule {
         app,
         WorkspaceDatabase::class.java,
         "WorkspaceDatabase"
-    ).build()
+    ).addMigrations(MIGRATION_2_3).build()
 
     @Singleton
     @Provides

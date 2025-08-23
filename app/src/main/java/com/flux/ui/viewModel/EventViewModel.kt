@@ -7,6 +7,7 @@ import com.flux.data.model.EventInstanceModel
 import com.flux.data.model.EventModel
 import com.flux.data.model.Repetition
 import com.flux.data.repository.EventRepository
+import com.flux.other.cancelReminder
 import com.flux.other.scheduleReminder
 import com.flux.ui.events.TaskEvents
 import com.flux.ui.state.EventState
@@ -21,6 +22,7 @@ import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import java.time.Instant
 import java.time.LocalDate
+import java.time.YearMonth
 import java.time.ZoneId
 import javax.inject.Inject
 import kotlin.collections.sortedBy
@@ -45,7 +47,16 @@ class EventViewModel @Inject constructor (
             is TaskEvents.LoadDateTask -> loadDateEvents(event.workspaceId, event.selectedDate)
             is TaskEvents.LoadAllTask -> loadAllEvents(event.workspaceId)
             is TaskEvents.LoadAllInstances -> loadAllEventsInstances(event.workspaceId)
-            is TaskEvents.DeleteAllWorkspaceEvents -> deleteWorkspaceEvents(event.workspaceId)
+            is TaskEvents.DeleteAllWorkspaceEvents -> deleteWorkspaceEvents(event.workspaceId, event.context)
+            is TaskEvents.ChangeMonth -> safeUpdateState {
+                it.copy(selectedYearMonth = event.newYearMonth)
+            }
+            is TaskEvents.ChangeDate -> safeUpdateState {
+                it.copy(
+                    selectedDate = event.newLocalDate,
+                    selectedYearMonth = YearMonth.from(event.newLocalDate)
+                )
+            }
         }
     }
 
@@ -67,7 +78,11 @@ class EventViewModel @Inject constructor (
         }
     }
     private fun toggleStatus(data: EventInstanceModel) { viewModelScope.launch(Dispatchers.IO) { repository.toggleStatus(data) } }
-    private fun deleteWorkspaceEvents(workspaceId: Long) { viewModelScope.launch(Dispatchers.IO) { repository.deleteAllWorkspaceEvent(workspaceId) } }
+    private fun deleteWorkspaceEvents(workspaceId: Long, context: Context) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.value.allEvent.forEach { event-> cancelReminder(context, event.eventId, "EVENT", event.title, event.description, event.repetition.toString()) }
+            repository.deleteAllWorkspaceEvent(workspaceId)
+        } }
     private fun filterEventsByDate(
         events: List<EventModel>,
         date: LocalDate
