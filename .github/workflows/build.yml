@@ -3,7 +3,7 @@ name: Android Build
 on:
   pull_request:
     types: [opened, edited]
-  push
+  push:
 
 jobs:
   build:
