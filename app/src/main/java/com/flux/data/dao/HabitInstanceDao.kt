@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface HabitInstanceDao {
-    @Insert(onConflict=OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertInstance(habitInstance: HabitInstanceModel)
 
     @Query("DELETE FROM HabitInstanceModel WHERE habitId IN (:habitId)")

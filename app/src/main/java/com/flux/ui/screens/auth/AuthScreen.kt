@@ -65,7 +65,6 @@ fun AuthScreen(
 
     // If biometric is enabled, show authentication UI
     if (isBiometricEnabled && showAuth.value) {
-
         fun startAuthentication() {
             val biometricAuthenticator = BiometricAuthenticator(
                 activity = activity,
@@ -78,7 +77,11 @@ fun AuthScreen(
                 },
                 onError = {},
                 onFailed = {
-                    Toast.makeText(context, context.getString(R.string.Auth_Error), Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        context,
+                        context.getString(R.string.Auth_Error),
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             )
 

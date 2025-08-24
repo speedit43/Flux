@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class WorkspaceViewModel @Inject constructor (
+class WorkspaceViewModel @Inject constructor(
     val repository: WorkspaceRepository
 ) : ViewModel() {
 
@@ -32,10 +32,17 @@ class WorkspaceViewModel @Inject constructor (
         viewModelScope.launch { _effect.send(effectValue) }
     }
 
-    init { loadWorkspace()  }
+    init {
+        loadWorkspace()
+    }
 
-    fun onEvent(event: WorkspaceEvents) { viewModelScope.launch { reduce(event = event) } }
-    private fun updateState(reducer: (WorkspaceState) -> WorkspaceState) { _state.value = reducer(_state.value) }
+    fun onEvent(event: WorkspaceEvents) {
+        viewModelScope.launch { reduce(event = event) }
+    }
+
+    private fun updateState(reducer: (WorkspaceState) -> WorkspaceState) {
+        _state.value = reducer(_state.value)
+    }
 
     private fun reduce(event: WorkspaceEvents) {
         when (event) {
@@ -44,14 +51,22 @@ class WorkspaceViewModel @Inject constructor (
         }
     }
 
-    private fun loadWorkspace(){
+    private fun loadWorkspace() {
         updateState { it.copy(isLoading = true) }
-        viewModelScope.launch { repository.loadAllWorkspaces().collect { data-> updateState { it.copy(isLoading = false, allSpaces = data) } } }
+        viewModelScope.launch {
+            repository.loadAllWorkspaces()
+                .collect { data -> updateState { it.copy(isLoading = false, allSpaces = data) } }
+        }
     }
 
-    private fun upsertWorkspace(data : WorkspaceModel){ viewModelScope.launch(Dispatchers.IO) { repository.upsertWorkspace(data) } }
-    private fun deleteWorkspace(space: WorkspaceModel){ viewModelScope.launch(Dispatchers.IO) {
-        repository.deleteWorkspace(space)
-        setEffect { ScreenEffect.ShowSnackBarMessage("Workspace Deleted") }
-    } }
+    private fun upsertWorkspace(data: WorkspaceModel) {
+        viewModelScope.launch(Dispatchers.IO) { repository.upsertWorkspace(data) }
+    }
+
+    private fun deleteWorkspace(space: WorkspaceModel) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteWorkspace(space)
+            setEffect { ScreenEffect.ShowSnackBarMessage("Workspace Deleted") }
+        }
+    }
 }

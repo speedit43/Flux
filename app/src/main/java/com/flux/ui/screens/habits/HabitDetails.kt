@@ -20,7 +20,7 @@ import com.flux.data.model.HabitInstanceModel
 import com.flux.data.model.HabitModel
 import com.flux.other.cancelReminder
 import com.flux.ui.components.HabitBottomSheet
-import com.flux.ui.components.HabitCalenderCard
+import com.flux.ui.components.HabitCalendarCard
 import com.flux.ui.components.HabitScaffold
 import com.flux.ui.components.HabitStartCard
 import com.flux.ui.components.HabitStreakCard
@@ -37,13 +37,13 @@ fun HabitDetails(
     workspaceId: Long,
     habit: HabitModel,
     habitInstances: List<HabitInstanceModel>,
-    onHabitEvents: (HabitEvents)-> Unit
-){
+    onHabitEvents: (HabitEvents) -> Unit
+) {
     var showHabitDialog by remember { mutableStateOf(false) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
     val (currentStreak, bestStreak) = calculateStreaks(habitInstances)
-    val context= LocalContext.current
+    val context = LocalContext.current
 
     HabitScaffold(
         title = habit.title,
@@ -54,15 +54,27 @@ fun HabitDetails(
             navController.popBackStack()
             onHabitEvents(HabitEvents.DeleteHabit(habit))
         },
-        onEditClicked = { showHabitDialog=true },
-        content= { innerPadding->
+        onEditClicked = { showHabitDialog = true },
+        content = { innerPadding ->
             LazyColumn(
-                Modifier.padding(innerPadding).padding(16.dp).fillMaxWidth(),
+                Modifier
+                    .padding(innerPadding)
+                    .padding(16.dp)
+                    .fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 item { HabitStartCard(habit.startDateTime, radius) }
                 item { HabitStreakCard(currentStreak, bestStreak, radius) }
-                item { HabitCalenderCard(radius, habit.habitId, workspaceId, habit.startDateTime, habitInstances, onHabitEvents) }
+                item {
+                    HabitCalendarCard(
+                        radius,
+                        habit.habitId,
+                        workspaceId,
+                        habit.startDateTime,
+                        habitInstances,
+                        onHabitEvents
+                    )
+                }
                 item { MonthlyHabitAnalyticsCard(radius, habitInstances) }
             }
         }
@@ -70,11 +82,13 @@ fun HabitDetails(
 
     HabitBottomSheet(
         isEditing = true,
-        habit=habit,
+        habit = habit,
         isVisible = showHabitDialog,
         sheetState = sheetState,
-        onDismissRequest = { scope.launch { sheetState.hide() }.invokeOnCompletion { showHabitDialog = false } },
-        onConfirm = { newHabit, adjustedTime->
+        onDismissRequest = {
+            scope.launch { sheetState.hide() }.invokeOnCompletion { showHabitDialog = false }
+        },
+        onConfirm = { newHabit, adjustedTime ->
             cancelReminder(context, habit.habitId, "HABIT", habit.title, habit.description, "DAILY")
             onHabitEvents(HabitEvents.UpsertHabit(context, newHabit, adjustedTime))
             scope.launch { sheetState.hide() }.invokeOnCompletion { showHabitDialog = false }

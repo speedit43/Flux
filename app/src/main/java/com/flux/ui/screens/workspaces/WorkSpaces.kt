@@ -59,25 +59,25 @@ fun WorkSpaces(
     gridColumns: Int,
     radius: Int,
     allSpaces: List<WorkspaceModel>,
-    onNotesEvents: (NotesEvents)->Unit,
-    onTaskEvents: (TaskEvents)->Unit,
-    onHabitEvents: (HabitEvents)->Unit,
-    onTodoEvents: (TodoEvents)->Unit,
+    onNotesEvents: (NotesEvents) -> Unit,
+    onTaskEvents: (TaskEvents) -> Unit,
+    onHabitEvents: (HabitEvents) -> Unit,
+    onTodoEvents: (TodoEvents) -> Unit,
     onWorkSpaceEvents: (WorkspaceEvents) -> Unit,
-    onJournalEvents: (JournalEvents)->Unit
-){
+    onJournalEvents: (JournalEvents) -> Unit
+) {
     var query by rememberSaveable { mutableStateOf("") }
     var addWorkspace by remember { mutableStateOf(false) }
-    var selectedWorkspace = remember { mutableStateListOf<WorkspaceModel>() }
+    val selectedWorkspace = remember { mutableStateListOf<WorkspaceModel>() }
     var showDeleteAlert by remember { mutableStateOf(false) }
     var lockedWorkspace by remember { mutableStateOf<WorkspaceModel?>(null) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
-    val context= LocalContext.current
+    val context = LocalContext.current
 
     lockedWorkspace?.let { it ->
-        SetPasskeyDialog(onConfirmRequest = {passkey->
-            if(it.passKey==passkey){
+        SetPasskeyDialog(onConfirmRequest = { passkey ->
+            if (it.passKey == passkey) {
                 onNotesEvents(NotesEvents.LoadAllNotes(it.workspaceId))
                 onNotesEvents(NotesEvents.LoadAllLabels(it.workspaceId))
                 onTaskEvents(TaskEvents.LoadAllInstances(it.workspaceId))
@@ -87,9 +87,10 @@ fun WorkSpaces(
                 onTodoEvents(TodoEvents.LoadAllLists(it.workspaceId))
                 onJournalEvents(JournalEvents.LoadJournalEntries(it.workspaceId))
                 navController.navigate(NavRoutes.WorkspaceHome.withArgs(it.workspaceId))
+            } else {
+                Toast.makeText(context, "Wrong Passkey", Toast.LENGTH_SHORT).show()
             }
-            else{ Toast.makeText(context, "Wrong Passkey", Toast.LENGTH_SHORT).show() }
-        }) { lockedWorkspace=null }
+        }) { lockedWorkspace = null }
     }
 
     fun handleWorkspaceClick(space: WorkspaceModel) {
@@ -118,8 +119,8 @@ fun WorkSpaces(
                     onSettingsClicked = { navController.navigate(NavRoutes.Settings.route) },
                     onCloseClicked = { query = "" }
                 )
-            } else{
-                Box(Modifier.padding(top = 48.dp)){
+            } else {
+                Box(Modifier.padding(top = 48.dp)) {
                     SelectedBar(
                         false,
                         false,
@@ -127,32 +128,56 @@ fun WorkSpaces(
                         onPinClick = {},
                         onDeleteClick = {},
                         onSelectAllClick = {},
-                        onCloseClick = {  }
+                        onCloseClick = { }
                     )
                 }
             }
         },
-        floatingActionButton = { ExtendedFloatingActionButton(onClick = { addWorkspace=true }, icon = {Icon(Icons.Default.Add, null)}, text = {Text("New", style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold))} ) },
+        floatingActionButton = {
+            ExtendedFloatingActionButton(
+                onClick = { addWorkspace = true },
+                icon = { Icon(Icons.Default.Add, null) },
+                text = {
+                    Text(
+                        "New",
+                        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+                    )
+                })
+        },
         snackbarHost = { SnackbarHost(snackbarHostState) }
-    ) { innerPadding->
-        if(allSpaces.isEmpty()){ EmptySpaces() }
-        else {
-            val spacing = when (gridColumns){
-                1-> 6.dp
-                2-> 4.dp
+    ) { innerPadding ->
+        if (allSpaces.isEmpty()) {
+            EmptySpaces()
+        } else {
+            val spacing = when (gridColumns) {
+                1 -> 6.dp
+                2 -> 4.dp
                 else -> 2.dp
             }
             LazyVerticalGrid(
                 columns = GridCells.Fixed(gridColumns),
-                modifier = Modifier.padding(innerPadding).fillMaxSize().padding(vertical = 16.dp, horizontal = 4.dp),
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize()
+                    .padding(vertical = 16.dp, horizontal = 4.dp),
                 horizontalArrangement = Arrangement.spacedBy(spacing),
                 verticalArrangement = Arrangement.spacedBy(spacing)
             ) {
-                if(allSpaces.none{ it.title.contains(query, ignoreCase = true) || it.description.contains(query, ignoreCase = true) }) {
-                    item(span = { GridItemSpan(maxLineSpan) } ) { EmptySpaces() }
+                if (allSpaces.none {
+                        it.title.contains(
+                            query,
+                            ignoreCase = true
+                        ) || it.description.contains(query, ignoreCase = true)
+                    }) {
+                    item(span = { GridItemSpan(maxLineSpan) }) { EmptySpaces() }
                 }
-                if(allSpaces.any { it.isPinned && (it.title.contains(query, ignoreCase = true) || it.description.contains(query, ignoreCase = true)) }) {
-                    item(span = { GridItemSpan(maxLineSpan) } ) {
+                if (allSpaces.any {
+                        it.isPinned && (it.title.contains(
+                            query,
+                            ignoreCase = true
+                        ) || it.description.contains(query, ignoreCase = true))
+                    }) {
+                    item(span = { GridItemSpan(maxLineSpan) }) {
                         Text(
                             "Pinned",
                             color = MaterialTheme.colorScheme.primary,
@@ -161,9 +186,14 @@ fun WorkSpaces(
                         )
                     }
                 }
-                items(allSpaces.filter { it.isPinned && (it.title.contains(query, ignoreCase = true) || it.description.contains(query, ignoreCase = true)) }) { space ->
+                items(allSpaces.filter {
+                    it.isPinned && (it.title.contains(
+                        query,
+                        ignoreCase = true
+                    ) || it.description.contains(query, ignoreCase = true))
+                }) { space ->
                     WorkspaceCard(
-                        gridColumns=gridColumns,
+                        gridColumns = gridColumns,
                         iconIndex = space.icon,
                         radius = radius,
                         isLocked = space.passKey.isNotBlank(),
@@ -173,7 +203,12 @@ fun WorkSpaces(
                         onClick = { handleWorkspaceClick(space) }
                     )
                 }
-                if(allSpaces.any { it.isPinned && (it.title.contains(query, ignoreCase = true) || it.description.contains(query, ignoreCase = true)) }){
+                if (allSpaces.any {
+                        it.isPinned && (it.title.contains(
+                            query,
+                            ignoreCase = true
+                        ) || it.description.contains(query, ignoreCase = true))
+                    }) {
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         Text(
                             "Others",
@@ -183,9 +218,14 @@ fun WorkSpaces(
                         )
                     }
                 }
-                items(allSpaces.filter { !it.isPinned && (it.title.contains(query, ignoreCase = true) || it.description.contains(query, ignoreCase = true)) }) { space ->
+                items(allSpaces.filter {
+                    !it.isPinned && (it.title.contains(
+                        query,
+                        ignoreCase = true
+                    ) || it.description.contains(query, ignoreCase = true))
+                }) { space ->
                     WorkspaceCard(
-                        gridColumns=gridColumns,
+                        gridColumns = gridColumns,
                         iconIndex = space.icon,
                         radius = radius,
                         isLocked = space.passKey.isNotBlank(),
@@ -199,18 +239,20 @@ fun WorkSpaces(
         }
     }
 
-    if(showDeleteAlert){
+    if (showDeleteAlert) {
         DeleteAlert(onDismissRequest = {
-            showDeleteAlert=false
+            showDeleteAlert = false
             selectedWorkspace.clear()
         }, onConfirmation = {
-            showDeleteAlert=false
+            showDeleteAlert = false
         })
     }
 
     NewWorkspaceBottomSheet(isVisible = addWorkspace, sheetState = sheetState, onDismiss = {
         scope.launch { sheetState.hide() }.invokeOnCompletion {
-            if (!sheetState.isVisible) { addWorkspace=false }
+            if (!sheetState.isVisible) {
+                addWorkspace = false
+            }
         }
     }, onConfirm = { onWorkSpaceEvents(WorkspaceEvents.UpsertSpace(it)) })
 }

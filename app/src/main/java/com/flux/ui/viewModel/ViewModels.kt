@@ -1,6 +1,6 @@
 package com.flux.ui.viewModel
 
-data class ViewModels (
+data class ViewModels(
     val notesViewModel: NotesViewModel,
     val eventViewModel: EventViewModel,
     val todoViewModel: TodoViewModel,

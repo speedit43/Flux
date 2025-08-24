@@ -270,16 +270,18 @@ fun NotesInfoBottomSheet(
     isVisible: Boolean,
     sheetState: SheetState,
     onDismiss: () -> Unit
-){
+) {
     if (isVisible) {
         ModalBottomSheet(
             onDismissRequest = onDismiss,
             sheetState = sheetState,
             containerColor = MaterialTheme.colorScheme.surfaceContainer
         ) {
-            LazyColumn (Modifier
-                .fillMaxWidth()
-                .padding(16.dp)) {
+            LazyColumn(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp)
+            ) {
                 item {
                     SettingOption(
                         radius = shapeManager(isFirst = true, radius = 32),

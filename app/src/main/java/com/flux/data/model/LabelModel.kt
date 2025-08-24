@@ -7,6 +7,6 @@ import androidx.room.PrimaryKey
 data class LabelModel(
     @PrimaryKey(autoGenerate = true)
     val labelId: Long = 0L,
-    val value: String="",
+    val value: String = "",
     val workspaceId: Long = 0L
 )

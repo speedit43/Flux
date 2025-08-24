@@ -49,14 +49,15 @@ fun WorkspaceSearchBar(
     onSearch: (String) -> Unit,
     onSettingsClicked: () -> Unit,
     onCloseClicked: () -> Unit,
-){
+) {
     val query = textFieldState.text.toString()
     var expanded by rememberSaveable { mutableStateOf(false) }
     val keyboardController = LocalSoftwareKeyboardController.current
 
-    Box(modifier = Modifier
-        .fillMaxWidth()
-        .semantics { isTraversalGroup = true }) {
+    Box(
+        modifier = Modifier
+            .fillMaxWidth()
+            .semantics { isTraversalGroup = true }) {
         SearchBar(
             modifier = Modifier
                 .align(Alignment.TopCenter)
@@ -68,9 +69,11 @@ fun WorkspaceSearchBar(
                     onQueryChange = {
                         textFieldState.edit { replace(0, length, it) }
                         onSearch(it)
-                        if (it.isBlank()) { expanded = false }
+                        if (it.isBlank()) {
+                            expanded = false
+                        }
                     },
-                    onSearch={
+                    onSearch = {
                         keyboardController?.hide()
                         onSearch(query)
                     },
@@ -83,9 +86,13 @@ fun WorkspaceSearchBar(
                     onSettingsClicked = onSettingsClicked
                 )
             },
-            colors = SearchBarDefaults.colors(containerColor = if (expanded) MaterialTheme.colorScheme.surfaceContainerLow else MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)),
+            colors = SearchBarDefaults.colors(
+                containerColor = if (expanded) MaterialTheme.colorScheme.surfaceContainerLow else MaterialTheme.colorScheme.surfaceColorAtElevation(
+                    6.dp
+                )
+            ),
             expanded = expanded,
-            onExpandedChange = {  },
+            onExpandedChange = { },
         ) {}
     }
 }
@@ -94,11 +101,11 @@ fun WorkspaceSearchBar(
 @Composable
 fun WorkspaceSearchInputField(
     query: String,
-    onQueryChange: (String)->Unit,
-    onSearch: (String)->Unit,
-    onSearchClosed: ()-> Unit,
-    onSettingsClicked: ()->Unit
-){
+    onQueryChange: (String) -> Unit,
+    onSearch: (String) -> Unit,
+    onSearchClosed: () -> Unit,
+    onSettingsClicked: () -> Unit
+) {
     SearchBarDefaults.InputField(
         query = query,
         onQueryChange = onQueryChange,
@@ -109,8 +116,8 @@ fun WorkspaceSearchInputField(
         leadingIcon = { Icon(Icons.Rounded.Search, "Search") },
         trailingIcon = {
             Row {
-                if(query.isNotBlank()) CloseButton(onSearchClosed)
-                SettingsButton( onSettingsClicked)
+                if (query.isNotBlank()) CloseButton(onSearchClosed)
+                SettingsButton(onSettingsClicked)
             }
         }
     )
@@ -120,7 +127,7 @@ fun WorkspaceSearchInputField(
 fun NotesSearchBar(
     query: String,
     onQueryChange: (String) -> Unit,
-    onCloseClicked: ()->Unit,
+    onCloseClicked: () -> Unit,
     modifier: Modifier = Modifier,
     placeholder: String = "Search..."
 ) {
@@ -169,7 +176,8 @@ fun NotesSearchBar(
             IconButton(
                 onClick = {
                     onCloseClicked()
-                    onQueryChange("") },
+                    onQueryChange("")
+                },
                 modifier = Modifier.size(24.dp)
             ) {
                 Icon(

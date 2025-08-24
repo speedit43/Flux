@@ -10,10 +10,10 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface NotesDao {
-    @Insert(onConflict=OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertNote(notes: NotesModel)
 
-    @Insert(onConflict=OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertNotes(notes: List<NotesModel>)
 
     @Delete

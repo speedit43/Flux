@@ -14,18 +14,38 @@ class HabitRepositoryImpl @Inject constructor(
     private val dao: HabitsDao,
     private val instanceDao: HabitInstanceDao,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
-): HabitRepository  {
-    override suspend fun upsertHabit(habit: HabitModel): Long { return withContext(ioDispatcher) { dao.upsertHabit(habit) } }
-    override suspend fun deleteInstance(habitInstance: HabitInstanceModel) { return withContext(ioDispatcher) { instanceDao.deleteInstance(habitInstance) } }
-    override suspend fun upsertHabitInstance(habitInstance: HabitInstanceModel) { return withContext(ioDispatcher) { instanceDao.upsertInstance(habitInstance) } }
-    override suspend fun loadAllHabits(): List<HabitModel> { return withContext(ioDispatcher) { dao.loadAllHabits() } }
-
-    override fun loadAllHabitInstance(workspaceId: Long): Flow<List<HabitInstanceModel>> { return instanceDao.loadAllInstances(workspaceId) }
-    override fun loadAllHabitsOfWorkspace(workspaceId: Long): Flow<List<HabitModel>> { return dao.loadAllHabitsOfWorkspace(workspaceId) }
-    override suspend fun deleteHabit(habit: HabitModel) { return withContext(ioDispatcher) {
-        instanceDao.deleteAllInstances(habit.habitId)
-        dao.deleteHabit(habit) }
+) : HabitRepository {
+    override suspend fun upsertHabit(habit: HabitModel): Long {
+        return withContext(ioDispatcher) { dao.upsertHabit(habit) }
     }
+
+    override suspend fun deleteInstance(habitInstance: HabitInstanceModel) {
+        return withContext(ioDispatcher) { instanceDao.deleteInstance(habitInstance) }
+    }
+
+    override suspend fun upsertHabitInstance(habitInstance: HabitInstanceModel) {
+        return withContext(ioDispatcher) { instanceDao.upsertInstance(habitInstance) }
+    }
+
+    override suspend fun loadAllHabits(): List<HabitModel> {
+        return withContext(ioDispatcher) { dao.loadAllHabits() }
+    }
+
+    override fun loadAllHabitInstance(workspaceId: Long): Flow<List<HabitInstanceModel>> {
+        return instanceDao.loadAllInstances(workspaceId)
+    }
+
+    override fun loadAllHabitsOfWorkspace(workspaceId: Long): Flow<List<HabitModel>> {
+        return dao.loadAllHabitsOfWorkspace(workspaceId)
+    }
+
+    override suspend fun deleteHabit(habit: HabitModel) {
+        return withContext(ioDispatcher) {
+            instanceDao.deleteAllInstances(habit.habitId)
+            dao.deleteHabit(habit)
+        }
+    }
+
     override suspend fun deleteAllWorkspaceHabit(workspaceId: Long) {
         return withContext(ioDispatcher) {
             dao.deleteAllWorkspaceHabit(workspaceId)

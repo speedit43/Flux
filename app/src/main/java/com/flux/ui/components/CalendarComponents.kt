@@ -46,8 +46,10 @@ import java.time.YearMonth
 
 @Composable
 fun DailyViewDateCard(date: LocalDate, day: String, isSelected: Boolean, onClick: () -> Unit) {
-    val containerColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHighest
-    val contentColor = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+    val containerColor =
+        if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerHighest
+    val contentColor =
+        if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
 
     Card(
         modifier = Modifier.width(60.dp),
@@ -58,8 +60,15 @@ fun DailyViewDateCard(date: LocalDate, day: String, isSelected: Boolean, onClick
         shape = RoundedCornerShape(8.dp),
         onClick = onClick
     ) {
-        Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(day, style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.ExtraLight), modifier = Modifier.padding(top = 4.dp))
+        Column(
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(
+                day,
+                style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.ExtraLight),
+                modifier = Modifier.padding(top = 4.dp)
+            )
             ElevatedCard(
                 Modifier.fillMaxWidth(),
                 colors = CardDefaults.cardColors(
@@ -68,7 +77,13 @@ fun DailyViewDateCard(date: LocalDate, day: String, isSelected: Boolean, onClick
                 ),
                 shape = RoundedCornerShape(8.dp)
             ) {
-                Text(date.dayOfMonth.toString(), textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth().padding(8.dp))
+                Text(
+                    date.dayOfMonth.toString(),
+                    textAlign = TextAlign.Center,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp)
+                )
             }
         }
     }
@@ -76,8 +91,12 @@ fun DailyViewDateCard(date: LocalDate, day: String, isSelected: Boolean, onClick
 
 @Composable
 fun MonthlyViewDateCard(date: LocalDate, isSelected: Boolean, onClick: () -> Unit) {
-    val containerColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerLow
-    val contentColor = if (isSelected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f)
+    val containerColor =
+        if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceContainerLow
+    val contentColor =
+        if (isSelected) MaterialTheme.colorScheme.onSurface else MaterialTheme.colorScheme.onSurface.copy(
+            alpha = 0.5f
+        )
 
     Box(
         modifier = Modifier
@@ -106,13 +125,12 @@ fun MonthlyViewDateCard(date: LocalDate, isSelected: Boolean, onClick: () -> Uni
     }
 }
 
-
 @Composable
-fun DailyViewCalender(
+fun DailyViewCalendar(
     selectedMonth: YearMonth,
     selectedDate: LocalDate,
-    onDateChange: (LocalDate)-> Unit
-){
+    onDateChange: (LocalDate) -> Unit
+) {
     val daysInMonth = selectedMonth.lengthOfMonth()
     val dateList = (1..daysInMonth).map { day -> selectedMonth.atDay(day) }
     val listState = rememberLazyListState()
@@ -132,7 +150,8 @@ fun DailyViewCalender(
             state = listState
         ) {
             items(dateList) { date ->
-                val dayName = date.dayOfWeek.name.take(3).lowercase().replaceFirstChar { it.uppercaseChar() }
+                val dayName =
+                    date.dayOfWeek.name.take(3).lowercase().replaceFirstChar { it.uppercaseChar() }
                 DailyViewDateCard(
                     date = date,
                     day = dayName,
@@ -146,7 +165,7 @@ fun DailyViewCalender(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun MonthlyViewCalender(
+fun MonthlyViewCalendar(
     currentMonth: YearMonth,
     selectedDate: LocalDate,
     onMonthChange: (YearMonth) -> Unit,
@@ -166,31 +185,48 @@ fun MonthlyViewCalender(
 
     Column(Modifier.fillMaxWidth()) {
         Row(
-            modifier = Modifier.fillMaxWidth().padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 8.dp, end = 8.dp, bottom = 8.dp),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(modifier = Modifier.weight(1f)) {
                 Text(
-                    text = currentMonth.month.name.lowercase().replaceFirstChar { it.uppercaseChar() } + ", ${currentMonth.year}",
+                    text = currentMonth.month.name.lowercase()
+                        .replaceFirstChar { it.uppercaseChar() } + ", ${currentMonth.year}",
                     style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
                     color = MaterialTheme.colorScheme.primary
                 )
             }
 
             IconButton(onClick = {
-                val month=currentMonth
+                val month = currentMonth
                 onMonthChange(currentMonth.minusMonths(1))
                 onDateChange(month.minusMonths(1).atDay(1))
             }) {
-                Icon(Icons.AutoMirrored.Default.ArrowBackIos, tint = MaterialTheme.colorScheme.primary, contentDescription = "Previous month", modifier = Modifier.size(18.dp).alpha(0.5f))
+                Icon(
+                    Icons.AutoMirrored.Default.ArrowBackIos,
+                    tint = MaterialTheme.colorScheme.primary,
+                    contentDescription = "Previous month",
+                    modifier = Modifier
+                        .size(18.dp)
+                        .alpha(0.5f)
+                )
             }
 
             IconButton(onClick = {
-                val month=currentMonth
+                val month = currentMonth
                 onMonthChange(currentMonth.plusMonths(1))
                 onDateChange(month.plusMonths(1).atDay(1))
             }) {
-                Icon(Icons.AutoMirrored.Default.ArrowForwardIos, tint = MaterialTheme.colorScheme.primary, contentDescription = "Next month", modifier = Modifier.size(18.dp).alpha(0.5f))
+                Icon(
+                    Icons.AutoMirrored.Default.ArrowForwardIos,
+                    tint = MaterialTheme.colorScheme.primary,
+                    contentDescription = "Next month",
+                    modifier = Modifier
+                        .size(18.dp)
+                        .alpha(0.5f)
+                )
             }
         }
 
@@ -210,12 +246,15 @@ fun MonthlyViewCalender(
         // Calendar Grid
         LazyVerticalGrid(
             columns = GridCells.Fixed(7),
-            modifier = Modifier.fillMaxWidth().heightIn(min = 100.dp, max = 300.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(min = 100.dp, max = 300.dp),
             userScrollEnabled = false
         ) {
             items(allDates) { date ->
-                if (date == null) { Box(modifier = Modifier.size(48.dp)) }
-                else{
+                if (date == null) {
+                    Box(modifier = Modifier.size(48.dp))
+                } else {
                     MonthlyViewDateCard(
                         date = date,
                         isSelected = selectedDate == date,

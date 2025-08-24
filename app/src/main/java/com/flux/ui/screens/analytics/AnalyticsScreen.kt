@@ -1,7 +1,6 @@
 package com.flux.ui.screens.analytics
 
 import androidx.compose.foundation.Canvas
-import androidx.compose.ui.graphics.lerp
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -40,6 +39,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.graphics.lerp
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -77,7 +77,7 @@ fun LazyListScope.analyticsItems(
     allEvents: List<EventModel>,
     allEventInstances: List<EventInstanceModel>
 ) {
-    when{
+    when {
         workspace.selectedSpaces.isEmpty() -> item { EmptyAnalytics() }
         else -> {
             item {
@@ -95,7 +95,10 @@ fun LazyListScope.analyticsItems(
                 Spacer(Modifier.height(8.dp))
             }
             item {
-                ChartCirclePie(radius = radius, weeklyEventStats = calculateWeeklyEventStats(allEvents, allEventInstances))
+                ChartCirclePie(
+                    radius = radius,
+                    weeklyEventStats = calculateWeeklyEventStats(allEvents, allEventInstances)
+                )
                 Spacer(Modifier.height(8.dp))
             }
             item { HabitHeatMap(radius, allHabitInstances, totalHabits) }
@@ -128,13 +131,12 @@ fun calculateWeeklyEventStats(
     fun dateRange(start: LocalDate, endInclusive: LocalDate): Sequence<LocalDate> =
         generateSequence(start) { it.plusDays(1) }.takeWhile { it <= endInclusive }
 
-
     events.forEach { event ->
         val baseDateTime = Instant.ofEpochMilli(event.startDateTime)
             .atZone(zoneId)
             .toLocalDateTime()
 
-        for (date in dateRange(weekStart, weekEnd))  {
+        for (date in dateRange(weekStart, weekEnd)) {
             val matches = when (event.repetition) {
                 Repetition.DAILY -> true
                 Repetition.WEEKLY -> baseDateTime.dayOfWeek == date.dayOfWeek
@@ -166,9 +168,8 @@ fun calculateWeeklyEventStats(
     return WeeklyEventStats(upcoming, completed, failed)
 }
 
-
 @Composable
-fun HabitHeatMap(radius: Int, allHabitInstances: List<HabitInstanceModel>, totalHabits: Int){
+fun HabitHeatMap(radius: Int, allHabitInstances: List<HabitInstanceModel>, totalHabits: Int) {
     val today = LocalDate.now()
     val yearStart = LocalDate.of(today.year, 1, 1)
 
@@ -229,17 +230,35 @@ fun HabitHeatMap(radius: Int, allHabitInstances: List<HabitInstanceModel>, total
         onClick = {},
         modifier = Modifier.fillMaxWidth(),
         shape = shapeManager(radius = radius),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp))
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                4.dp
+            )
+        )
     ) {
-        Column(Modifier
-            .fillMaxWidth()
-            .padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            Text(stringResource(R.string.HeatMap), style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold
-            ), color = MaterialTheme.colorScheme.primary, textAlign = TextAlign.Center, modifier = Modifier.fillMaxWidth())
-            Text("${stringResource(R.string.Completed_Today)}: $todayHabit/$totalHabits", style = MaterialTheme.typography.labelMedium)
-            Row(modifier = Modifier
+        Column(
+            Modifier
                 .fillMaxWidth()
-                .padding(bottom = 12.dp)) {
+                .padding(12.dp), verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            Text(
+                stringResource(R.string.HeatMap),
+                style = MaterialTheme.typography.titleMedium.copy(
+                    fontWeight = FontWeight.Bold
+                ),
+                color = MaterialTheme.colorScheme.primary,
+                textAlign = TextAlign.Center,
+                modifier = Modifier.fillMaxWidth()
+            )
+            Text(
+                "${stringResource(R.string.Completed_Today)}: $todayHabit/$totalHabits",
+                style = MaterialTheme.typography.labelMedium
+            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(bottom = 12.dp)
+            ) {
                 Column(
                     verticalArrangement = Arrangement.spacedBy(2.dp),
                     modifier = Modifier
@@ -273,7 +292,9 @@ fun HabitHeatMap(radius: Int, allHabitInstances: List<HabitInstanceModel>, total
 
                         // Show month label if this is the first week of the month
                         // or if it's the very first column
-                        val showMonth = month != null && (index == 0 || weekColumns.getOrNull(index - 1)?.firstOrNull()?.month != month)
+                        val showMonth =
+                            month != null && (index == 0 || weekColumns.getOrNull(index - 1)
+                                ?.firstOrNull()?.month != month)
 
                         Column(
                             verticalArrangement = Arrangement.spacedBy(2.dp),
@@ -297,7 +318,11 @@ fun HabitHeatMap(radius: Int, allHabitInstances: List<HabitInstanceModel>, total
                             columnDates.forEachIndexed { dayIndex, date ->
                                 if (date != null) {
                                     val count = habitMap[date]?.size ?: 0
-                                    val intensity = (count / if(totalHabits>0) totalHabits.toFloat() else 2f).coerceIn(0f, 1f)
+                                    val intensity =
+                                        (count / if (totalHabits > 0) totalHabits.toFloat() else 2f).coerceIn(
+                                            0f,
+                                            1f
+                                        )
                                     val color = lerp(
                                         MaterialTheme.colorScheme.primary.copy(alpha = 0.08f),
                                         MaterialTheme.colorScheme.primary,
@@ -362,7 +387,11 @@ private fun ChartCirclePie(
     Card(
         shape = shapeManager(radius = radius),
         modifier = Modifier.fillMaxWidth(),
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp)),
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                4.dp
+            )
+        ),
         onClick = {}
     ) {
         Row(
@@ -403,27 +432,42 @@ private fun ChartCirclePie(
                 )
                 Spacer(Modifier.height(8.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(Modifier
-                        .size(width = 30.dp, height = 10.dp)
-                        .background(pending))
+                    Box(
+                        Modifier
+                            .size(width = 30.dp, height = 10.dp)
+                            .background(pending)
+                    )
                     Spacer(Modifier.width(8.dp))
-                    Text("${stringResource(R.string.Upcoming)}: $upcomingEvents", style = MaterialTheme.typography.labelLarge)
+                    Text(
+                        "${stringResource(R.string.Upcoming)}: $upcomingEvents",
+                        style = MaterialTheme.typography.labelLarge
+                    )
                 }
                 Spacer(Modifier.height(4.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(Modifier
-                        .size(width = 30.dp, height = 10.dp)
-                        .background(completed))
+                    Box(
+                        Modifier
+                            .size(width = 30.dp, height = 10.dp)
+                            .background(completed)
+                    )
                     Spacer(Modifier.width(8.dp))
-                    Text("${stringResource(R.string.Completed)}: $completedEvents", style = MaterialTheme.typography.labelLarge)
+                    Text(
+                        "${stringResource(R.string.Completed)}: $completedEvents",
+                        style = MaterialTheme.typography.labelLarge
+                    )
                 }
                 Spacer(Modifier.height(4.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(Modifier
-                        .size(width = 30.dp, height = 10.dp)
-                        .background(failed))
+                    Box(
+                        Modifier
+                            .size(width = 30.dp, height = 10.dp)
+                            .background(failed)
+                    )
                     Spacer(Modifier.width(8.dp))
-                    Text("${stringResource(R.string.Failed)}: $failedEvents", style = MaterialTheme.typography.labelLarge)
+                    Text(
+                        "${stringResource(R.string.Failed)}: $failedEvents",
+                        style = MaterialTheme.typography.labelLarge
+                    )
                 }
             }
         }
@@ -431,24 +475,24 @@ private fun ChartCirclePie(
 }
 
 @Composable
-fun JournalAnalytics(radius: Int, entries: List<JournalModel>){
-    val (thisWeek, thisMonth)=countJournalsThisWeekAndMonth(entries)
+fun JournalAnalytics(radius: Int, entries: List<JournalModel>) {
+    val (thisWeek, thisMonth) = countJournalsThisWeekAndMonth(entries)
     val daysInMonth = LocalDate.now().lengthOfMonth()
 
     Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
         JournalAnalyticsCard(
-            radius=radius,
+            radius = radius,
             modifier = Modifier.weight(0.5f),
-            progress = thisWeek/7f,
+            progress = thisWeek / 7f,
             title = stringResource(R.string.This_Week),
             bestStreak = calculateWeeklyStreak(entries),
             journalsWritten = thisWeek
         )
 
         JournalAnalyticsCard(
-            radius=radius,
+            radius = radius,
             modifier = Modifier.weight(0.5f),
-            progress = thisMonth.toFloat()/daysInMonth.toFloat(),
+            progress = thisMonth.toFloat() / daysInMonth.toFloat(),
             title = stringResource(R.string.This_Month),
             bestStreak = calculateMonthlyStreak(entries),
             journalsWritten = thisMonth
@@ -459,21 +503,29 @@ fun JournalAnalytics(radius: Int, entries: List<JournalModel>){
 @Composable
 fun JournalAnalyticsCard(
     radius: Int,
-    modifier: Modifier= Modifier,
-    title: String=stringResource(R.string.This_Week),
+    modifier: Modifier = Modifier,
+    title: String = stringResource(R.string.This_Week),
     progress: Float,
     journalsWritten: Int,
     bestStreak: Int
-){
+) {
     Card(
-        shape = shapeManager(radius=radius),
+        shape = shapeManager(radius = radius),
         modifier = modifier,
         onClick = {},
-        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp))
+        colors = CardDefaults.cardColors(
+            containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                4.dp
+            )
+        )
     ) {
-        Column(Modifier
-            .fillMaxSize()
-            .padding(8.dp), horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.spacedBy(8.dp)) {
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(8.dp),
+            horizontalAlignment = Alignment.CenterHorizontally,
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
             Text(
                 title,
                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
@@ -487,12 +539,18 @@ fun JournalAnalyticsCard(
                 trackColor = MaterialTheme.colorScheme.primary.copy(0.35f),
                 strokeCap = StrokeCap.Round,
             )
-
-            Row(Modifier
-                .align(Alignment.Start)
-                .padding(start = 8.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            Row(
+                Modifier
+                    .align(Alignment.Start)
+                    .padding(start = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
                 Icon(Icons.Default.AutoStories, null, modifier = Modifier.size(18.dp))
-                Text(stringResource(R.string.journals_written, journalsWritten), style = MaterialTheme.typography.labelMedium)
+                Text(
+                    stringResource(R.string.journals_written, journalsWritten),
+                    style = MaterialTheme.typography.labelMedium
+                )
             }
             Row(
                 Modifier
@@ -502,19 +560,28 @@ fun JournalAnalyticsCard(
                 horizontalArrangement = Arrangement.spacedBy(4.dp)
             ) {
                 Icon(Icons.Default.LocalFireDepartment, null, modifier = Modifier.size(18.dp))
-                Text(stringResource(R.string.best_streak, bestStreak), style = MaterialTheme.typography.labelMedium)
+                Text(
+                    stringResource(R.string.best_streak, bestStreak),
+                    style = MaterialTheme.typography.labelMedium
+                )
             }
 
-            Row(Modifier
-                .align(Alignment.Start)
-                .padding(start = 8.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
+            Row(
+                Modifier
+                    .align(Alignment.Start)
+                    .padding(start = 8.dp),
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.spacedBy(4.dp)
+            ) {
                 Icon(Icons.Default.DoneAll, null, modifier = Modifier.size(18.dp))
-                Text(stringResource(R.string.completion_percentage, (progress * 100).toInt()), style = MaterialTheme.typography.labelMedium)
+                Text(
+                    stringResource(R.string.completion_percentage, (progress * 100).toInt()),
+                    style = MaterialTheme.typography.labelMedium
+                )
             }
         }
     }
 }
-
 
 fun calculateWeeklyStreak(entries: List<JournalModel>): Int {
     val zoneId = ZoneId.systemDefault()
@@ -600,7 +667,7 @@ fun countJournalsThisWeekAndMonth(entries: List<JournalModel>): Pair<Int, Int> {
 }
 
 @Composable
-fun EmptyAnalytics(){
+fun EmptyAnalytics() {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,

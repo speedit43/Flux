@@ -11,9 +11,20 @@ import javax.inject.Inject
 class JournalRepositoryImpl @Inject constructor(
     private val dao: JournalDao,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
-): JournalRepository  {
-    override suspend fun upsertEntry(entry: JournalModel) { return withContext(ioDispatcher) { dao.upsertEntry(entry) } }
-    override suspend fun deleteEntry(entry: JournalModel) { return withContext(ioDispatcher) { dao.deleteEntry(entry) } }
-    override suspend fun deleteAllWorkspaceEntry(workspaceId: Long) { return withContext(ioDispatcher) { dao.deleteAllWorkspaceEntries(workspaceId) } }
-    override fun loadAllEntries(workspaceId: Long): Flow<List<JournalModel>> { return dao.loadEntriesForMonth(workspaceId) }
+) : JournalRepository {
+    override suspend fun upsertEntry(entry: JournalModel) {
+        return withContext(ioDispatcher) { dao.upsertEntry(entry) }
+    }
+
+    override suspend fun deleteEntry(entry: JournalModel) {
+        return withContext(ioDispatcher) { dao.deleteEntry(entry) }
+    }
+
+    override suspend fun deleteAllWorkspaceEntry(workspaceId: Long) {
+        return withContext(ioDispatcher) { dao.deleteAllWorkspaceEntries(workspaceId) }
+    }
+
+    override fun loadAllEntries(workspaceId: Long): Flow<List<JournalModel>> {
+        return dao.loadEntriesForMonth(workspaceId)
+    }
 }

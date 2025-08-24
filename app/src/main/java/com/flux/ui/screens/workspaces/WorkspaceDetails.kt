@@ -112,14 +112,15 @@ fun WorkspaceDetails(
     onNotesEvents: (NotesEvents) -> Unit,
     onTaskEvents: (TaskEvents) -> Unit,
     onHabitEvents: (HabitEvents) -> Unit,
-    onTodoEvents: (TodoEvents)->Unit,
+    onTodoEvents: (TodoEvents) -> Unit,
     onSettingEvents: (SettingEvents) -> Unit,
 ) {
     val radius = settings.data.cornerRadius
     val workspaceId = workspace.workspaceId
     val context = LocalContext.current
     var query by remember { mutableStateOf("") }
-    var selectedSpaceId = rememberSaveable { mutableIntStateOf(if(workspace.selectedSpaces.isEmpty()) -1 else workspace.selectedSpaces.first()) }
+    var selectedSpaceId =
+        rememberSaveable { mutableIntStateOf(if (workspace.selectedSpaces.isEmpty()) -1 else workspace.selectedSpaces.first()) }
     var editWorkspaceDialog by remember { mutableStateOf(false) }
     var editIconSheet by remember { mutableStateOf(false) }
     var showSpacesMenu by remember { mutableStateOf(false) }
@@ -128,7 +129,17 @@ fun WorkspaceDetails(
     var showLockDialog by remember { mutableStateOf(false) }
     val imagePickerLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.GetContent(),
-        onResult = { uri: Uri? -> uri?.let { onWorkspaceEvents(WorkspaceEvents.UpsertSpace(workspace.copy(cover = copyToInternalStorage(context, uri).toString()))) } }
+        onResult = { uri: Uri? ->
+            uri?.let {
+                onWorkspaceEvents(
+                    WorkspaceEvents.UpsertSpace(
+                        workspace.copy(
+                            cover = copyToInternalStorage(context, uri).toString()
+                        )
+                    )
+                )
+            }
+        }
     )
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
@@ -141,10 +152,19 @@ fun WorkspaceDetails(
                 workspace,
                 onBackPressed = { navController.popBackStack() },
                 onDelete = { showDeleteWorkspaceDialog = true },
-                onTogglePinned = { onWorkspaceEvents(WorkspaceEvents.UpsertSpace(workspace.copy(isPinned = !workspace.isPinned))) },
+                onTogglePinned = {
+                    onWorkspaceEvents(
+                        WorkspaceEvents.UpsertSpace(
+                            workspace.copy(
+                                isPinned = !workspace.isPinned
+                            )
+                        )
+                    )
+                },
                 onToggleLock = {
-                    if (workspace.passKey.isNotBlank()) { onWorkspaceEvents(WorkspaceEvents.UpsertSpace(workspace.copy(passKey = "")))}
-                    else showLockDialog = true
+                    if (workspace.passKey.isNotBlank()) {
+                        onWorkspaceEvents(WorkspaceEvents.UpsertSpace(workspace.copy(passKey = "")))
+                    } else showLockDialog = true
                 },
                 onAddCover = { imagePickerLauncher.launch("image/*") },
                 onEditDetails = { editWorkspaceDialog = true },
@@ -153,38 +173,81 @@ fun WorkspaceDetails(
             )
         }
     ) { innerPadding ->
-        LazyColumn(Modifier.padding(innerPadding).padding(horizontal = 12.dp, vertical = 8.dp)) {
-            item { IconButton(onClick = { editIconSheet=true }){ Icon(icons[workspace.icon], null, modifier = Modifier.size(48.dp), tint = MaterialTheme.colorScheme.primary) } }
-            item { Text(workspace.title, style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.ExtraBold), color = MaterialTheme.colorScheme.primary) }
-            if (workspace.description.isNotBlank()) { item { Text(workspace.description, style = MaterialTheme.typography.bodyLarge) } }
+        LazyColumn(
+            Modifier
+                .padding(innerPadding)
+                .padding(horizontal = 12.dp, vertical = 8.dp)
+        ) {
             item {
-                if(SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Notes" && selectedNotes.isNotEmpty()){
-                    SelectedBar(
-                        allNotes.size==selectedNotes.size,
-                        allNotes.filter { selectedNotes.contains(it.notesId) }.all { it.isPinned },
-                        selectedNotes.size,
-                        onPinClick = { onNotesEvents(NotesEvents.TogglePinMultiple(allNotes.filter { selectedNotes.contains(it.notesId) })) },
-                        onDeleteClick = { onNotesEvents(NotesEvents.DeleteNotes(allNotes.filter { selectedNotes.contains(it.notesId) })) },
-                        onSelectAllClick = {
-                            if (allNotes.size==selectedNotes.size){ onNotesEvents(NotesEvents.ClearSelection) }
-                            else{ onNotesEvents(NotesEvents.SelectAllNotes) } },
-                        onCloseClick = { onNotesEvents(NotesEvents.ClearSelection) }
+                IconButton(onClick = { editIconSheet = true }) {
+                    Icon(
+                        icons[workspace.icon],
+                        null,
+                        modifier = Modifier.size(48.dp),
+                        tint = MaterialTheme.colorScheme.primary
                     )
                 }
-                else{
-                    Row(Modifier.fillMaxWidth().padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
+            }
+            item {
+                Text(
+                    workspace.title,
+                    style = MaterialTheme.typography.headlineMedium.copy(fontWeight = FontWeight.ExtraBold),
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+            if (workspace.description.isNotBlank()) {
+                item { Text(workspace.description, style = MaterialTheme.typography.bodyLarge) }
+            }
+            item {
+                if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Notes" && selectedNotes.isNotEmpty()) {
+                    SelectedBar(
+                        allNotes.size == selectedNotes.size,
+                        allNotes.filter { selectedNotes.contains(it.notesId) }.all { it.isPinned },
+                        selectedNotes.size,
+                        onPinClick = {
+                            onNotesEvents(NotesEvents.TogglePinMultiple(allNotes.filter {
+                                selectedNotes.contains(
+                                    it.notesId
+                                )
+                            }))
+                        },
+                        onDeleteClick = {
+                            onNotesEvents(NotesEvents.DeleteNotes(allNotes.filter {
+                                selectedNotes.contains(
+                                    it.notesId
+                                )
+                            }))
+                        },
+                        onSelectAllClick = {
+                            if (allNotes.size == selectedNotes.size) {
+                                onNotesEvents(NotesEvents.ClearSelection)
+                            } else {
+                                onNotesEvents(NotesEvents.SelectAllNotes)
+                            }
+                        },
+                        onCloseClick = { onNotesEvents(NotesEvents.ClearSelection) }
+                    )
+                } else {
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(vertical = 8.dp),
+                        verticalAlignment = Alignment.CenterVertically,
+                        horizontalArrangement = Arrangement.SpaceBetween
+                    ) {
                         SpacesToolBar(
-                            SpacesList.find { it.id == selectedSpaceId.intValue }?.title?:"",
-                            SpacesList.find { it.id == selectedSpaceId.intValue }?.icon?: Icons.AutoMirrored.Default.Notes,
-                            selectedSpaceId.intValue==-1,
-                            onMainClick = { showSpacesMenu=true },
-                            onEditClick = { addSpaceBottomSheet=true }
+                            SpacesList.find { it.id == selectedSpaceId.intValue }?.title ?: "",
+                            SpacesList.find { it.id == selectedSpaceId.intValue }?.icon
+                                ?: Icons.AutoMirrored.Default.Notes,
+                            selectedSpaceId.intValue == -1,
+                            onMainClick = { showSpacesMenu = true },
+                            onEditClick = { addSpaceBottomSheet = true }
                         )
                         SpacesMenu(
                             expanded = showSpacesMenu,
-                            workspace=workspace,
-                            onConfirm = { newSpaceId-> selectedSpaceId.intValue=newSpaceId }
-                        ) { showSpacesMenu=false }
+                            workspace = workspace,
+                            onConfirm = { newSpaceId -> selectedSpaceId.intValue = newSpaceId }
+                        ) { showSpacesMenu = false }
 
                         if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Habits") {
                             HabitToolBar(context) {
@@ -197,8 +260,14 @@ fun WorkspaceDetails(
                                 navController,
                                 workspaceId,
                                 query, settings.data.isGridView,
-                                onSearch = { query=it },
-                                onChangeView = { onSettingEvents(SettingEvents.UpdateSettings(settings.data.copy(isGridView = !settings.data.isGridView))) })
+                                onSearch = { query = it },
+                                onChangeView = {
+                                    onSettingEvents(
+                                        SettingEvents.UpdateSettings(
+                                            settings.data.copy(isGridView = !settings.data.isGridView)
+                                        )
+                                    )
+                                })
                         }
                         if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Journal") {
                             JournalToolBar(navController, workspaceId)
@@ -211,7 +280,11 @@ fun WorkspaceDetails(
                                 settings.data.isCalenderMonthlyView,
                                 onClick = {
                                     onSettingEvents(
-                                        SettingEvents.UpdateSettings(settings.data.copy(isCalenderMonthlyView = it))
+                                        SettingEvents.UpdateSettings(
+                                            settings.data.copy(
+                                                isCalenderMonthlyView = it
+                                            )
+                                        )
                                     )
                                 }
                             )
@@ -223,37 +296,90 @@ fun WorkspaceDetails(
                 }
             }
             if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Habits") {
-                habitsHomeItems(navController, isHabitLoading, radius, workspace.workspaceId, allHabits, allHabitInstances, onHabitEvents)
+                habitsHomeItems(
+                    navController,
+                    isHabitLoading,
+                    radius,
+                    workspace.workspaceId,
+                    allHabits,
+                    allHabitInstances,
+                    onHabitEvents
+                )
             }
             if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Notes") {
-                notesHomeItems(navController, workspaceId, selectedNotes, query, settings.data.cornerRadius, allLabels, isNotesLoading, allNotes, onNotesEvents)
+                notesHomeItems(
+                    navController,
+                    workspaceId,
+                    selectedNotes,
+                    query,
+                    settings.data.cornerRadius,
+                    allLabels,
+                    isNotesLoading,
+                    allNotes,
+                    onNotesEvents
+                )
             }
             if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Calendar") {
-                calenderItems(navController, radius, isDatedTaskLoading, workspaceId, selectedYearMonth, selectedDate, settings, datedEvents, allEventInstances, onTaskEvents)
+                calenderItems(
+                    navController,
+                    radius,
+                    isDatedTaskLoading,
+                    workspaceId,
+                    selectedYearMonth,
+                    selectedDate,
+                    settings,
+                    datedEvents,
+                    allEventInstances,
+                    onTaskEvents
+                )
             }
             if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Journal") {
                 journalHomeItems(navController, isJournalEntriesLoading, workspaceId, allEntries)
             }
             if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Analytics") {
-                analyticsItems(workspace, radius, allHabitInstances, totalHabits = allHabits.size, totalNotes = allNotes.size, allEntries, allEvents, allEventInstances)
+                analyticsItems(
+                    workspace,
+                    radius,
+                    allHabitInstances,
+                    totalHabits = allHabits.size,
+                    totalNotes = allNotes.size,
+                    allEntries,
+                    allEvents,
+                    allEventInstances
+                )
             }
             if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "To-Do") {
-                todoHomeItems(navController, radius, allLists, workspaceId, isTodoLoading, onTodoEvents)
+                todoHomeItems(
+                    navController,
+                    radius,
+                    allLists,
+                    workspaceId,
+                    isTodoLoading,
+                    onTodoEvents
+                )
             }
             if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Events") {
-                eventHomeItems(navController, radius, isAllEventsLoading, allEvents, allEventInstances, workspaceId, onTaskEvents)
+                eventHomeItems(
+                    navController,
+                    radius,
+                    isAllEventsLoading,
+                    allEvents,
+                    allEventInstances,
+                    workspaceId,
+                    onTaskEvents
+                )
             }
         }
     }
 
-    if(showLockDialog){
-        SetPasskeyDialog({onWorkspaceEvents(WorkspaceEvents.UpsertSpace(workspace.copy(passKey = it)))})
-        { showLockDialog=false }
+    if (showLockDialog) {
+        SetPasskeyDialog({ onWorkspaceEvents(WorkspaceEvents.UpsertSpace(workspace.copy(passKey = it))) })
+        { showLockDialog = false }
     }
 
-    if(showDeleteWorkspaceDialog){
+    if (showDeleteWorkspaceDialog) {
         DeleteAlert(onConfirmation = {
-            showDeleteWorkspaceDialog=false
+            showDeleteWorkspaceDialog = false
             navController.popBackStack()
             onWorkspaceEvents(WorkspaceEvents.DeleteSpace(workspace))
             onNotesEvents(NotesEvents.DeleteAllWorkspaceNotes(workspaceId))
@@ -261,25 +387,34 @@ fun WorkspaceDetails(
             onTaskEvents(TaskEvents.DeleteAllWorkspaceEvents(workspaceId, context))
             onHabitEvents(HabitEvents.DeleteAllWorkspaceHabits(workspaceId, context))
         }, onDismissRequest = {
-            showDeleteWorkspaceDialog=false
+            showDeleteWorkspaceDialog = false
         })
     }
 
     AddNewSpacesBottomSheet(
         isVisible = addSpaceBottomSheet,
-        sheetState=sheetState,
+        sheetState = sheetState,
         selectedSpaces = SpacesList.filter { workspace.selectedSpaces.contains(it.id) },
-        onDismiss = { addSpaceBottomSheet=false },
+        onDismiss = { addSpaceBottomSheet = false },
         onRemove = {
-            if(workspace.selectedSpaces.size==1) selectedSpaceId.intValue=-1
+            if (workspace.selectedSpaces.size == 1) selectedSpaceId.intValue = -1
             onWorkspaceEvents(
                 WorkspaceEvents.UpsertSpace(
                     workspace.copy(selectedSpaces = workspace.selectedSpaces.minus(it))
                 )
-            ) },
+            )
+        },
         onSelect = {
-            if(selectedSpaceId.intValue==-1) selectedSpaceId.intValue=it
-            onWorkspaceEvents(WorkspaceEvents.UpsertSpace(workspace.copy(selectedSpaces = workspace.selectedSpaces.plus(it))))
+            if (selectedSpaceId.intValue == -1) selectedSpaceId.intValue = it
+            onWorkspaceEvents(
+                WorkspaceEvents.UpsertSpace(
+                    workspace.copy(
+                        selectedSpaces = workspace.selectedSpaces.plus(
+                            it
+                        )
+                    )
+                )
+            )
         }
     )
 
@@ -289,7 +424,9 @@ fun WorkspaceDetails(
         workspace = workspace,
         isVisible = editWorkspaceDialog,
         sheetState = sheetState,
-        onDismiss = { scope.launch { sheetState.hide() }.invokeOnCompletion { editWorkspaceDialog = false } },
+        onDismiss = {
+            scope.launch { sheetState.hide() }.invokeOnCompletion { editWorkspaceDialog = false }
+        },
         onConfirm = {
             onWorkspaceEvents(WorkspaceEvents.UpsertSpace(it))
             scope.launch { sheetState.hide() }.invokeOnCompletion {
@@ -302,9 +439,17 @@ fun WorkspaceDetails(
     HabitBottomSheet(
         isVisible = showHabitDialog,
         sheetState = sheetState,
-        onDismissRequest = { scope.launch { sheetState.hide() }.invokeOnCompletion { showHabitDialog = false } },
-        onConfirm = { newHabit, adjustedTime->
-            onHabitEvents(HabitEvents.UpsertHabit(context, newHabit.copy(workspaceId = workspaceId), adjustedTime))
+        onDismissRequest = {
+            scope.launch { sheetState.hide() }.invokeOnCompletion { showHabitDialog = false }
+        },
+        onConfirm = { newHabit, adjustedTime ->
+            onHabitEvents(
+                HabitEvents.UpsertHabit(
+                    context,
+                    newHabit.copy(workspaceId = workspaceId),
+                    adjustedTime
+                )
+            )
             scope.launch { sheetState.hide() }.invokeOnCompletion { showHabitDialog = false }
         }
     )
@@ -313,8 +458,10 @@ fun WorkspaceDetails(
     ChangeIconBottomSheet(
         isVisible = editIconSheet,
         sheetState = sheetState,
-        onDismiss = { scope.launch { sheetState.hide() }.invokeOnCompletion { editIconSheet = false } },
-        onConfirm = {index->
+        onDismiss = {
+            scope.launch { sheetState.hide() }.invokeOnCompletion { editIconSheet = false }
+        },
+        onConfirm = { index ->
             scope.launch { sheetState.hide() }.invokeOnCompletion {
                 onWorkspaceEvents(WorkspaceEvents.UpsertSpace(workspace.copy(icon = index)))
                 editIconSheet = false

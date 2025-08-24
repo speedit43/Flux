@@ -40,7 +40,7 @@
     <string name="Grid_View">Grid View</string>
     <string name="Grid_View_Desc">Change notes view to grid</string>
     <string name="Monthly_View">Monthly View</string>
-    <string name="Monthly_View_Desc">Change to monthly calender view</string>
+    <string name="Monthly_View_Desc">Change to monthly calendar view</string>
     <string name="Contrast">Contrast</string>
     <string name="Low">Low</string>
     <string name="Medium">Medium</string>
@@ -159,8 +159,8 @@
     <string name="Amount">Amount</string>
     <string name="Today">Today</string>
 
-    <!-- Calender -->
-    <string name="Calender">Calender</string>
+    <!-- Calendar -->
+    <string name="Calendar">Calendar</string>
 
     <!-- Analytics -->
     <string name="Analytics">Analytics</string>

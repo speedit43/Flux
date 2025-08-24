@@ -11,7 +11,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 
 @Composable
-fun CloseButton(onCloseClicked:  () -> Unit) {
+fun CloseButton(onCloseClicked: () -> Unit) {
     IconButton(onClick = onCloseClicked) {
         Icon(
             imageVector = Icons.Rounded.Close,
@@ -36,7 +36,7 @@ fun SettingsButton(onSettingsClicked: () -> Unit) {
 fun GridViewButton(isGridView: Boolean, onButtonClicked: () -> Unit) {
     IconButton(onClick = onButtonClicked) {
         Icon(
-            imageVector = if(isGridView) Icons.Outlined.GridView else Icons.Outlined.ViewAgenda,
+            imageVector = if (isGridView) Icons.Outlined.GridView else Icons.Outlined.ViewAgenda,
             contentDescription = "GridView",
             tint = MaterialTheme.colorScheme.primary
         )

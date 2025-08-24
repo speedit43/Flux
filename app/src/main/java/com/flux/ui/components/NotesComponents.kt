@@ -165,10 +165,12 @@ fun NotesInputCard(
 
         if (isFocused.value) {
             RichTextStyleRow(
-                modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 8.dp),
                 state = richTextState,
                 isAddImage = false,
-            ){}
+            ) {}
         }
     }
 }
@@ -178,14 +180,14 @@ fun NotesInputCard(
 fun RichTextStyleRow(
     modifier: Modifier = Modifier,
     state: RichTextState,
-    isAddImage: Boolean=false,
-    onAddImageClicked: ()->Unit
+    isAddImage: Boolean = false,
+    onAddImageClicked: () -> Unit
 ) {
     LazyRow(
         verticalAlignment = Alignment.CenterVertically,
         modifier = modifier
     ) {
-        if(isAddImage){
+        if (isAddImage) {
             item {
                 RichTextStyleButton(
                     onClick = onAddImageClicked,
@@ -294,7 +296,11 @@ fun RichTextStyleButton(
     IconButton(
         onClick = onClick,
         colors = IconButtonDefaults.iconButtonColors(
-            containerColor = if (isSelected) { MaterialTheme.colorScheme.onSurface.copy(0.1f) } else { MaterialTheme.colorScheme.surfaceContainerLow },
+            containerColor = if (isSelected) {
+                MaterialTheme.colorScheme.onSurface.copy(0.1f)
+            } else {
+                MaterialTheme.colorScheme.surfaceContainerLow
+            },
         )
     ) { Icon(icon, icon.name) }
 }
@@ -302,7 +308,7 @@ fun RichTextStyleButton(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NotesPreviewCard(
-    modifier: Modifier=Modifier,
+    modifier: Modifier = Modifier,
     radius: Int,
     isSelected: Boolean,
     note: NotesModel,
@@ -347,7 +353,12 @@ fun NotesPreviewCard(
             )
 
 
-            Box(modifier = Modifier.fillMaxWidth().heightIn(max = 300.dp).verticalScroll(scrollState)) {
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 300.dp)
+                    .verticalScroll(scrollState)
+            ) {
                 RichTextEditor(
                     state = richTextState,
                     enabled = false,
@@ -421,11 +432,12 @@ fun NotesPreviewCard(
     }
 }
 
-
 @Composable
-fun EmptyNotes(){
+fun EmptyNotes() {
     Column(
-        modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(top = 24.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -439,7 +451,7 @@ fun EmptyNotes(){
 }
 
 @Composable
-fun EmptyLabels(){
+fun EmptyLabels() {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,

@@ -55,10 +55,11 @@ fun BasicScaffold(
 fun HabitScaffold(
     title: String,
     description: String,
-    onDeleteClicked: ()->Unit,
-    onBackPressed: ()->Unit,
-    onEditClicked:()->Unit,
-    content: @Composable (PaddingValues) -> Unit){
+    onDeleteClicked: () -> Unit,
+    onBackPressed: () -> Unit,
+    onEditClicked: () -> Unit,
+    content: @Composable (PaddingValues) -> Unit
+) {
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
         topBar = {
@@ -66,14 +67,39 @@ fun HabitScaffold(
                 colors = TopAppBarDefaults.topAppBarColors(MaterialTheme.colorScheme.surfaceContainerLow),
                 title = {
                     Column {
-                        Text(title, style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold), maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.padding(end = 3.dp))
-                        Text(description, style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Light), maxLines = 1, overflow = TextOverflow.Ellipsis, modifier = Modifier.padding(end = 3.dp))
+                        Text(
+                            title,
+                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.padding(end = 3.dp)
+                        )
+                        Text(
+                            description,
+                            style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Light),
+                            maxLines = 1,
+                            overflow = TextOverflow.Ellipsis,
+                            modifier = Modifier.padding(end = 3.dp)
+                        )
                     }
                 },
-                navigationIcon = { IconButton(onBackPressed) { Icon(Icons.AutoMirrored.Default.ArrowBack, null) } },
+                navigationIcon = {
+                    IconButton(onBackPressed) {
+                        Icon(
+                            Icons.AutoMirrored.Default.ArrowBack,
+                            null
+                        )
+                    }
+                },
                 actions = {
                     IconButton(onEditClicked) { Icon(Icons.Default.Edit, null) }
-                    IconButton(onDeleteClicked) { Icon(Icons.Default.DeleteOutline, null, tint = MaterialTheme.colorScheme.error) }
+                    IconButton(onDeleteClicked) {
+                        Icon(
+                            Icons.Default.DeleteOutline,
+                            null,
+                            tint = MaterialTheme.colorScheme.error
+                        )
+                    }
                 }
             )
         },

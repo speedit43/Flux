@@ -25,7 +25,11 @@ import com.flux.data.model.SettingsModel
 import com.flux.data.model.TodoModel
 import com.flux.data.model.WorkspaceModel
 
-@Database(entities = [EventModel::class, LabelModel:: class, EventInstanceModel::class, SettingsModel::class, NotesModel::class, HabitModel::class, HabitInstanceModel::class, WorkspaceModel::class, TodoModel::class, JournalModel::class], version = 1, exportSchema = false)
+@Database(
+    entities = [EventModel::class, LabelModel::class, EventInstanceModel::class, SettingsModel::class, NotesModel::class, HabitModel::class, HabitInstanceModel::class, WorkspaceModel::class, TodoModel::class, JournalModel::class],
+    version = 1,
+    exportSchema = false
+)
 @TypeConverters(Converter::class)
 abstract class FluxDatabase : RoomDatabase() {
     abstract val settingsDao: SettingsDao

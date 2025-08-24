@@ -80,29 +80,51 @@ import java.util.Locale
 @Composable
 fun AddLabelDialog(
     initialValue: String,
-    onConfirmation: (String)->Unit,
-    onDismissRequest: ()-> Unit
-){
+    onConfirmation: (String) -> Unit,
+    onDismissRequest: () -> Unit
+) {
     var label by remember { mutableStateOf(initialValue) }
 
     AlertDialog(
-        icon = { CircleWrapper(MaterialTheme.colorScheme.primary) { val icon=if(initialValue.isBlank()) Icons.Default.Add else Icons.Default.Edit
-            Icon(icon, contentDescription = "Add/Edit Icon", tint = MaterialTheme.colorScheme.onPrimary) } },
-        title = { Text(text = if(initialValue.isBlank()) stringResource(R.string.Add_Label) else stringResource(R.string.Edit_Label)) },
-        text = { OutlinedTextField(value = label, onValueChange = { label=it }, singleLine = true,
-            keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-            keyboardActions = KeyboardActions(
-                onDone = {
-                    onConfirmation(label)
-                    onDismissRequest()
-                }
-            )) },
+        icon = {
+            CircleWrapper(MaterialTheme.colorScheme.primary) {
+                val icon = if (initialValue.isBlank()) Icons.Default.Add else Icons.Default.Edit
+                Icon(
+                    icon,
+                    contentDescription = "Add/Edit Icon",
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
+            }
+        },
+        title = {
+            Text(
+                text = if (initialValue.isBlank()) stringResource(R.string.Add_Label) else stringResource(
+                    R.string.Edit_Label
+                )
+            )
+        },
+        text = {
+            OutlinedTextField(
+                value = label, onValueChange = { label = it }, singleLine = true,
+                keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
+                keyboardActions = KeyboardActions(
+                    onDone = {
+                        onConfirmation(label)
+                        onDismissRequest()
+                    }
+                ))
+        },
         onDismissRequest = { onDismissRequest() },
         confirmButton = {
             TextButton(
-                onClick = { onConfirmation(label)
-                    onDismissRequest() },
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.primary, contentColor = MaterialTheme.colorScheme.onPrimary)
+                onClick = {
+                    onConfirmation(label)
+                    onDismissRequest()
+                },
+                colors = ButtonDefaults.buttonColors(
+                    containerColor = MaterialTheme.colorScheme.primary,
+                    contentColor = MaterialTheme.colorScheme.onPrimary
+                )
             ) { Text(stringResource(R.string.Confirm)) }
         },
         dismissButton = { TextButton(onClick = { onDismissRequest() }) { Text(stringResource(R.string.Dismiss)) } }
@@ -114,20 +136,37 @@ fun SelectLabelDialog(
     currNoteLabels: List<LabelModel>,
     labels: List<LabelModel>,
     onAddLabel: () -> Unit,
-    onConfirmation: (List<LabelModel>)->Unit,
-    onDismissRequest: ()-> Unit
-){
-    val selectedLabel = remember { mutableStateListOf<LabelModel>().apply {
-        addAll(currNoteLabels)
-    } }
+    onConfirmation: (List<LabelModel>) -> Unit,
+    onDismissRequest: () -> Unit
+) {
+    val selectedLabel = remember {
+        mutableStateListOf<LabelModel>().apply {
+            addAll(currNoteLabels)
+        }
+    }
 
     AlertDialog(
-        icon = { CircleWrapper(MaterialTheme.colorScheme.primary) { Icon(Icons.AutoMirrored.Filled.Label, contentDescription = "Label Icon", tint = MaterialTheme.colorScheme.onPrimary) } },
+        icon = {
+            CircleWrapper(MaterialTheme.colorScheme.primary) {
+                Icon(
+                    Icons.AutoMirrored.Filled.Label,
+                    contentDescription = "Label Icon",
+                    tint = MaterialTheme.colorScheme.onPrimary
+                )
+            }
+        },
         title = { Text(text = stringResource(R.string.Select_Label)) },
-        text = { LabelCheckBoxList(selectedLabel, labels, onChecked = {selectedLabel.add(it)}, onAddLabel = {
-            onAddLabel()
-            onDismissRequest()
-        }, onUnChecked = { selectedLabel.remove(it)} )  },
+        text = {
+            LabelCheckBoxList(
+                selectedLabel,
+                labels,
+                onChecked = { selectedLabel.add(it) },
+                onAddLabel = {
+                    onAddLabel()
+                    onDismissRequest()
+                },
+                onUnChecked = { selectedLabel.remove(it) })
+        },
         onDismissRequest = { onDismissRequest() },
         confirmButton = {
             TextButton(
@@ -151,23 +190,27 @@ fun SelectLabelDialog(
 fun LabelCheckBoxList(
     checkedLabel: List<LabelModel>,
     labels: List<LabelModel>,
-    onChecked: (LabelModel)-> Unit,
+    onChecked: (LabelModel) -> Unit,
     onUnChecked: (LabelModel) -> Unit,
-    onAddLabel: ()->Unit
-){
+    onAddLabel: () -> Unit
+) {
 
     LazyColumn(
-        modifier = Modifier.heightIn(max=250.dp)
+        modifier = Modifier.heightIn(max = 250.dp)
     ) {
         item {
             Card(
-                Modifier.fillMaxWidth()
+                Modifier
+                    .fillMaxWidth()
                     .clip(RoundedCornerShape(50))
-                    .padding(vertical = 2.dp).clickable(onClick = onAddLabel),
+                    .padding(vertical = 2.dp)
+                    .clickable(onClick = onAddLabel),
                 shape = RoundedCornerShape(50)
             ) {
                 Row(
-                    Modifier.fillMaxWidth().padding(vertical = 6.dp, horizontal = 8.dp),
+                    Modifier
+                        .fillMaxWidth()
+                        .padding(vertical = 6.dp, horizontal = 8.dp),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -176,20 +219,29 @@ fun LabelCheckBoxList(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         CircleWrapper(color = MaterialTheme.colorScheme.primary) {
-                            Icon(Icons.Default.NewLabel, null, tint = MaterialTheme.colorScheme.onPrimary)
+                            Icon(
+                                Icons.Default.NewLabel,
+                                null,
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
                         }
-                        Text(text = stringResource(R.string.Add_Label), fontWeight = FontWeight.Bold)
+                        Text(
+                            text = stringResource(R.string.Add_Label),
+                            fontWeight = FontWeight.Bold
+                        )
                     }
                     IconButton(onAddLabel) { }
                 }
             }
         }
-        items(labels){ label->
-            val isChecked=checkedLabel.contains(label)
+        items(labels) { label ->
+            val isChecked = checkedLabel.contains(label)
             Card(
-                Modifier.fillMaxWidth()
+                Modifier
+                    .fillMaxWidth()
                     .clip(RoundedCornerShape(50))
-                    .padding(vertical = 2.dp).clickable {
+                    .padding(vertical = 2.dp)
+                    .clickable {
                         if (isChecked) {
                             onUnChecked(label)
                         } else {
@@ -199,7 +251,9 @@ fun LabelCheckBoxList(
                 shape = RoundedCornerShape(50)
             ) {
                 Row(
-                    Modifier.padding(vertical = 6.dp, horizontal = 8.dp).fillMaxWidth(),
+                    Modifier
+                        .padding(vertical = 6.dp, horizontal = 8.dp)
+                        .fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically,
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
@@ -208,13 +262,26 @@ fun LabelCheckBoxList(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         CircleWrapper(color = MaterialTheme.colorScheme.primary) {
-                            Icon(Icons.AutoMirrored.Outlined.LabelImportant, null, tint = MaterialTheme.colorScheme.onPrimary)
+                            Icon(
+                                Icons.AutoMirrored.Outlined.LabelImportant,
+                                null,
+                                tint = MaterialTheme.colorScheme.onPrimary
+                            )
                         }
-                        Text(text = label.value, fontWeight = FontWeight.Bold, overflow = TextOverflow.Ellipsis, maxLines = 1, modifier = Modifier.width(150.dp))
+                        Text(
+                            text = label.value,
+                            fontWeight = FontWeight.Bold,
+                            overflow = TextOverflow.Ellipsis,
+                            maxLines = 1,
+                            modifier = Modifier.width(150.dp)
+                        )
                     }
                     Checkbox(checked = isChecked, onCheckedChange = {
-                        if(isChecked) { onUnChecked(label) }
-                        else { onChecked(label) }
+                        if (isChecked) {
+                            onUnChecked(label)
+                        } else {
+                            onChecked(label)
+                        }
                     })
                 }
             }
@@ -267,8 +334,7 @@ fun TimePicker(
     onConfirm: (TimePickerState) -> Unit,
     onDismiss: () -> Unit,
 ) {
-
-    val currentTime = Calendar.getInstance().apply { timeInMillis=initialTime}
+    val currentTime = Calendar.getInstance().apply { timeInMillis = initialTime }
 
     val timePickerState = rememberTimePickerState(
         initialHour = currentTime.get(Calendar.HOUR_OF_DAY),
@@ -353,8 +419,10 @@ fun TimePickerDialog(
                     toggle()
                     Spacer(modifier = Modifier.weight(1f))
                     TextButton(onClick = onDismiss) { Text(stringResource(R.string.Cancel)) }
-                    TextButton(onClick = { onConfirm()
-                    onDismiss()}) { Text(stringResource(R.string.Set)) }
+                    TextButton(onClick = {
+                        onConfirm()
+                        onDismiss()
+                    }) { Text(stringResource(R.string.Set)) }
                 }
             }
         }
@@ -367,7 +435,13 @@ fun TaskRepetitionDialog(
     onChange: (Repetition) -> Unit,
     onDismissRequest: () -> Unit
 ) {
-    val options = listOf(Repetition.NONE, Repetition.DAILY, Repetition.WEEKLY, Repetition.MONTHLY, Repetition.YEARLY)
+    val options = listOf(
+        Repetition.NONE,
+        Repetition.DAILY,
+        Repetition.WEEKLY,
+        Repetition.MONTHLY,
+        Repetition.YEARLY
+    )
 
     Dialog(onDismissRequest = onDismissRequest) {
         Card(Modifier.fillMaxWidth()) {
@@ -516,18 +590,28 @@ fun EventNotificationDialog(
 }
 
 @Composable
-fun SetPasskeyDialog(onConfirmRequest: (String)->Unit, onDismissRequest: () -> Unit){
+fun SetPasskeyDialog(onConfirmRequest: (String) -> Unit, onDismissRequest: () -> Unit) {
     var passKey by remember { mutableStateOf("") }
 
     Dialog(onDismissRequest) {
         Card(shape = RoundedCornerShape(16.dp)) {
-            Column(Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.spacedBy(16.dp)) {
-                Text(stringResource(R.string.enterPasskey), style = MaterialTheme.typography.titleLarge, fontWeight = FontWeight.SemiBold, color = MaterialTheme.colorScheme.primary)
+            Column(
+                Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                verticalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                Text(
+                    stringResource(R.string.enterPasskey),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.SemiBold,
+                    color = MaterialTheme.colorScheme.primary
+                )
 
                 OutlinedTextField(
                     value = passKey,
                     singleLine = true,
-                    onValueChange = { passKey=it },
+                    onValueChange = { passKey = it },
                     modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions.Default.copy(
                         imeAction = ImeAction.Done
@@ -560,7 +644,11 @@ fun CustomNotificationDialog(
     onDismissRequest: () -> Unit,
     onConfirm: (offsetMillis: Long) -> Unit
 ) {
-    val timeUnits = listOf(stringResource(R.string.minutes), stringResource(R.string.hours), stringResource(R.string.days))
+    val timeUnits = listOf(
+        stringResource(R.string.minutes),
+        stringResource(R.string.hours),
+        stringResource(R.string.days)
+    )
     var selectedUnit by remember { mutableStateOf(timeUnits[0]) }
     var amountText by remember { mutableStateOf("1") }
 
@@ -575,9 +663,16 @@ fun CustomNotificationDialog(
     }
 
     Dialog(onDismissRequest = onDismissRequest) {
-        Card(Modifier.fillMaxWidth().padding(16.dp)) {
+        Card(
+            Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+        ) {
             Column(Modifier.padding(16.dp)) {
-                Text(stringResource(R.string.Custom_Notification), style = MaterialTheme.typography.titleLarge)
+                Text(
+                    stringResource(R.string.Custom_Notification),
+                    style = MaterialTheme.typography.titleLarge
+                )
                 Spacer(Modifier.height(16.dp))
 
                 timeUnits.forEach { unit ->
@@ -633,12 +728,18 @@ fun CustomNotificationDialog(
 fun DeleteAlert(
     onDismissRequest: () -> Unit,
     onConfirmation: () -> Unit,
-    dialogTitle: String=stringResource(R.string.deleteDialogTitle),
-    dialogText: String=stringResource(R.string.deleteDialogText),
-    icon: ImageVector=Icons.Default.DeleteOutline,
+    dialogTitle: String = stringResource(R.string.deleteDialogTitle),
+    dialogText: String = stringResource(R.string.deleteDialogText),
+    icon: ImageVector = Icons.Default.DeleteOutline,
 ) {
     AlertDialog(
-        icon = { Icon(icon, contentDescription = "Delete Icon", tint = MaterialTheme.colorScheme.error) },
+        icon = {
+            Icon(
+                icon,
+                contentDescription = "Delete Icon",
+                tint = MaterialTheme.colorScheme.error
+            )
+        },
         title = { Text(text = dialogTitle) },
         text = { Text(text = dialogText) },
         onDismissRequest = { onDismissRequest() },
