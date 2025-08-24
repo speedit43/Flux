@@ -2,19 +2,18 @@ package com.flux.ui.screens.workspaces
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExtendedFloatingActionButton
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -22,32 +21,28 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
-import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.flux.R
 import com.flux.data.model.WorkspaceModel
 import com.flux.navigation.NavRoutes
 import com.flux.ui.components.DeleteAlert
 import com.flux.ui.components.EmptySpaces
 import com.flux.ui.components.NewWorkspaceBottomSheet
-import com.flux.ui.components.PinnedSpacesCard
+import com.flux.ui.components.SelectedBar
 import com.flux.ui.components.SetPasskeyDialog
-import com.flux.ui.components.WorkSpacesCard
+import com.flux.ui.components.WorkspaceCard
 import com.flux.ui.components.WorkspaceSearchBar
-import com.flux.ui.components.shapeManager
 import com.flux.ui.events.HabitEvents
 import com.flux.ui.events.JournalEvents
 import com.flux.ui.events.NotesEvents
@@ -61,6 +56,7 @@ import kotlinx.coroutines.launch
 fun WorkSpaces(
     snackbarHostState: SnackbarHostState,
     navController: NavController,
+    gridColumns: Int,
     radius: Int,
     allSpaces: List<WorkspaceModel>,
     onNotesEvents: (NotesEvents) -> Unit,
@@ -72,7 +68,7 @@ fun WorkSpaces(
 ) {
     var query by rememberSaveable { mutableStateOf("") }
     var addWorkspace by remember { mutableStateOf(false) }
-    var selectedWorkspace by remember { mutableStateOf<WorkspaceModel?>(null) }
+    val selectedWorkspace = remember { mutableStateListOf<WorkspaceModel>() }
     var showDeleteAlert by remember { mutableStateOf(false) }
     var lockedWorkspace by remember { mutableStateOf<WorkspaceModel?>(null) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
@@ -116,20 +112,26 @@ fun WorkSpaces(
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
         topBar = {
-            WorkspaceSearchBar(
-                textFieldState = TextFieldState(query),
-                onSearch = { query = it },
-                searchResults = allSpaces.filter {
-                    it.title.contains(query, ignoreCase = true) || it.description.contains(
-                        query,
-                        ignoreCase = true
+            if (selectedWorkspace.isEmpty()) {
+                WorkspaceSearchBar(
+                    textFieldState = TextFieldState(query),
+                    onSearch = { query = it },
+                    onSettingsClicked = { navController.navigate(NavRoutes.Settings.route) },
+                    onCloseClicked = { query = "" }
+                )
+            } else {
+                Box(Modifier.padding(top = 48.dp)) {
+                    SelectedBar(
+                        false,
+                        false,
+                        0,
+                        onPinClick = {},
+                        onDeleteClick = {},
+                        onSelectAllClick = {},
+                        onCloseClick = { }
                     )
-                },
-                onSettingsClicked = { navController.navigate(NavRoutes.Settings.route) },
-                onCloseClicked = { query = "" },
-                onWorkspaceEvents = onWorkSpaceEvents,
-                onClick = { space -> handleWorkspaceClick(space) }
-            )
+                }
+            }
         },
         floatingActionButton = {
             ExtendedFloatingActionButton(
@@ -147,65 +149,91 @@ fun WorkSpaces(
         if (allSpaces.isEmpty()) {
             EmptySpaces()
         } else {
-            Column(Modifier.padding(innerPadding)) {
-                LazyColumn {
-                    if (allSpaces.any { it.isPinned }) {
-                        item {
-                            Text(
-                                stringResource(R.string.Pinned),
-                                modifier = Modifier
-                                    .padding(horizontal = 16.dp, vertical = 8.dp),
-                                fontWeight = FontWeight.Bold,
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        }
-                        item {
-                            LazyRow(
-                                Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
-                                horizontalArrangement = Arrangement.spacedBy(4.dp)
-                            ) {
-                                items(allSpaces.filter { it.isPinned }) { space ->
-                                    PinnedSpacesCard(
-                                        iconIndex = space.icon,
-                                        radius = radius,
-                                        isLocked = space.passKey.isNotBlank(),
-                                        cover = space.cover,
-                                        title = space.title,
-                                        onClick = { handleWorkspaceClick(space) }
-                                    )
-                                }
-                            }
-                        }
+            val spacing = when (gridColumns) {
+                1 -> 6.dp
+                2 -> 4.dp
+                else -> 2.dp
+            }
+            LazyVerticalGrid(
+                columns = GridCells.Fixed(gridColumns),
+                modifier = Modifier
+                    .padding(innerPadding)
+                    .fillMaxSize()
+                    .padding(vertical = 16.dp, horizontal = 4.dp),
+                horizontalArrangement = Arrangement.spacedBy(spacing),
+                verticalArrangement = Arrangement.spacedBy(spacing)
+            ) {
+                if (allSpaces.none {
+                        it.title.contains(
+                            query,
+                            ignoreCase = true
+                        ) || it.description.contains(query, ignoreCase = true)
+                    }) {
+                    item(span = { GridItemSpan(maxLineSpan) }) { EmptySpaces() }
+                }
+                if (allSpaces.any {
+                        it.isPinned && (it.title.contains(
+                            query,
+                            ignoreCase = true
+                        ) || it.description.contains(query, ignoreCase = true))
+                    }) {
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        Text(
+                            "Pinned",
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
+                            modifier = Modifier.padding(vertical = 8.dp)
+                        )
                     }
-
-                    item {
-                        ElevatedCard(
-                            shape = shapeManager(radius = radius * 2),
-                            modifier = Modifier.padding(16.dp),
-                            colors = CardDefaults.elevatedCardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
-                                    6.dp
-                                )
-                            )
-                        ) {
-                            Column {
-                                allSpaces.forEachIndexed { index, space ->
-                                    WorkSpacesCard(
-                                        workspace = space,
-                                        onClick = { handleWorkspaceClick(space) },
-                                        onDeleteClick = {
-                                            selectedWorkspace = space
-                                            showDeleteAlert = true
-                                        },
-                                        onWorkspaceEvents = onWorkSpaceEvents
-                                    )
-                                    if (index != allSpaces.lastIndex) {
-                                        HorizontalDivider(modifier = Modifier.alpha(0.4f))
-                                    }
-                                }
-                            }
-                        }
+                }
+                items(allSpaces.filter {
+                    it.isPinned && (it.title.contains(
+                        query,
+                        ignoreCase = true
+                    ) || it.description.contains(query, ignoreCase = true))
+                }) { space ->
+                    WorkspaceCard(
+                        gridColumns = gridColumns,
+                        iconIndex = space.icon,
+                        radius = radius,
+                        isLocked = space.passKey.isNotBlank(),
+                        cover = space.cover,
+                        title = space.title,
+                        description = space.description,
+                        onClick = { handleWorkspaceClick(space) }
+                    )
+                }
+                if (allSpaces.any {
+                        it.isPinned && (it.title.contains(
+                            query,
+                            ignoreCase = true
+                        ) || it.description.contains(query, ignoreCase = true))
+                    }) {
+                    item(span = { GridItemSpan(maxLineSpan) }) {
+                        Text(
+                            "Others",
+                            modifier = Modifier.padding(vertical = 8.dp),
+                            color = MaterialTheme.colorScheme.primary,
+                            style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold)
+                        )
                     }
+                }
+                items(allSpaces.filter {
+                    !it.isPinned && (it.title.contains(
+                        query,
+                        ignoreCase = true
+                    ) || it.description.contains(query, ignoreCase = true))
+                }) { space ->
+                    WorkspaceCard(
+                        gridColumns = gridColumns,
+                        iconIndex = space.icon,
+                        radius = radius,
+                        isLocked = space.passKey.isNotBlank(),
+                        cover = space.cover,
+                        title = space.title,
+                        description = space.description,
+                        onClick = { handleWorkspaceClick(space) }
+                    )
                 }
             }
         }
@@ -214,15 +242,9 @@ fun WorkSpaces(
     if (showDeleteAlert) {
         DeleteAlert(onDismissRequest = {
             showDeleteAlert = false
-            selectedWorkspace = null
+            selectedWorkspace.clear()
         }, onConfirmation = {
-            val workspace = selectedWorkspace!!
             showDeleteAlert = false
-            onWorkSpaceEvents(WorkspaceEvents.DeleteSpace(workspace))
-            onNotesEvents(NotesEvents.DeleteAllWorkspaceNotes(workspace.workspaceId))
-            onTodoEvents(TodoEvents.DeleteAllWorkspaceLists(workspace.workspaceId))
-            onTaskEvents(TaskEvents.DeleteAllWorkspaceEvents(workspace.workspaceId, context))
-            onHabitEvents(HabitEvents.DeleteAllWorkspaceHabits(workspace.workspaceId, context))
         })
     }
 

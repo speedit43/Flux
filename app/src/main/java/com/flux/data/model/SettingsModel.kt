@@ -16,5 +16,6 @@ data class SettingsModel(
     val cornerRadius: Int = 32,
     val dynamicTheme: Boolean = false,
     val amoledTheme: Boolean = false,
-    val isScreenProtection: Boolean = false
+    val isScreenProtection: Boolean = false,
+    val workspaceGridColumns: Int = 1
 )

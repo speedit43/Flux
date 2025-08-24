@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Notes
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -55,7 +57,7 @@ import com.flux.ui.components.HabitToolBar
 import com.flux.ui.components.JournalToolBar
 import com.flux.ui.components.NewWorkspaceBottomSheet
 import com.flux.ui.components.NotesToolBar
-import com.flux.ui.components.SelectedNotesToolBar
+import com.flux.ui.components.SelectedBar
 import com.flux.ui.components.SetPasskeyDialog
 import com.flux.ui.components.SpacesMenu
 import com.flux.ui.components.SpacesToolBar
@@ -117,7 +119,8 @@ fun WorkspaceDetails(
     val workspaceId = workspace.workspaceId
     val context = LocalContext.current
     var query by remember { mutableStateOf("") }
-    var selectedSpaceId = rememberSaveable { mutableIntStateOf(1) }
+    var selectedSpaceId =
+        rememberSaveable { mutableIntStateOf(if (workspace.selectedSpaces.isEmpty()) -1 else workspace.selectedSpaces.first()) }
     var editWorkspaceDialog by remember { mutableStateOf(false) }
     var editIconSheet by remember { mutableStateOf(false) }
     var showSpacesMenu by remember { mutableStateOf(false) }
@@ -196,11 +199,11 @@ fun WorkspaceDetails(
                 item { Text(workspace.description, style = MaterialTheme.typography.bodyLarge) }
             }
             item {
-                if (SpacesList.first { it.id == selectedSpaceId.intValue }.title == "Notes" && selectedNotes.isNotEmpty()) {
-                    SelectedNotesToolBar(
+                if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Notes" && selectedNotes.isNotEmpty()) {
+                    SelectedBar(
                         allNotes.size == selectedNotes.size,
                         allNotes.filter { selectedNotes.contains(it.notesId) }.all { it.isPinned },
-                        selectedNotes,
+                        selectedNotes.size,
                         onPinClick = {
                             onNotesEvents(NotesEvents.TogglePinMultiple(allNotes.filter {
                                 selectedNotes.contains(
@@ -233,23 +236,26 @@ fun WorkspaceDetails(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         SpacesToolBar(
-                            SpacesList.first { it.id == selectedSpaceId.intValue }.title,
-                            SpacesList.first { it.id == selectedSpaceId.intValue }.icon,
+                            SpacesList.find { it.id == selectedSpaceId.intValue }?.title ?: "",
+                            SpacesList.find { it.id == selectedSpaceId.intValue }?.icon
+                                ?: Icons.AutoMirrored.Default.Notes,
+                            selectedSpaceId.intValue == -1,
                             onMainClick = { showSpacesMenu = true },
-                            onEditClick = { addSpaceBottomSheet = true })
+                            onEditClick = { addSpaceBottomSheet = true }
+                        )
                         SpacesMenu(
                             expanded = showSpacesMenu,
                             workspace = workspace,
-                            onConfirm = { newSpaceId ->
-                                selectedSpaceId.intValue = newSpaceId
-                            }) { showSpacesMenu = false }
-                        if (SpacesList.first { it.id == selectedSpaceId.intValue }.title == "Habits") {
+                            onConfirm = { newSpaceId -> selectedSpaceId.intValue = newSpaceId }
+                        ) { showSpacesMenu = false }
+
+                        if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Habits") {
                             HabitToolBar(context) {
                                 showHabitDialog = true
                                 scope.launch { sheetState.show() }
                             }
                         }
-                        if (SpacesList.first { it.id == selectedSpaceId.intValue }.title == "Notes") {
+                        if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Notes") {
                             NotesToolBar(
                                 navController,
                                 workspaceId,
@@ -263,31 +269,33 @@ fun WorkspaceDetails(
                                     )
                                 })
                         }
-
-                        if (SpacesList.first { it.id == selectedSpaceId.intValue }.title == "Journal") {
+                        if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Journal") {
                             JournalToolBar(navController, workspaceId)
                         }
-                        if (SpacesList.first { it.id == selectedSpaceId.intValue }.title == "To-Do") {
+                        if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "To-Do") {
                             TodoToolBar(navController, workspaceId)
                         }
-                        if (SpacesList.first { it.id == selectedSpaceId.intValue }.title == "Calendar") {
+                        if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Calendar") {
                             CalenderToolBar(
                                 settings.data.isCalenderMonthlyView,
                                 onClick = {
                                     onSettingEvents(
                                         SettingEvents.UpdateSettings(
-                                            settings.data.copy(isCalenderMonthlyView = it)
+                                            settings.data.copy(
+                                                isCalenderMonthlyView = it
+                                            )
                                         )
                                     )
-                                })
+                                }
+                            )
                         }
-                        if (SpacesList.first { it.id == selectedSpaceId.intValue }.title == "Events") {
+                        if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Events") {
                             EventToolBar(context, navController, workspaceId)
                         }
                     }
                 }
             }
-            if (SpacesList.first { it.id == selectedSpaceId.intValue }.title == "Habits") {
+            if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Habits") {
                 habitsHomeItems(
                     navController,
                     isHabitLoading,
@@ -298,7 +306,7 @@ fun WorkspaceDetails(
                     onHabitEvents
                 )
             }
-            if (SpacesList.first { it.id == selectedSpaceId.intValue }.title == "Notes") {
+            if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Notes") {
                 notesHomeItems(
                     navController,
                     workspaceId,
@@ -311,7 +319,7 @@ fun WorkspaceDetails(
                     onNotesEvents
                 )
             }
-            if (SpacesList.first { it.id == selectedSpaceId.intValue }.title == "Calendar") {
+            if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Calendar") {
                 calenderItems(
                     navController,
                     radius,
@@ -325,10 +333,10 @@ fun WorkspaceDetails(
                     onTaskEvents
                 )
             }
-            if (SpacesList.first { it.id == selectedSpaceId.intValue }.title == "Journal") {
+            if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Journal") {
                 journalHomeItems(navController, isJournalEntriesLoading, workspaceId, allEntries)
             }
-            if (SpacesList.first { it.id == selectedSpaceId.intValue }.title == "Analytics") {
+            if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Analytics") {
                 analyticsItems(
                     workspace,
                     radius,
@@ -340,7 +348,7 @@ fun WorkspaceDetails(
                     allEventInstances
                 )
             }
-            if (SpacesList.first { it.id == selectedSpaceId.intValue }.title == "To-Do") {
+            if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "To-Do") {
                 todoHomeItems(
                     navController,
                     radius,
@@ -350,7 +358,7 @@ fun WorkspaceDetails(
                     onTodoEvents
                 )
             }
-            if (SpacesList.first { it.id == selectedSpaceId.intValue }.title == "Events") {
+            if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Events") {
                 eventHomeItems(
                     navController,
                     radius,
@@ -389,17 +397,15 @@ fun WorkspaceDetails(
         selectedSpaces = SpacesList.filter { workspace.selectedSpaces.contains(it.id) },
         onDismiss = { addSpaceBottomSheet = false },
         onRemove = {
+            if (workspace.selectedSpaces.size == 1) selectedSpaceId.intValue = -1
             onWorkspaceEvents(
                 WorkspaceEvents.UpsertSpace(
-                    workspace.copy(
-                        selectedSpaces = workspace.selectedSpaces.minus(
-                            it
-                        )
-                    )
+                    workspace.copy(selectedSpaces = workspace.selectedSpaces.minus(it))
                 )
             )
         },
         onSelect = {
+            if (selectedSpaceId.intValue == -1) selectedSpaceId.intValue = it
             onWorkspaceEvents(
                 WorkspaceEvents.UpsertSpace(
                     workspace.copy(

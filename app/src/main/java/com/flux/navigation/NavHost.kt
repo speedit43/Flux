@@ -1,5 +1,7 @@
 package com.flux.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.navigation.NamedNavArgument
@@ -25,6 +27,7 @@ import com.flux.ui.viewModel.TodoViewModel
 import com.flux.ui.viewModel.ViewModels
 import com.flux.ui.viewModel.WorkspaceViewModel
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @Composable
 fun AppNavHost(
     navController: NavHostController = rememberNavController(),

@@ -32,23 +32,32 @@ import com.flux.ui.viewModel.ViewModels
 import java.time.LocalDate
 
 sealed class NavRoutes(val route: String) {
+    // auth screen
     data object AuthScreen : NavRoutes("biometric")
 
+    // workspaces
     data object Workspace : NavRoutes("workspace")
     data object WorkspaceHome : NavRoutes("workspace/details")
 
+    //Labels
     data object EditLabels : NavRoutes("workspace/labels/edit")
 
+    // Notes
     data object NoteDetails : NavRoutes("workspace/note/details")
 
+    // Habits
     data object HabitDetails : NavRoutes("workspace/habit/details")
 
+    // Events
     data object EventDetails : NavRoutes("workspace/event/details")
 
+    // TodoList
     data object TodoDetail : NavRoutes("workspace/todo/details")
 
+    // Journal
     data object EditJournal : NavRoutes("workspace/journal/edit")
 
+    // Settings
     data object Settings : NavRoutes("settings")
     data object Privacy : NavRoutes("settings/privacy")
     data object Customize : NavRoutes("settings/customize")
@@ -175,6 +184,7 @@ val WorkspaceScreens =
             WorkSpaces(
                 snackbarHostState,
                 navController,
+                states.settings.data.workspaceGridColumns,
                 states.settings.data.cornerRadius,
                 states.workspaceState.allSpaces,
                 viewModels.notesViewModel::onEvent,
