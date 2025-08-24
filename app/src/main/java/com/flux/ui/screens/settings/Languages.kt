@@ -46,20 +46,23 @@ import java.util.Locale
 @Composable
 fun Languages(navController: NavController, settings: Settings) {
     val context = LocalContext.current
-    val supportedLanguages =getSupportedLanguages(context)
+    val supportedLanguages = getSupportedLanguages(context)
     val currentLocale = AppCompatDelegate.getApplicationLocales()
 
     BasicScaffold(
         title = stringResource(R.string.Languages),
         onBackClicked = { navController.popBackStack() }
     ) { innerPadding ->
-        LazyColumn(Modifier.padding(innerPadding).padding(16.dp))
-        {
+        LazyColumn(
+            Modifier
+                .padding(innerPadding)
+                .padding(16.dp)
+        ) {
             item {
                 LanguageItem(
                     title = stringResource(R.string.System_language),
                     isSelected = currentLocale.isEmpty,
-                    shape= shapeManager(radius = settings.data.cornerRadius, isFirst = true),
+                    shape = shapeManager(radius = settings.data.cornerRadius, isFirst = true),
                     icon = R.drawable.translate,
                     description = stringResource(R.string.System_language_desc),
                     onRadioClicked = { AppCompatDelegate.setApplicationLocales(LocaleListCompat.getEmptyLocaleList()) }
@@ -73,10 +76,19 @@ fun Languages(navController: NavController, settings: Settings) {
                 LanguageItem(
                     title = displayName,
                     isSelected = !currentLocale.isEmpty && currentLocale[0]?.language == languageCode,
-                    shape= shapeManager(radius = settings.data.cornerRadius, isLast = index==supportedLanguages.size-1),
+                    shape = shapeManager(
+                        radius = settings.data.cornerRadius,
+                        isLast = index == supportedLanguages.size - 1
+                    ),
                     icon = languageInfo.iconRes,
                     description = languageInfo.description,
-                    onRadioClicked = { AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(languageCode)) }
+                    onRadioClicked = {
+                        AppCompatDelegate.setApplicationLocales(
+                            LocaleListCompat.forLanguageTags(
+                                languageCode
+                            )
+                        )
+                    }
                 )
             }
         }
@@ -115,16 +127,19 @@ private fun getLanguageInfo(languageCode: String): LanguageInfo {
             description = "Change your language to English",
             iconRes = R.drawable.english
         )
+
         "fr" -> LanguageInfo(
             displayName = "Français",
             description = "Changer la langue en français",
             iconRes = R.drawable.french
         )
+
         "hi" -> LanguageInfo(
             displayName = "हिंदी",
             description = "अपनी भाषा को हिंदी में बदलें",
             iconRes = R.drawable.hindi
         )
+
         else -> LanguageInfo(
             displayName = Locale(languageCode).displayName,
             description = "Change language to ${Locale(languageCode).displayName}",
@@ -142,7 +157,7 @@ fun LanguageItem(
     size: Dp = 12.dp,
     isSelected: Boolean,
     onRadioClicked: () -> Unit
-){
+) {
     Box(
         modifier = Modifier
             .padding(bottom = 3.dp)
@@ -152,14 +167,19 @@ fun LanguageItem(
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.padding(horizontal = 12.dp, vertical = size).fillMaxWidth()
+            modifier = Modifier
+                .padding(horizontal = 12.dp, vertical = size)
+                .fillMaxWidth()
         ) {
             Row(
                 Modifier.weight(1f),
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.Start
             ) {
-                CircleWrapper(size = 12.dp, color = MaterialTheme.colorScheme.surfaceContainerLow) { Icon(painter = painterResource(icon), null, modifier = Modifier.size(24.dp)) }
+                CircleWrapper(
+                    size = 12.dp,
+                    color = MaterialTheme.colorScheme.surfaceContainerLow
+                ) { Icon(painter = painterResource(icon), null, modifier = Modifier.size(24.dp)) }
                 Spacer(modifier = Modifier.width(8.dp))
                 MaterialText(title = title, description = description)
             }

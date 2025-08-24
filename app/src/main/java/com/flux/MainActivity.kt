@@ -26,11 +26,11 @@ import com.flux.navigation.Loader
 import com.flux.other.createNotificationChannel
 import com.flux.ui.effects.ScreenEffect
 import com.flux.ui.theme.FluxTheme
+import com.flux.ui.viewModel.EventViewModel
 import com.flux.ui.viewModel.HabitViewModel
+import com.flux.ui.viewModel.JournalViewModel
 import com.flux.ui.viewModel.NotesViewModel
 import com.flux.ui.viewModel.SettingsViewModel
-import com.flux.ui.viewModel.EventViewModel
-import com.flux.ui.viewModel.JournalViewModel
 import com.flux.ui.viewModel.TodoViewModel
 import com.flux.ui.viewModel.WorkspaceViewModel
 import dagger.hilt.android.AndroidEntryPoint

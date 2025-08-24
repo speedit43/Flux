@@ -57,15 +57,28 @@ fun Customize(
     settings: Settings,
     onSettingsEvents: (SettingEvents) -> Unit
 ) {
-    val options = listOf(stringResource(R.string.Low), stringResource(R.string.Medium), stringResource(R.string.High))
+    val options = listOf(
+        stringResource(R.string.Low),
+        stringResource(R.string.Medium),
+        stringResource(R.string.High)
+    )
 
     BasicScaffold(
         title = stringResource(R.string.Customize),
         onBackClicked = { navController.popBackStack() }
     ) { innerPadding ->
-        LazyColumn(modifier = Modifier.padding(innerPadding).padding(16.dp, 8.dp, 16.dp)) {
-            item{
-                Text(stringResource(R.string.Themes), color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+        LazyColumn(
+            modifier = Modifier
+                .padding(innerPadding)
+                .padding(16.dp, 8.dp, 16.dp)
+        ) {
+            item {
+                Text(
+                    stringResource(R.string.Themes),
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
+                )
                 Spacer(Modifier.height(12.dp))
 
                 SettingOption(
@@ -75,11 +88,22 @@ fun Customize(
                     radius = shapeManager(radius = settings.data.cornerRadius, isFirst = true),
                     actionType = ActionType.RADIOBUTTON,
                     variable = settings.data.isAutomaticTheme,
-                    switchEnabled = { onSettingsEvents(SettingEvents.UpdateSettings(settings.data.copy(isAutomaticTheme = true, isDarkMode = false, dynamicTheme = false, amoledTheme = false))) }
+                    switchEnabled = {
+                        onSettingsEvents(
+                            SettingEvents.UpdateSettings(
+                                settings.data.copy(
+                                    isAutomaticTheme = true,
+                                    isDarkMode = false,
+                                    dynamicTheme = false,
+                                    amoledTheme = false
+                                )
+                            )
+                        )
+                    }
                 )
             }
 
-            item{
+            item {
                 SettingOption(
                     title = stringResource(R.string.Light_theme),
                     description = stringResource(R.string.Light_theme_desc),
@@ -87,11 +111,20 @@ fun Customize(
                     radius = shapeManager(radius = settings.data.cornerRadius),
                     actionType = ActionType.RADIOBUTTON,
                     variable = !settings.data.isAutomaticTheme && !settings.data.isDarkMode,
-                    switchEnabled = { onSettingsEvents(SettingEvents.UpdateSettings(settings.data.copy(isAutomaticTheme = false, isDarkMode = false))) }
+                    switchEnabled = {
+                        onSettingsEvents(
+                            SettingEvents.UpdateSettings(
+                                settings.data.copy(
+                                    isAutomaticTheme = false,
+                                    isDarkMode = false
+                                )
+                            )
+                        )
+                    }
                 )
             }
 
-            item{
+            item {
                 SettingOption(
                     title = stringResource(R.string.Dark_theme),
                     description = stringResource(R.string.Dark_theme_desc),
@@ -99,12 +132,21 @@ fun Customize(
                     radius = shapeManager(radius = settings.data.cornerRadius),
                     actionType = ActionType.RADIOBUTTON,
                     variable = !settings.data.isAutomaticTheme && settings.data.isDarkMode,
-                    switchEnabled = { onSettingsEvents(SettingEvents.UpdateSettings(settings.data.copy(isAutomaticTheme = false, isDarkMode = true))) }
+                    switchEnabled = {
+                        onSettingsEvents(
+                            SettingEvents.UpdateSettings(
+                                settings.data.copy(
+                                    isAutomaticTheme = false,
+                                    isDarkMode = true
+                                )
+                            )
+                        )
+                    }
                 )
             }
 
-            item{
-                val isLast=settings.data.isAutomaticTheme || !settings.data.isDarkMode
+            item {
+                val isLast = settings.data.isAutomaticTheme || !settings.data.isDarkMode
                 SettingOption(
                     title = stringResource(R.string.Dynamic_theme),
                     description = stringResource(R.string.Dynamic_theme_desc),
@@ -112,11 +154,19 @@ fun Customize(
                     radius = shapeManager(radius = settings.data.cornerRadius, isLast = isLast),
                     actionType = ActionType.SWITCH,
                     variable = settings.data.dynamicTheme,
-                    switchEnabled = { onSettingsEvents(SettingEvents.UpdateSettings(settings.data.copy(dynamicTheme = it))) },
+                    switchEnabled = {
+                        onSettingsEvents(
+                            SettingEvents.UpdateSettings(
+                                settings.data.copy(
+                                    dynamicTheme = it
+                                )
+                            )
+                        )
+                    },
                 )
             }
 
-            item{
+            item {
                 val isEnabled = settings.data.isDarkMode
                 SettingOption(
                     title = stringResource(R.string.Amoled_theme),
@@ -126,7 +176,15 @@ fun Customize(
                     radius = shapeManager(radius = settings.data.cornerRadius, isLast = true),
                     actionType = ActionType.SWITCH,
                     variable = settings.data.amoledTheme,
-                    switchEnabled = { onSettingsEvents(SettingEvents.UpdateSettings(settings.data.copy(amoledTheme = it))) },
+                    switchEnabled = {
+                        onSettingsEvents(
+                            SettingEvents.UpdateSettings(
+                                settings.data.copy(
+                                    amoledTheme = it
+                                )
+                            )
+                        )
+                    },
                 )
             }
 
@@ -169,34 +227,56 @@ fun Customize(
                     description = "Show workspace in compact mode",
                     icon = Icons.Rounded.ViewCompactAlt,
                     radius = shapeManager(radius = settings.data.cornerRadius),
-                    variable = settings.data.workspaceGridColumns>1,
+                    variable = settings.data.workspaceGridColumns > 1,
                     actionType = ActionType.SWITCH,
                     switchEnabled = {
-                        if(it){
-                            onSettingsEvents(SettingEvents.UpdateSettings(settings.data.copy(workspaceGridColumns = 2)))
-                        }
-                        else {
-                            onSettingsEvents(SettingEvents.UpdateSettings(settings.data.copy(workspaceGridColumns = 1)))
+                        if (it) {
+                            onSettingsEvents(
+                                SettingEvents.UpdateSettings(
+                                    settings.data.copy(
+                                        workspaceGridColumns = 2
+                                    )
+                                )
+                            )
+                        } else {
+                            onSettingsEvents(
+                                SettingEvents.UpdateSettings(
+                                    settings.data.copy(
+                                        workspaceGridColumns = 1
+                                    )
+                                )
+                            )
                         }
                     }
                 )
             }
             item {
-                val isEnabled = settings.data.workspaceGridColumns>1
+                val isEnabled = settings.data.workspaceGridColumns > 1
                 SettingOption(
                     title = "Extreme Compact Mode",
                     description = "Tighter the spacing between workspaces",
                     icon = Icons.Rounded.ViewCompact,
                     isEnabled = isEnabled,
                     radius = shapeManager(radius = settings.data.cornerRadius),
-                    variable = settings.data.workspaceGridColumns==3,
+                    variable = settings.data.workspaceGridColumns == 3,
                     actionType = ActionType.SWITCH,
                     switchEnabled = {
-                        if(it){
-                            onSettingsEvents(SettingEvents.UpdateSettings(settings.data.copy(workspaceGridColumns = 3)))
-                        }
-                        else {
-                            onSettingsEvents(SettingEvents.UpdateSettings(settings.data.copy(workspaceGridColumns = 2)))
+                        if (it) {
+                            onSettingsEvents(
+                                SettingEvents.UpdateSettings(
+                                    settings.data.copy(
+                                        workspaceGridColumns = 3
+                                    )
+                                )
+                            )
+                        } else {
+                            onSettingsEvents(
+                                SettingEvents.UpdateSettings(
+                                    settings.data.copy(
+                                        workspaceGridColumns = 2
+                                    )
+                                )
+                            )
                         }
                     }
                 )
@@ -209,11 +289,19 @@ fun Customize(
                     radius = shapeManager(radius = settings.data.cornerRadius),
                     variable = settings.data.isGridView,
                     actionType = ActionType.SWITCH,
-                    switchEnabled = { onSettingsEvents(SettingEvents.UpdateSettings(settings.data.copy(isGridView = it))) }
+                    switchEnabled = {
+                        onSettingsEvents(
+                            SettingEvents.UpdateSettings(
+                                settings.data.copy(
+                                    isGridView = it
+                                )
+                            )
+                        )
+                    }
                 )
             }
 
-            item{
+            item {
                 SettingOption(
                     title = stringResource(R.string.Monthly_View),
                     description = stringResource(R.string.Monthly_View_Desc),
@@ -222,16 +310,29 @@ fun Customize(
                         radius = settings.data.cornerRadius,
                         isLast = true
                     ),
-                    variable = settings.data.isCalenderMonthlyView,
+                    variable = settings.data.isCalendarMonthlyView,
                     actionType = ActionType.SWITCH,
-                    switchEnabled = { onSettingsEvents(SettingEvents.UpdateSettings(settings.data.copy(isCalenderMonthlyView = it))) },
+                    switchEnabled = {
+                        onSettingsEvents(
+                            SettingEvents.UpdateSettings(
+                                settings.data.copy(
+                                    isCalendarMonthlyView = it
+                                )
+                            )
+                        )
+                    },
                 )
             }
 
-            item{
+            item {
                 Spacer(Modifier.height(12.dp))
                 AnimatedVisibility(visible = !settings.data.dynamicTheme) {
-                    Text(stringResource(R.string.Contrast), color = MaterialTheme.colorScheme.primary, fontWeight = FontWeight.Bold, fontSize = 20.sp)
+                    Text(
+                        stringResource(R.string.Contrast),
+                        color = MaterialTheme.colorScheme.primary,
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 20.sp
+                    )
                 }
                 Spacer(Modifier.height(12.dp))
 
@@ -243,7 +344,15 @@ fun Customize(
                                     index = index,
                                     count = options.size
                                 ),
-                                onClick = { onSettingsEvents(SettingEvents.UpdateSettings(settings.data.copy(contrast = index))) },
+                                onClick = {
+                                    onSettingsEvents(
+                                        SettingEvents.UpdateSettings(
+                                            settings.data.copy(
+                                                contrast = index
+                                            )
+                                        )
+                                    )
+                                },
                                 selected = index == settings.data.contrast,
                                 label = { Text(label) }
                             )
@@ -256,11 +365,11 @@ fun Customize(
 }
 
 @Composable
-fun OnRadiusClicked( settings: Settings, onExit: (Int) -> Unit) {
+fun OnRadiusClicked(settings: Settings, onExit: (Int) -> Unit) {
     val minimalRadius = 5
     val settingsRadius = settings.data.cornerRadius
-    var sliderPosition by remember { mutableFloatStateOf(((settingsRadius - minimalRadius).toFloat()/30)) }
-    val realRadius : Int  = (((sliderPosition*100).toInt())/3) + minimalRadius
+    var sliderPosition by remember { mutableFloatStateOf(((settingsRadius - minimalRadius).toFloat() / 30)) }
+    val realRadius: Int = (((sliderPosition * 100).toInt()) / 3) + minimalRadius
 
     @Composable
     fun example(shape: RoundedCornerShape) {
@@ -300,7 +409,7 @@ fun OnRadiusClicked( settings: Settings, onExit: (Int) -> Unit) {
                 value = sliderPosition,
                 modifier = Modifier.padding(32.dp, 16.dp, 32.dp, 16.dp),
                 colors = SliderDefaults.colors(inactiveTrackColor = MaterialTheme.colorScheme.surfaceContainerHigh),
-                onValueChange = { newValue -> sliderPosition = newValue}
+                onValueChange = { newValue -> sliderPosition = newValue }
             )
         }
     }

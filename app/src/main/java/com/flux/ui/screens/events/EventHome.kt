@@ -63,10 +63,10 @@ fun LazyListScope.eventHomeItems(
     allEvents: List<EventModel>,
     allEventInstances: List<EventInstanceModel>,
     workspaceId: Long,
-    onTaskEvents: (TaskEvents)->Unit
+    onTaskEvents: (TaskEvents) -> Unit
 ) {
-    if(isLoading) item { Loader() }
-    else if(allEvents.isEmpty()) item { EmptyEvents() }
+    if (isLoading) item { Loader() }
+    else if (allEvents.isEmpty()) item { EmptyEvents() }
     else {
         val today = LocalDate.now()
 
@@ -92,7 +92,7 @@ fun LazyListScope.eventHomeItems(
                     text = stringResource(R.string.Today),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
-                    color= MaterialTheme.colorScheme.primary,
+                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
             }
@@ -133,7 +133,7 @@ fun LazyListScope.eventHomeItems(
                     text = stringResource(R.string.Upcoming),
                     style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
-                    color= MaterialTheme.colorScheme.primary,
+                    color = MaterialTheme.colorScheme.primary,
                     modifier = Modifier.padding(vertical = 8.dp)
                 )
             }
@@ -172,7 +172,7 @@ fun LazyListScope.eventHomeItems(
 }
 
 @Composable
-fun EmptyEvents(){
+fun EmptyEvents() {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -191,13 +191,13 @@ fun EmptyEvents(){
 
 @Composable
 fun IconRadioButton(
-    modifier: Modifier= Modifier,
+    modifier: Modifier = Modifier,
     uncheckedTint: Color = MaterialTheme.colorScheme.onSurface.copy(alpha = 0.6f),
     checkedTint: Color = completed,
     selected: Boolean,
     onClick: () -> Unit
 ) {
-    IconButton(modifier=modifier, onClick = onClick) {
+    IconButton(modifier = modifier, onClick = onClick) {
         if (selected) {
             Icon(
                 imageVector = Icons.Default.CheckCircle,
@@ -223,15 +223,16 @@ fun EventCard(
     timeline: Long,
     description: String,
     repeat: Repetition,
-    onChangeStatus: (EventInstanceModel)->Unit,
+    onChangeStatus: (EventInstanceModel) -> Unit,
     onClick: () -> Unit
 ) {
-    val eventStatus=eventInstance.status
+    val eventStatus = eventInstance.status
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         IconRadioButton(
             selected = eventStatus == EventStatus.COMPLETED,
             onClick = {
-                val newStatus = if (eventStatus == EventStatus.COMPLETED) EventStatus.PENDING else EventStatus.COMPLETED
+                val newStatus =
+                    if (eventStatus == EventStatus.COMPLETED) EventStatus.PENDING else EventStatus.COMPLETED
                 onChangeStatus(eventInstance.copy(status = newStatus))
             }
         )
@@ -240,7 +241,7 @@ fun EventCard(
                 .fillMaxWidth()
                 .height(if (description.isEmpty()) 55.dp else 76.dp),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
-            shape = shapeManager(radius=radius*2),
+            shape = shapeManager(radius = radius * 2),
             onClick = onClick
         ) {
             Row(Modifier.fillMaxWidth()) {
@@ -254,12 +255,17 @@ fun EventCard(
                         )
                 )
 
-                Column(modifier = Modifier
-                    .weight(1f)
-                    .padding(horizontal = 8.dp, vertical = 4.dp)) {
+                Column(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                ) {
                     Text(title, style = MaterialTheme.typography.titleMedium)
-                    Row(Modifier.padding(vertical = 2.dp), verticalAlignment = Alignment.CenterVertically) {
-                        if(repeat!= Repetition.NONE){
+                    Row(
+                        Modifier.padding(vertical = 2.dp),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        if (repeat != Repetition.NONE) {
                             Row(
                                 modifier = Modifier.padding(end = 6.dp),
                                 verticalAlignment = Alignment.CenterVertically,
@@ -311,7 +317,6 @@ fun Long.toFormattedDate(): String {
     val format = SimpleDateFormat("dd MMMM, yyyy", Locale.getDefault())
     return format.format(date)
 }
-
 
 fun Long.toFormattedDateTime(): String {
     val date = Date(this)

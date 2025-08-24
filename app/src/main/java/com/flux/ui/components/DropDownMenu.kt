@@ -47,31 +47,46 @@ import com.flux.data.model.WorkspaceModel
 @Composable
 fun DropdownMenuWithDetails(
     isPinned: Boolean,
-    onTogglePinned: ()->Unit,
-    onAddLabel: ()->Unit,
-    onAboutClicked: ()->Unit,
-    onDelete: ()->Unit
+    onTogglePinned: () -> Unit,
+    onAddLabel: () -> Unit,
+    onAboutClicked: () -> Unit,
+    onDelete: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier) {
-        IconButton(onClick = { expanded = !expanded }) { Icon(Icons.Default.MoreVert, contentDescription = "More options") }
+        IconButton(onClick = { expanded = !expanded }) {
+            Icon(
+                Icons.Default.MoreVert,
+                contentDescription = "More options"
+            )
+        }
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
             DropdownMenuItem(
                 text = { Text(if (isPinned) stringResource(R.string.Unpin) else stringResource(R.string.Pin)) },
-                leadingIcon = { Icon(if (isPinned) Icons.Filled.PushPin else Icons.Outlined.PushPin, contentDescription = null) },
+                leadingIcon = {
+                    Icon(
+                        if (isPinned) Icons.Filled.PushPin else Icons.Outlined.PushPin,
+                        contentDescription = null
+                    )
+                },
                 onClick = onTogglePinned
             )
             HorizontalDivider()
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.Labels)) },
-                leadingIcon = { Icon(Icons.AutoMirrored.Outlined.Label, contentDescription = null) },
+                leadingIcon = {
+                    Icon(
+                        Icons.AutoMirrored.Outlined.Label,
+                        contentDescription = null
+                    )
+                },
                 trailingIcon = { Icon(Icons.Default.Add, contentDescription = null) },
                 onClick = {
-                    expanded=false
+                    expanded = false
                     onAddLabel()
                 }
             )
@@ -80,17 +95,20 @@ fun DropdownMenuWithDetails(
                 text = { Text(stringResource(R.string.About)) },
                 leadingIcon = { Icon(Icons.Outlined.Info, contentDescription = null) },
                 onClick = {
-                    expanded=false
+                    expanded = false
                     onAboutClicked()
                 }
             )
             HorizontalDivider()
             DropdownMenuItem(
-                colors = MenuDefaults.itemColors(textColor = MaterialTheme.colorScheme.error, leadingIconColor = MaterialTheme.colorScheme.error),
+                colors = MenuDefaults.itemColors(
+                    textColor = MaterialTheme.colorScheme.error,
+                    leadingIconColor = MaterialTheme.colorScheme.error
+                ),
                 text = { Text(stringResource(R.string.Delete_Note)) },
                 leadingIcon = { Icon(Icons.Outlined.Delete, contentDescription = null) },
                 onClick = {
-                    expanded=false
+                    expanded = false
                     onDelete()
                 }
             )
@@ -102,16 +120,16 @@ fun DropdownMenuWithDetails(
 fun SpacesMenu(
     expanded: Boolean,
     workspace: WorkspaceModel,
-    onConfirm: (Int)->Unit,
-    onDismiss: ()->Unit
+    onConfirm: (Int) -> Unit,
+    onDismiss: () -> Unit
 ) {
-    val selectedSpaces=workspace.selectedSpaces
+    val selectedSpaces = workspace.selectedSpaces
     DropdownMenu(
         shape = RoundedCornerShape(16.dp),
         expanded = expanded,
         onDismissRequest = onDismiss
     ) {
-        if(selectedSpaces.contains(1)){
+        if (selectedSpaces.contains(1)) {
             DropdownMenuItem(
                 text = { Text("Notes") },
                 leadingIcon = { Icon(Icons.AutoMirrored.Default.Notes, contentDescription = null) },
@@ -121,7 +139,7 @@ fun SpacesMenu(
                 }
             )
         }
-        if(selectedSpaces.contains(2)){
+        if (selectedSpaces.contains(2)) {
             DropdownMenuItem(
                 text = { Text("To-Do") },
                 leadingIcon = { Icon(Icons.Outlined.TaskAlt, contentDescription = null) },
@@ -131,7 +149,7 @@ fun SpacesMenu(
                 }
             )
         }
-        if(selectedSpaces.contains(3)) {
+        if (selectedSpaces.contains(3)) {
             DropdownMenuItem(
                 text = { Text("Events") },
                 leadingIcon = { Icon(Icons.Outlined.Event, contentDescription = null) },
@@ -141,7 +159,7 @@ fun SpacesMenu(
                 }
             )
         }
-        if(selectedSpaces.contains(4)) {
+        if (selectedSpaces.contains(4)) {
             DropdownMenuItem(
                 text = { Text("Calendar") },
                 leadingIcon = { Icon(Icons.Outlined.CalendarMonth, contentDescription = null) },
@@ -151,7 +169,7 @@ fun SpacesMenu(
                 }
             )
         }
-        if(selectedSpaces.contains(5)) {
+        if (selectedSpaces.contains(5)) {
             DropdownMenuItem(
                 text = { Text("Journal") },
                 leadingIcon = { Icon(Icons.Outlined.AutoStories, contentDescription = null) },
@@ -161,7 +179,7 @@ fun SpacesMenu(
                 }
             )
         }
-        if(selectedSpaces.contains(6)) {
+        if (selectedSpaces.contains(6)) {
             DropdownMenuItem(
                 text = { Text("Habits") },
                 leadingIcon = { Icon(Icons.Outlined.EventAvailable, contentDescription = null) },
@@ -171,7 +189,7 @@ fun SpacesMenu(
                 }
             )
         }
-        if(selectedSpaces.contains(7)) {
+        if (selectedSpaces.contains(7)) {
             DropdownMenuItem(
                 text = { Text("Analytics") },
                 leadingIcon = { Icon(Icons.Outlined.Analytics, contentDescription = null) },
@@ -190,73 +208,94 @@ fun WorkspaceMore(
     isCoverAdded: Boolean,
     showEditLabel: Boolean,
     isPinned: Boolean,
-    onEditDetails: ()->Unit,
-    onEditLabel: ()->Unit,
-    onRemoveCover: ()-> Unit,
-    onAddCover: ()->Unit,
-    onDelete: ()->Unit,
+    onEditDetails: () -> Unit,
+    onEditLabel: () -> Unit,
+    onRemoveCover: () -> Unit,
+    onAddCover: () -> Unit,
+    onDelete: () -> Unit,
     onTogglePinned: () -> Unit,
-    onToggleLock: ()->Unit
+    onToggleLock: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier) {
-        IconButton(onClick = { expanded=true }, colors = IconButtonDefaults.iconButtonColors(
-            containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
-            contentColor = MaterialTheme.colorScheme.onSurface
-        )) { Icon(Icons.Default.MoreVert, contentDescription = "More options") }
+        IconButton(
+            onClick = { expanded = true }, colors = IconButtonDefaults.iconButtonColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                contentColor = MaterialTheme.colorScheme.onSurface
+            )
+        ) { Icon(Icons.Default.MoreVert, contentDescription = "More options") }
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded=false }
+            onDismissRequest = { expanded = false }
         ) {
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.Edit_Details)) },
                 leadingIcon = { Icon(Icons.Outlined.Edit, contentDescription = null) },
                 onClick = {
-                    expanded=false
+                    expanded = false
                     onEditDetails()
                 }
             )
             DropdownMenuItem(
                 text = { Text(if (isPinned) stringResource(R.string.Unpin) else stringResource(R.string.Pin)) },
-                leadingIcon = { Icon(if (isPinned) Icons.Filled.PushPin else Icons.Outlined.PushPin, contentDescription = null) },
+                leadingIcon = {
+                    Icon(
+                        if (isPinned) Icons.Filled.PushPin else Icons.Outlined.PushPin,
+                        contentDescription = null
+                    )
+                },
                 onClick = {
-                    expanded=false
+                    expanded = false
                     onTogglePinned()
                 }
             )
-
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.Change_Cover)) },
-                leadingIcon = { Icon(Icons.Outlined.PhotoSizeSelectActual, contentDescription = null) },
+                leadingIcon = {
+                    Icon(
+                        Icons.Outlined.PhotoSizeSelectActual,
+                        contentDescription = null
+                    )
+                },
                 onClick = {
-                    expanded=false
+                    expanded = false
                     onAddCover()
                 }
             )
-            if (isCoverAdded){
+            if (isCoverAdded) {
                 DropdownMenuItem(
-                    colors =  MenuDefaults.itemColors(
+                    colors = MenuDefaults.itemColors(
                         leadingIconColor = MaterialTheme.colorScheme.error,
                         textColor = MaterialTheme.colorScheme.error
                     ),
                     text = { Text("Remove Cover") },
-                    leadingIcon = { Icon(Icons.Default.RemoveCircleOutline, contentDescription = null) },
+                    leadingIcon = {
+                        Icon(
+                            Icons.Default.RemoveCircleOutline,
+                            contentDescription = null
+                        )
+                    },
                     onClick = {
-                        expanded=false
+                        expanded = false
                         onRemoveCover()
                     }
                 )
             }
 
-            if(showEditLabel){
+            if (showEditLabel) {
                 HorizontalDivider()
                 DropdownMenuItem(
                     text = { Text(stringResource(R.string.Labels)) },
-                    leadingIcon = { Icon(Icons.AutoMirrored.Outlined.Label, contentDescription = null) },
-                    trailingIcon = { Icon(Icons.Default.KeyboardDoubleArrowRight, null)},
+                    leadingIcon = {
+                        Icon(
+                            Icons.AutoMirrored.Outlined.Label,
+                            contentDescription = null
+                        )
+                    },
+                    trailingIcon = { Icon(Icons.Default.KeyboardDoubleArrowRight, null) },
                     onClick = {
-                        expanded=false
+                        expanded = false
                         onEditLabel()
                     }
                 )
@@ -264,22 +303,33 @@ fun WorkspaceMore(
             }
 
             DropdownMenuItem(
-                text = { Text(if(isLocked) stringResource(R.string.Unlock_Workspace) else stringResource(R.string.Lock_Workspace)) },
-                leadingIcon = { Icon(if(isLocked) Icons.Outlined.LockOpen else Icons.Outlined.Lock, contentDescription = null) },
+                text = {
+                    Text(
+                        if (isLocked) stringResource(R.string.Unlock_Workspace) else stringResource(
+                            R.string.Lock_Workspace
+                        )
+                    )
+                },
+                leadingIcon = {
+                    Icon(
+                        if (isLocked) Icons.Outlined.LockOpen else Icons.Outlined.Lock,
+                        contentDescription = null
+                    )
+                },
                 onClick = {
-                    expanded=false
+                    expanded = false
                     onToggleLock()
                 }
             )
             DropdownMenuItem(
-                colors =  MenuDefaults.itemColors(
+                colors = MenuDefaults.itemColors(
                     leadingIconColor = MaterialTheme.colorScheme.error,
                     textColor = MaterialTheme.colorScheme.error
                 ),
                 text = { Text(stringResource(R.string.Delete_Workspace)) },
                 leadingIcon = { Icon(Icons.Outlined.Delete, contentDescription = null) },
                 onClick = {
-                    expanded=false
+                    expanded = false
                     onDelete()
                 }
             )
@@ -290,35 +340,45 @@ fun WorkspaceMore(
 @Composable
 fun WorkspacePreviewMore(
     isPinned: Boolean,
-    onDelete: ()->Unit,
+    onDelete: () -> Unit,
     onTogglePinned: () -> Unit
 ) {
     var expanded by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier) {
-        IconButton(onClick = { expanded=true }) { Icon(Icons.Default.MoreHoriz, contentDescription = "More options") }
+        IconButton(onClick = { expanded = true }) {
+            Icon(
+                Icons.Default.MoreHoriz,
+                contentDescription = "More options"
+            )
+        }
         DropdownMenu(
             expanded = expanded,
-            onDismissRequest = { expanded=false }
+            onDismissRequest = { expanded = false }
         ) {
             DropdownMenuItem(
                 text = { Text(if (isPinned) stringResource(R.string.Unpin) else stringResource(R.string.Pin)) },
-                leadingIcon = { Icon(if (isPinned) Icons.Filled.PushPin else Icons.Outlined.PushPin, contentDescription = null) },
+                leadingIcon = {
+                    Icon(
+                        if (isPinned) Icons.Filled.PushPin else Icons.Outlined.PushPin,
+                        contentDescription = null
+                    )
+                },
                 onClick = {
-                    expanded=false
+                    expanded = false
                     onTogglePinned()
                 }
             )
             HorizontalDivider()
             DropdownMenuItem(
-                colors =  MenuDefaults.itemColors(
+                colors = MenuDefaults.itemColors(
                     leadingIconColor = MaterialTheme.colorScheme.error,
                     textColor = MaterialTheme.colorScheme.error
                 ),
                 text = { Text(stringResource(R.string.Delete_Workspace)) },
                 leadingIcon = { Icon(Icons.Outlined.Delete, contentDescription = null) },
                 onClick = {
-                    expanded=false
+                    expanded = false
                     onDelete()
                 }
             )

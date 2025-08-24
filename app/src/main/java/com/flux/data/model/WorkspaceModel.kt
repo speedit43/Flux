@@ -16,13 +16,13 @@ import androidx.room.PrimaryKey
 data class WorkspaceModel(
     @PrimaryKey(autoGenerate = true)
     val workspaceId: Long = 0L,
-    val title: String="",
-    val description: String="",
-    val colorInd: Int=0,
-    val cover: String="",
-    val icon: Int=48,
-    val passKey: String="",
-    val isPinned: Boolean=false,
+    val title: String = "",
+    val description: String = "",
+    val colorInd: Int = 0,
+    val cover: String = "",
+    val icon: Int = 48,
+    val passKey: String = "",
+    val isPinned: Boolean = false,
     val selectedSpaces: List<Int> = emptyList()
 )
 

@@ -61,9 +61,9 @@ fun SpacesToolBar(
             .clip(RoundedCornerShape(50))
             .background(MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp))
     ) {
-        if(isEmptyWorkspace){
+        if (isEmptyWorkspace) {
             Row(
-                modifier =  Modifier
+                modifier = Modifier
                     .clickable { onEditClick() }
                     .padding(vertical = 6.dp, horizontal = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -79,8 +79,7 @@ fun SpacesToolBar(
                     color = MaterialTheme.colorScheme.primary
                 )
             }
-        }
-        else{
+        } else {
             Row(
                 modifier = Modifier.height(IntrinsicSize.Min),
                 verticalAlignment = Alignment.CenterVertically
@@ -130,38 +129,52 @@ fun SpacesToolBar(
 
 @Composable
 fun TodoToolBar(navController: NavController, workspaceId: Long) {
-    IconButton({navController.navigate(NavRoutes.TodoDetail.withArgs(workspaceId, -1))}) {
+    IconButton({ navController.navigate(NavRoutes.TodoDetail.withArgs(workspaceId, -1)) }) {
         Icon(Icons.Default.Add, null, tint = MaterialTheme.colorScheme.primary)
     }
 }
 
 @Composable
 fun JournalToolBar(navController: NavController, workspaceId: Long) {
-    IconButton({navController.navigate(NavRoutes.EditJournal.withArgs(workspaceId, -1))}) {
+    IconButton({ navController.navigate(NavRoutes.EditJournal.withArgs(workspaceId, -1)) }) {
         Icon(Icons.Default.Add, null, tint = MaterialTheme.colorScheme.primary)
     }
 }
 
 @Composable
 fun CalenderToolBar(isMonthlyView: Boolean, onClick: (Boolean) -> Unit) {
-    IconButton({onClick(!isMonthlyView)}) {
-        Icon(if(isMonthlyView) Icons.Default.CalendarViewDay else Icons.Default.CalendarViewMonth, null, tint = MaterialTheme.colorScheme.primary)
+    IconButton({ onClick(!isMonthlyView) }) {
+        Icon(
+            if (isMonthlyView) Icons.Default.CalendarViewDay else Icons.Default.CalendarViewMonth,
+            null,
+            tint = MaterialTheme.colorScheme.primary
+        )
     }
 }
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU, Build.VERSION_CODES.S)
 @Composable
-fun HabitToolBar(context: Context, onAddClick: ()->Unit) {
+fun HabitToolBar(context: Context, onAddClick: () -> Unit) {
     IconButton({
-        if(!canScheduleReminder(context)){
-            Toast.makeText(context, context.getText(R.string.Reminder_Permission), Toast.LENGTH_SHORT).show()
+        if (!canScheduleReminder(context)) {
+            Toast.makeText(
+                context,
+                context.getText(R.string.Reminder_Permission),
+                Toast.LENGTH_SHORT
+            ).show()
             requestExactAlarmPermission(context)
         }
         if (!isNotificationPermissionGranted(context)) {
-            Toast.makeText(context, context.getText(R.string.Notification_Permission), Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                context,
+                context.getText(R.string.Notification_Permission),
+                Toast.LENGTH_SHORT
+            ).show()
             openAppNotificationSettings(context)
         }
-        if (canScheduleReminder(context) && isNotificationPermissionGranted(context)) { onAddClick() }
+        if (canScheduleReminder(context) && isNotificationPermissionGranted(context)) {
+            onAddClick()
+        }
     }) { Icon(Icons.Default.Add, null, tint = MaterialTheme.colorScheme.primary) }
 }
 
@@ -169,22 +182,37 @@ fun HabitToolBar(context: Context, onAddClick: ()->Unit) {
 @Composable
 fun EventToolBar(context: Context, navController: NavController, workspaceId: Long) {
     IconButton({
-        if(!canScheduleReminder(context)) {
-            Toast.makeText(context, context.getText(R.string.Reminder_Permission), Toast.LENGTH_SHORT).show()
+        if (!canScheduleReminder(context)) {
+            Toast.makeText(
+                context,
+                context.getText(R.string.Reminder_Permission),
+                Toast.LENGTH_SHORT
+            ).show()
             requestExactAlarmPermission(context)
         }
-        if(!isNotificationPermissionGranted(context)) {
-            Toast.makeText(context, context.getText(R.string.Notification_Permission), Toast.LENGTH_SHORT).show()
+        if (!isNotificationPermissionGranted(context)) {
+            Toast.makeText(
+                context,
+                context.getText(R.string.Notification_Permission),
+                Toast.LENGTH_SHORT
+            ).show()
             openAppNotificationSettings(context)
         }
-        if(canScheduleReminder(context) && isNotificationPermissionGranted(context)){
+        if (canScheduleReminder(context) && isNotificationPermissionGranted(context)) {
             navController.navigate(NavRoutes.EventDetails.withArgs(workspaceId, -1))
         }
     }) { Icon(Icons.Default.Add, null, tint = MaterialTheme.colorScheme.primary) }
 }
 
 @Composable
-fun NotesToolBar(navController: NavController, workspaceId: Long, query: String, isGridView: Boolean, onChangeView: ()->Unit, onSearch: (String)->Unit) {
+fun NotesToolBar(
+    navController: NavController,
+    workspaceId: Long,
+    query: String,
+    isGridView: Boolean,
+    onChangeView: () -> Unit,
+    onSearch: (String) -> Unit
+) {
     var onSearchClicked by remember { mutableStateOf(false) }
 
     if (!onSearchClicked) {
@@ -199,7 +227,14 @@ fun NotesToolBar(navController: NavController, workspaceId: Long, query: String,
                 }
                 Icon(icon, null, tint = MaterialTheme.colorScheme.primary)
             }
-            IconButton({ navController.navigate(NavRoutes.NoteDetails.withArgs(workspaceId, -1)) }) {
+            IconButton({
+                navController.navigate(
+                    NavRoutes.NoteDetails.withArgs(
+                        workspaceId,
+                        -1
+                    )
+                )
+            }) {
                 Icon(Icons.Default.Add, null, tint = MaterialTheme.colorScheme.primary)
             }
         }

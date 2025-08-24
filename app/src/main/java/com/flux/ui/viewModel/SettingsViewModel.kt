@@ -15,30 +15,44 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class SettingsViewModel @Inject constructor (
+class SettingsViewModel @Inject constructor(
     val repository: SettingsRepository
 ) : ViewModel() {
 
     private val _state: MutableStateFlow<Settings> = MutableStateFlow(Settings())
     val state: StateFlow<Settings> = _state.asStateFlow()
 
-    init { loadSettings()  }
-
-    fun onEvent(event: SettingEvents) { viewModelScope.launch { reduce(event = event) } }
-    private fun updateState(reducer: (Settings) -> Settings) { _state.value = reducer(_state.value) }
-    private fun reduce(event: SettingEvents) {
-        when (event) { is SettingEvents.UpdateSettings -> { updateSettings(event.data) } }
+    init {
+        loadSettings()
     }
 
-    private fun loadSettings(){
+    fun onEvent(event: SettingEvents) {
+        viewModelScope.launch { reduce(event = event) }
+    }
+
+    private fun updateState(reducer: (Settings) -> Settings) {
+        _state.value = reducer(_state.value)
+    }
+
+    private fun reduce(event: SettingEvents) {
+        when (event) {
+            is SettingEvents.UpdateSettings -> {
+                updateSettings(event.data)
+            }
+        }
+    }
+
+    private fun loadSettings() {
         updateState { it.copy(isLoading = true) }
         viewModelScope.launch {
-            repository.loadSettings().collect { data->
-                if(data!=null) updateState { it.copy(isLoading = false, data=data) }
+            repository.loadSettings().collect { data ->
+                if (data != null) updateState { it.copy(isLoading = false, data = data) }
                 else updateState { it.copy(isLoading = false) }
             }
         }
     }
 
-    private fun updateSettings(data : SettingsModel){ viewModelScope.launch(Dispatchers.IO) { repository.upsertSettings(data) } }
+    private fun updateSettings(data: SettingsModel) {
+        viewModelScope.launch(Dispatchers.IO) { repository.upsertSettings(data) }
+    }
 }

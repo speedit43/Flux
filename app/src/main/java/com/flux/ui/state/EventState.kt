@@ -5,7 +5,7 @@ import com.flux.data.model.EventModel
 import java.time.LocalDate
 import java.time.YearMonth
 
-data class EventState (
+data class EventState(
     val isDatedEventLoading: Boolean = true,
     val isAllEventsLoading: Boolean = true,
     val selectedYearMonth: YearMonth = YearMonth.now(),

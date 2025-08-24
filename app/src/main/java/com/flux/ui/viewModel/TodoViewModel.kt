@@ -16,28 +16,53 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class TodoViewModel@Inject constructor(
+class TodoViewModel @Inject constructor(
     private val repository: TodoRepository
-) : ViewModel()  {
+) : ViewModel() {
     private val _state: MutableStateFlow<TodoState> = MutableStateFlow(TodoState())
     val state: StateFlow<TodoState> = _state.asStateFlow()
 
-    fun onEvent(event: TodoEvents) { viewModelScope.launch { reduce(event = event) } }
-    private fun updateState(reducer: (TodoState) -> TodoState) { _state.value = reducer(_state.value) }
+    fun onEvent(event: TodoEvents) {
+        viewModelScope.launch { reduce(event = event) }
+    }
+
+    private fun updateState(reducer: (TodoState) -> TodoState) {
+        _state.value = reducer(_state.value)
+    }
+
     private suspend fun reduce(event: TodoEvents) {
         when (event) {
-            is TodoEvents.DeleteList -> { deleteList(event.data) }
-            is TodoEvents.LoadAllLists -> { loadAllLists(event.workspaceId) }
-            is TodoEvents.UpsertList -> { upsertList(event.data) }
+            is TodoEvents.DeleteList -> {
+                deleteList(event.data)
+            }
+
+            is TodoEvents.LoadAllLists -> {
+                loadAllLists(event.workspaceId)
+            }
+
+            is TodoEvents.UpsertList -> {
+                upsertList(event.data)
+            }
+
             is TodoEvents.DeleteAllWorkspaceLists -> deleteWorkspaceLists(event.workspaceId)
         }
     }
 
-    private fun deleteWorkspaceLists(workspaceId: Long){ viewModelScope.launch(Dispatchers.IO) { repository.deleteAllWorkspaceLists(workspaceId) } }
-    private fun deleteList(data: TodoModel) { viewModelScope.launch(Dispatchers.IO) { repository.deleteList(data) } }
-    private fun upsertList(data: TodoModel) { viewModelScope.launch(Dispatchers.IO) { repository.upsertList(data) } }
-    private suspend fun loadAllLists(workspaceId: Long){
+    private fun deleteWorkspaceLists(workspaceId: Long) {
+        viewModelScope.launch(Dispatchers.IO) { repository.deleteAllWorkspaceLists(workspaceId) }
+    }
+
+    private fun deleteList(data: TodoModel) {
+        viewModelScope.launch(Dispatchers.IO) { repository.deleteList(data) }
+    }
+
+    private fun upsertList(data: TodoModel) {
+        viewModelScope.launch(Dispatchers.IO) { repository.upsertList(data) }
+    }
+
+    private suspend fun loadAllLists(workspaceId: Long) {
         updateState { it.copy(isLoading = true) }
-        repository.loadAllLists(workspaceId).distinctUntilChanged().collect { data-> updateState { it.copy(isLoading = false, allLists = data) } }
+        repository.loadAllLists(workspaceId).distinctUntilChanged()
+            .collect { data -> updateState { it.copy(isLoading = false, allLists = data) } }
     }
 }

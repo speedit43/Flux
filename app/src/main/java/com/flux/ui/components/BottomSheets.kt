@@ -71,17 +71,21 @@ import java.util.Calendar
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun HabitBottomSheet(
-    isEditing: Boolean=false,
-    habit: HabitModel?=null,
+    isEditing: Boolean = false,
+    habit: HabitModel? = null,
     isVisible: Boolean,
     sheetState: SheetState,
-    onConfirm: (HabitModel, Long)->Unit,
+    onConfirm: (HabitModel, Long) -> Unit,
     onDismissRequest: () -> Unit,
 ) {
     if (!isVisible) return
-    var newHabitTitle by remember { mutableStateOf(habit?.title?:"") }
-    var newHabitDescription by remember { mutableStateOf(habit?.description?:"") }
-    var newHabitTime by remember { mutableLongStateOf(habit?.startDateTime?: System.currentTimeMillis()) }
+    var newHabitTitle by remember { mutableStateOf(habit?.title ?: "") }
+    var newHabitDescription by remember { mutableStateOf(habit?.description ?: "") }
+    var newHabitTime by remember {
+        mutableLongStateOf(
+            habit?.startDateTime ?: System.currentTimeMillis()
+        )
+    }
     var timePickerDialog by remember { mutableStateOf(false) }
     val focusRequesterDesc = remember { FocusRequester() }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -93,7 +97,9 @@ fun HabitBottomSheet(
         containerColor = MaterialTheme.colorScheme.surfaceContainer
     ) {
         Column(
-            modifier = Modifier.padding(16.dp).fillMaxWidth(),
+            modifier = Modifier
+                .padding(16.dp)
+                .fillMaxWidth(),
             horizontalAlignment = Alignment.CenterHorizontally,
             verticalArrangement = Arrangement.spacedBy(4.dp),
         ) {
@@ -136,7 +142,9 @@ fun HabitBottomSheet(
             TextField(
                 value = newHabitDescription,
                 onValueChange = { newHabitDescription = it },
-                modifier = Modifier.fillMaxWidth().focusRequester(focusRequesterDesc),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .focusRequester(focusRequesterDesc),
                 placeholder = { Text(stringResource(R.string.Description)) },
                 singleLine = true,
                 shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp),
@@ -199,21 +207,27 @@ fun HabitBottomSheet(
                 }) { Text(stringResource(R.string.Dismiss)) }
 
                 Spacer(Modifier.width(8.dp))
-
-                FilledTonalButton(onClick = {
-                    if (habit==null) {
-                        val newHabit = HabitModel(
-                            title = newHabitTitle,
-                            startDateTime = newHabitTime,
-                            description = newHabitDescription
-                        )
-                        onConfirm(newHabit, getAdjustedTime(newHabitTime))
-                    }
-                    else{ onConfirm(habit.copy(title = newHabitTitle, description = newHabitDescription, startDateTime = newHabitTime), getAdjustedTime(newHabitTime)) }
-
-                    keyboardController?.hide()
-                    onDismissRequest()
-                }, enabled = newHabitTitle.isNotBlank()
+                FilledTonalButton(
+                    onClick = {
+                        if (habit == null) {
+                            val newHabit = HabitModel(
+                                title = newHabitTitle,
+                                startDateTime = newHabitTime,
+                                description = newHabitDescription
+                            )
+                            onConfirm(newHabit, getAdjustedTime(newHabitTime))
+                        } else {
+                            onConfirm(
+                                habit.copy(
+                                    title = newHabitTitle,
+                                    description = newHabitDescription,
+                                    startDateTime = newHabitTime
+                                ), getAdjustedTime(newHabitTime)
+                            )
+                        }
+                        keyboardController?.hide()
+                        onDismissRequest()
+                    }, enabled = newHabitTitle.isNotBlank()
                 ) { Text(stringResource(R.string.Confirm)) }
             }
 
@@ -236,7 +250,7 @@ fun HabitBottomSheet(
     }
 }
 
-fun getAdjustedTime(time: Long): Long{
+fun getAdjustedTime(time: Long): Long {
     val now = Calendar.getInstance()
     val habitCalendar = Calendar.getInstance().apply { timeInMillis = time }
     val adjustedCalendar = Calendar.getInstance().apply {
@@ -255,8 +269,8 @@ fun getAdjustedTime(time: Long): Long{
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NewWorkspaceBottomSheet(
-    isEditing: Boolean=false,
-    workspace: WorkspaceModel= WorkspaceModel(),
+    isEditing: Boolean = false,
+    workspace: WorkspaceModel = WorkspaceModel(),
     isVisible: Boolean,
     sheetState: SheetState,
     onDismiss: () -> Unit,
@@ -280,13 +294,19 @@ fun NewWorkspaceBottomSheet(
             containerColor = MaterialTheme.colorScheme.surfaceContainer
         ) {
             Column(
-                modifier = Modifier.fillMaxWidth().imePadding().padding(horizontal = 16.dp, vertical = 16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .imePadding()
+                    .padding(horizontal = 16.dp, vertical = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Icon(if(isEditing) Icons.Default.Edit else Icons.Default.Add, null)
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(if (isEditing) Icons.Default.Edit else Icons.Default.Add, null)
                     Text(
-                        if(isEditing) stringResource(R.string.Edit_Workspace) else stringResource(R.string.Add_Workspace),
+                        if (isEditing) stringResource(R.string.Edit_Workspace) else stringResource(R.string.Add_Workspace),
                         fontWeight = FontWeight.Bold,
                         style = MaterialTheme.typography.titleLarge
                     )
@@ -295,7 +315,9 @@ fun NewWorkspaceBottomSheet(
                 TextField(
                     value = title,
                     onValueChange = { title = it },
-                    modifier = Modifier.fillMaxWidth().padding(bottom = 3.dp),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(bottom = 3.dp),
                     placeholder = { Text(stringResource(R.string.Title)) },
                     singleLine = true,
                     shape = RoundedCornerShape(topStart = 32.dp, topEnd = 32.dp),
@@ -314,7 +336,9 @@ fun NewWorkspaceBottomSheet(
                 TextField(
                     value = description,
                     onValueChange = { description = it },
-                    modifier = Modifier.fillMaxWidth().focusRequester(focusRequesterDesc),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .focusRequester(focusRequesterDesc),
                     placeholder = { Text(stringResource(R.string.Description)) },
                     singleLine = true,
                     shape = RoundedCornerShape(bottomStart = 32.dp, bottomEnd = 32.dp),
@@ -361,7 +385,7 @@ fun NewWorkspaceBottomSheet(
                         enabled = title.isNotBlank(),
                         onClick = {
                             keyboardController?.hide()
-                            onConfirm(workspace.copy(title=title, description=description))
+                            onConfirm(workspace.copy(title = title, description = description))
                             onDismiss()
                             title = workspace.title
                             description = workspace.description
@@ -389,12 +413,24 @@ fun ChangeIconBottomSheet(
             sheetState = sheetState,
             containerColor = MaterialTheme.colorScheme.surfaceContainer
         ) {
-            LazyColumn(Modifier.fillMaxWidth().heightIn(max = 500.dp)) {
-                items(workspaceIconList) { item->
-                    Text(item.title, modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp), style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold))
-                    FlowRow(modifier = Modifier.padding(horizontal = 8.dp), horizontalArrangement = Arrangement.spacedBy(2.dp), verticalArrangement = Arrangement.spacedBy(2.dp)) {
-                        item.icons.forEach { index->
-                            IconButton({onConfirm(index)}) { Icon(icons[index], null) }
+            LazyColumn(
+                Modifier
+                    .fillMaxWidth()
+                    .heightIn(max = 500.dp)
+            ) {
+                items(workspaceIconList) { item ->
+                    Text(
+                        item.title,
+                        modifier = Modifier.padding(horizontal = 16.dp, vertical = 8.dp),
+                        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+                    )
+                    FlowRow(
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(2.dp),
+                        verticalArrangement = Arrangement.spacedBy(2.dp)
+                    ) {
+                        item.icons.forEach { index ->
+                            IconButton({ onConfirm(index) }) { Icon(icons[index], null) }
                         }
                     }
                 }
@@ -412,16 +448,16 @@ fun AddNewSpacesBottomSheet(
     onDismiss: () -> Unit,
     onRemove: (Int) -> Unit,
     onSelect: (Int) -> Unit
-){
+) {
     var showDeleteDialog by remember { mutableStateOf(false) }
     var removeSpace by remember { mutableIntStateOf(-1) }
-    if(showDeleteDialog){
+    if (showDeleteDialog) {
         DeleteAlert(onConfirmation = {
             onRemove(removeSpace)
-            removeSpace=-1
-            showDeleteDialog=false
+            removeSpace = -1
+            showDeleteDialog = false
         }, onDismissRequest = {
-            showDeleteDialog=false
+            showDeleteDialog = false
         })
     }
 
@@ -432,7 +468,7 @@ fun AddNewSpacesBottomSheet(
             containerColor = MaterialTheme.colorScheme.surfaceContainer
         ) {
             LazyColumn(Modifier.fillMaxWidth()) {
-                if (selectedSpaces.isNotEmpty()){
+                if (selectedSpaces.isNotEmpty()) {
                     item {
                         Text(
                             "Current",
@@ -446,16 +482,17 @@ fun AddNewSpacesBottomSheet(
                     FlowRow(
                         modifier = Modifier.padding(horizontal = 8.dp),
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        selectedSpaces.forEach { space->
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        selectedSpaces.forEach { space ->
                             SpaceCard(space, true, { onSelect(space.id) }, {
-                                removeSpace=space.id
-                                showDeleteDialog=true
+                                removeSpace = space.id
+                                showDeleteDialog = true
                             })
                         }
                     }
                 }
-                if (selectedSpaces.size!=SpacesList.size){
+                if (selectedSpaces.size != SpacesList.size) {
                     item {
                         Text(
                             "Available Spaces",
@@ -468,10 +505,12 @@ fun AddNewSpacesBottomSheet(
                     FlowRow(
                         modifier = Modifier.padding(horizontal = 8.dp),
                         horizontalArrangement = Arrangement.spacedBy(6.dp),
-                        verticalArrangement = Arrangement.spacedBy(6.dp)) {
-                        SpacesList.filterNot {id-> selectedSpaces.contains(id) }.forEach { space->
-                            SpaceCard(space, false, { onSelect(space.id) }, {  })
-                        }
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        SpacesList.filterNot { id -> selectedSpaces.contains(id) }
+                            .forEach { space ->
+                                SpaceCard(space, false, { onSelect(space.id) }, { })
+                            }
                     }
                 }
             }
@@ -480,11 +519,15 @@ fun AddNewSpacesBottomSheet(
 }
 
 @Composable
-fun SpaceCard(space: Space, isSelected: Boolean, onSelect: () -> Unit, onRemove: () -> Unit){
-    val cardContainerColor= if (isSelected) MaterialTheme.colorScheme.surfaceColorAtElevation(8.dp) else MaterialTheme.colorScheme.surfaceContainerHigh
-    val cardContentColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
-    val iconContainerColor = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
-    val iconContentColor = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+fun SpaceCard(space: Space, isSelected: Boolean, onSelect: () -> Unit, onRemove: () -> Unit) {
+    val cardContainerColor =
+        if (isSelected) MaterialTheme.colorScheme.surfaceColorAtElevation(8.dp) else MaterialTheme.colorScheme.surfaceContainerHigh
+    val cardContentColor =
+        if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+    val iconContainerColor =
+        if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
+    val iconContentColor =
+        if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
 
     Card(
         modifier = Modifier.clip(RoundedCornerShape(50)),
@@ -504,7 +547,9 @@ fun SpaceCard(space: Space, isSelected: Boolean, onSelect: () -> Unit, onRemove:
                 )
             ) { Icon(space.icon, null) }
             Text(space.title, modifier = Modifier.padding(end = if (isSelected) 0.dp else 16.dp))
-            if (isSelected){ IconButton(onRemove) { Icon(Icons.Default.Remove, null) } }
+            if (isSelected) {
+                IconButton(onRemove) { Icon(Icons.Default.Remove, null) }
+            }
         }
     }
 }

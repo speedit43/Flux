@@ -24,7 +24,7 @@ fun LazyListScope.habitsHomeItems(
     allInstances: List<HabitInstanceModel>,
     onHabitEvents: (HabitEvents) -> Unit
 ) {
-    when{
+    when {
         isLoading -> item { Loader() }
         allHabits.isEmpty() -> item { EmptyHabits() }
         else -> {
@@ -50,7 +50,14 @@ fun LazyListScope.habitsHomeItems(
                             )
                         }
                     },
-                    onAnalyticsClicked = { navController.navigate(NavRoutes.HabitDetails.withArgs(workspaceId, habit.habitId)) }
+                    onAnalyticsClicked = {
+                        navController.navigate(
+                            NavRoutes.HabitDetails.withArgs(
+                                workspaceId,
+                                habit.habitId
+                            )
+                        )
+                    }
                 )
                 Spacer(Modifier.height(8.dp))
             }

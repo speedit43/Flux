@@ -54,34 +54,51 @@ fun LazyListScope.todoHomeItems(
     allList: List<TodoModel>,
     workspaceId: Long,
     isLoading: Boolean,
-    onTodoEvents: (TodoEvents)->Unit
+    onTodoEvents: (TodoEvents) -> Unit
 ) {
     if (isLoading) item { Loader() }
-    else if(allList.isEmpty()) item { EmptyTodoList() }
-    else{
+    else if (allList.isEmpty()) item { EmptyTodoList() }
+    else {
         item {
             var expanded by remember { mutableLongStateOf(-1L) }
 
             ElevatedCard(
                 modifier = Modifier.padding(top = 8.dp),
-                shape = shapeManager(radius=radius*2),
-                colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
+                shape = shapeManager(radius = radius * 2),
+                colors = CardDefaults.elevatedCardColors(
+                    containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                        6.dp
+                    )
+                )
             ) {
-                Column{
-                    allList.forEach { item->
+                Column {
+                    allList.forEach { item ->
                         Row(
-                            modifier = Modifier.fillMaxWidth().clickable { navController.navigate(NavRoutes.TodoDetail.withArgs(workspaceId, item.id)) },
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    navController.navigate(
+                                        NavRoutes.TodoDetail.withArgs(
+                                            workspaceId,
+                                            item.id
+                                        )
+                                    )
+                                },
                             verticalAlignment = Alignment.CenterVertically,
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Row(
-                                modifier = Modifier.weight(1f).padding(end = 3.dp),
+                                modifier = Modifier
+                                    .weight(1f)
+                                    .padding(end = 3.dp),
                                 verticalAlignment = Alignment.CenterVertically,
                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                IconButton(onClick = { expanded = if(expanded!=item.id) item.id else -1 }) {
+                                IconButton(onClick = {
+                                    expanded = if (expanded != item.id) item.id else -1
+                                }) {
                                     Icon(
-                                        if(expanded==item.id) Icons.Default.KeyboardArrowDown else Icons.AutoMirrored.Default.KeyboardArrowRight,
+                                        if (expanded == item.id) Icons.Default.KeyboardArrowDown else Icons.AutoMirrored.Default.KeyboardArrowRight,
                                         null
                                     )
                                 }
@@ -92,17 +109,46 @@ fun LazyListScope.todoHomeItems(
                                     maxLines = 1
                                 )
                             }
-                            IconButton(onClick = {onTodoEvents(TodoEvents.DeleteList(item))}) { Icon(Icons.Default.Remove, null, tint = MaterialTheme.colorScheme.error) }
+                            IconButton(onClick = { onTodoEvents(TodoEvents.DeleteList(item)) }) {
+                                Icon(
+                                    Icons.Default.Remove,
+                                    null,
+                                    tint = MaterialTheme.colorScheme.error
+                                )
+                            }
                         }
-                        if(expanded==item.id){
-                            item.items.take(3).forEach { checkItem->
-                                Row(Modifier.fillMaxWidth().padding(vertical = 2.dp).padding(start = 64.dp, end = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                                    Box(Modifier.clip(RoundedCornerShape(50)).size(8.dp).background(MaterialTheme.colorScheme.onSurface.copy(0.75f)))
-                                    Text(checkItem.value, textDecoration = if(checkItem.isChecked) TextDecoration.LineThrough else TextDecoration.None)
+                        if (expanded == item.id) {
+                            item.items.take(3).forEach { checkItem ->
+                                Row(
+                                    Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 2.dp)
+                                        .padding(start = 64.dp, end = 8.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                                    verticalAlignment = Alignment.CenterVertically
+                                ) {
+                                    Box(
+                                        Modifier
+                                            .clip(RoundedCornerShape(50))
+                                            .size(8.dp)
+                                            .background(
+                                                MaterialTheme.colorScheme.onSurface.copy(0.75f)
+                                            )
+                                    )
+                                    Text(
+                                        checkItem.value,
+                                        textDecoration = if (checkItem.isChecked) TextDecoration.LineThrough else TextDecoration.None
+                                    )
                                 }
                             }
-                            if(item.items.size>3){
-                                Text(stringResource(R.string.more), modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp).padding(start = 70.dp, end = 8.dp))
+                            if (item.items.size > 3) {
+                                Text(
+                                    stringResource(R.string.more),
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(vertical = 2.dp)
+                                        .padding(start = 70.dp, end = 8.dp)
+                                )
                             }
                         }
                         HorizontalDivider(Modifier.alpha(0.5f))
@@ -114,9 +160,11 @@ fun LazyListScope.todoHomeItems(
 }
 
 @Composable
-fun EmptyTodoList(){
+fun EmptyTodoList() {
     Column(
-        modifier = Modifier.fillMaxWidth().padding(16.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

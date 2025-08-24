@@ -40,13 +40,13 @@ import com.flux.other.icons
 fun WorkspaceCard(
     gridColumns: Int,
     radius: Int,
-    isLocked: Boolean=false,
+    isLocked: Boolean = false,
     cover: String,
     title: String,
     description: String,
     iconIndex: Int,
     isSelected: Boolean,
-    onClick: ()->Unit,
+    onClick: () -> Unit,
     onLongPressed: ()->Unit
 ){
     val coverHeight = when (gridColumns) {
@@ -65,28 +65,28 @@ fun WorkspaceCard(
         else -> 2
     }
 
-    val paddingValues = when (gridColumns){
-        1-> 8.dp
-        2-> 6.dp
+    val paddingValues = when (gridColumns) {
+        1 -> 8.dp
+        2 -> 6.dp
         else -> 4.dp
     }
 
-    val iconSize = when (gridColumns){
-        1-> 28.dp
-        2->24.dp
+    val iconSize = when (gridColumns) {
+        1 -> 28.dp
+        2 -> 24.dp
         else -> 18.dp
     }
 
-    val titleStyle =  when (gridColumns){
-        1-> MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold)
-        2-> MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold)
-        else-> MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold)
+    val titleStyle = when (gridColumns) {
+        1 -> MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold)
+        2 -> MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.SemiBold)
+        else -> MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.SemiBold)
     }
 
-    val descriptionStyle =  when (gridColumns){
-        1-> MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Normal)
+    val descriptionStyle = when (gridColumns) {
+        1 -> MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Normal)
         2 -> MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Normal)
-        else-> MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.ExtraLight)
+        else -> MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.ExtraLight)
     }
 
     Card(
@@ -100,19 +100,45 @@ fun WorkspaceCard(
         colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)),
         border = if (isSelected) BorderStroke(2.dp, MaterialTheme.colorScheme.primary) else null
     ) {
-        Column(Modifier.fillMaxSize().padding(bottom = 4.dp)){
-            if(cover.isBlank()){ Box(Modifier.fillMaxWidth().height(coverHeight).alpha(0.125f).background(MaterialTheme.colorScheme.onSurface)) }
-            else{
+        Column(
+            Modifier
+                .fillMaxSize()
+                .padding(bottom = 4.dp)
+        ) {
+            if (cover.isBlank()) {
+                Box(
+                    Modifier
+                        .fillMaxWidth()
+                        .height(coverHeight)
+                        .alpha(0.125f)
+                        .background(MaterialTheme.colorScheme.onSurface)
+                )
+            } else {
                 AsyncImage(
                     model = cover.toUri(),
-                    modifier = Modifier.height(coverHeight).alpha(0.8f),
+                    modifier = Modifier
+                        .height(coverHeight)
+                        .alpha(0.8f),
                     contentDescription = null,
                     contentScale = ContentScale.Crop
                 )
             }
-            Row(modifier = Modifier.padding(vertical = 8.dp, horizontal = paddingValues), verticalAlignment = Alignment.CenterVertically) {
-                Icon(icons[iconIndex], null, Modifier.size(iconSize), MaterialTheme.colorScheme.primary)
-                if(isLocked) Icon(Icons.Default.Lock, null, Modifier.size(iconSize), MaterialTheme.colorScheme.primary)
+            Row(
+                modifier = Modifier.padding(vertical = 8.dp, horizontal = paddingValues),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    icons[iconIndex],
+                    null,
+                    Modifier.size(iconSize),
+                    MaterialTheme.colorScheme.primary
+                )
+                if (isLocked) Icon(
+                    Icons.Default.Lock,
+                    null,
+                    Modifier.size(iconSize),
+                    MaterialTheme.colorScheme.primary
+                )
                 Text(
                     title,
                     modifier = Modifier.padding(start = 4.dp),
@@ -126,7 +152,9 @@ fun WorkspaceCard(
             Text(
                 description,
                 style = descriptionStyle,
-                modifier = Modifier.padding(bottom = 6.dp).padding(horizontal = paddingValues),
+                modifier = Modifier
+                    .padding(bottom = 6.dp)
+                    .padding(horizontal = paddingValues),
                 maxLines = maxDescriptionLines,
                 overflow = TextOverflow.Ellipsis
             )
@@ -135,7 +163,7 @@ fun WorkspaceCard(
 }
 
 @Composable
-fun EmptySpaces(){
+fun EmptySpaces() {
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,

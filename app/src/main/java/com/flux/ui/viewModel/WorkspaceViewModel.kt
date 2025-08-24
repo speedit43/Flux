@@ -18,7 +18,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class WorkspaceViewModel @Inject constructor (
+class WorkspaceViewModel @Inject constructor(
     val repository: WorkspaceRepository
 ) : ViewModel() {
 
@@ -58,14 +58,22 @@ class WorkspaceViewModel @Inject constructor (
         }
     }
 
-    private fun loadWorkspace(){
+    private fun loadWorkspace() {
         updateState { it.copy(isLoading = true) }
-        viewModelScope.launch { repository.loadAllWorkspaces().collect { data-> updateState { it.copy(isLoading = false, allSpaces = data) } } }
+        viewModelScope.launch {
+            repository.loadAllWorkspaces()
+                .collect { data -> updateState { it.copy(isLoading = false, allSpaces = data) } }
+        }
     }
 
-    private fun upsertWorkspace(data : WorkspaceModel){ viewModelScope.launch(Dispatchers.IO) { repository.upsertWorkspace(data) } }
-    private fun deleteWorkspace(space: WorkspaceModel){ viewModelScope.launch(Dispatchers.IO) {
-        repository.deleteWorkspace(space)
-        setEffect { ScreenEffect.ShowSnackBarMessage("Workspace Deleted") }
-    } }
+    private fun upsertWorkspace(data: WorkspaceModel) {
+        viewModelScope.launch(Dispatchers.IO) { repository.upsertWorkspace(data) }
+    }
+
+    private fun deleteWorkspace(space: WorkspaceModel) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteWorkspace(space)
+            setEffect { ScreenEffect.ShowSnackBarMessage("Workspace Deleted") }
+        }
+    }
 }

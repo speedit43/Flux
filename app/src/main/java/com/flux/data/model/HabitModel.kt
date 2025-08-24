@@ -5,7 +5,7 @@ import androidx.room.PrimaryKey
 import java.time.LocalDate
 
 @Entity
-data class HabitModel (
+data class HabitModel(
     @PrimaryKey(autoGenerate = true)
     val habitId: Long = 0L,
     val workspaceId: Long = 0L,
@@ -19,5 +19,5 @@ data class HabitModel (
 data class HabitInstanceModel(
     val habitId: Long = 0L,
     val workspaceId: Long = 0L,
-    val instanceDate: LocalDate= LocalDate.now()
+    val instanceDate: LocalDate = LocalDate.now()
 )

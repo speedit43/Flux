@@ -18,14 +18,15 @@ import androidx.annotation.RequiresApi
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.content.ContextCompat
-import com.flux.R
 import androidx.core.net.toUri
+import com.flux.R
 import java.util.Calendar
 
 class ReminderReceiver : BroadcastReceiver() {
     override fun onReceive(context: Context, intent: Intent) {
         val title = intent.getStringExtra("TITLE") ?: "Reminder"
-        val description = intent.getStringExtra("DESCRIPTION") ?: "It's time to complete pending things"
+        val description =
+            intent.getStringExtra("DESCRIPTION") ?: "It's time to complete pending things"
         val id = intent.getLongExtra("ID", 0L)
         val type = intent.getStringExtra("TYPE") ?: "HABIT"
         val repeat = intent.getStringExtra("REPEAT") ?: "NONE"
@@ -54,8 +55,8 @@ class ReminderReceiver : BroadcastReceiver() {
             scheduleReminder(
                 context = context,
                 id = id,
-                type=type,
-                repeat=repeat,
+                type = type,
+                repeat = repeat,
                 timeInMillis = nextTime.timeInMillis,
                 title = title,
                 description = description,
@@ -66,7 +67,9 @@ class ReminderReceiver : BroadcastReceiver() {
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 fun createNotificationChannel(context: Context) {
-    if(!isNotificationPermissionGranted(context)){ requestNotificationPermission(context as Activity) }
+    if (!isNotificationPermissionGranted(context)) {
+        requestNotificationPermission(context as Activity)
+    }
 
     val importance = NotificationManager.IMPORTANCE_HIGH
     val channel = NotificationChannel("notification_channel", "Reminders", importance)
@@ -85,11 +88,12 @@ fun requestExactAlarmPermission(context: Context) {
         context.startActivity(intent)
     } catch (e: ActivityNotFoundException) {
         e.printStackTrace()
-        Toast.makeText(context, "Unable to open alarm permission settings", Toast.LENGTH_LONG).show()
+        Toast.makeText(context, "Unable to open alarm permission settings", Toast.LENGTH_LONG)
+            .show()
     }
 }
 
-fun canScheduleReminder(context: Context): Boolean{
+fun canScheduleReminder(context: Context): Boolean {
     val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
     return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
         alarmManager.canScheduleExactAlarms()
@@ -153,9 +157,23 @@ private fun getUniqueRequestCode(type: String, id: Long): Long {
     }
 }
 
-fun cancelReminder(context: Context, id: Long, type: String, title: String, description: String, repeat: String="NONE") {
+fun cancelReminder(
+    context: Context,
+    id: Long,
+    type: String,
+    title: String,
+    description: String,
+    repeat: String = "NONE"
+) {
     try {
-        val intent = createReminderIntent(context = context, id = id, type = type, title = title, description = description, repeat = repeat)
+        val intent = createReminderIntent(
+            context = context,
+            id = id,
+            type = type,
+            title = title,
+            description = description,
+            repeat = repeat
+        )
         val requestCode = getUniqueRequestCode(type, id)
         val pendingIntent = PendingIntent.getBroadcast(
             context,
@@ -174,7 +192,10 @@ fun cancelReminder(context: Context, id: Long, type: String, title: String, desc
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 fun isNotificationPermissionGranted(context: Context): Boolean {
-    return ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED
+    return ContextCompat.checkSelfPermission(
+        context,
+        Manifest.permission.POST_NOTIFICATIONS
+    ) == PackageManager.PERMISSION_GRANTED
 }
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)

@@ -1,9 +1,14 @@
 package com.flux.ui.screens.notes
 
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.items
-import androidx.compose.material3.*
+import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -30,14 +35,17 @@ fun LazyListScope.notesHomeItems(
 ) {
     val pinnedNotes = allNotes.filter { it.isPinned }
     val unPinnedNotes = allNotes.filter { !it.isPinned }
+
     when {
         isLoading -> item { Loader() }
         else ->
-            if (pinnedNotes.isEmpty() && unPinnedNotes.isEmpty()) { item { EmptyNotes() } }
-            else {
-                if(pinnedNotes.isNotEmpty()){
-                    item{
-                        Text("Pinned",
+            if (pinnedNotes.isEmpty() && unPinnedNotes.isEmpty()) {
+                item { EmptyNotes() }
+            } else {
+                if (pinnedNotes.isNotEmpty()) {
+                    item {
+                        Text(
+                            "Pinned",
                             modifier = Modifier.padding(vertical = 8.dp),
                             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                             color = MaterialTheme.colorScheme.primary
@@ -45,18 +53,28 @@ fun LazyListScope.notesHomeItems(
                     }
                 }
 
-                items(pinnedNotes.filter { it.title.lowercase().contains(query.lowercase()) || it.description.lowercase().contains(query.lowercase()) }) { note->
+                items(pinnedNotes.filter {
+                    it.title.lowercase().contains(query.lowercase()) || it.description.lowercase()
+                        .contains(query.lowercase())
+                }) { note ->
                     NotesPreviewCard(
                         radius = radius,
                         isSelected = selectedNotes.contains(note.notesId),
                         note = note,
-                        labels = allLabels.filter { note.labels.contains(it.labelId) }.map { it.value },
-                        onClick = { navController.navigate(NavRoutes.NoteDetails.withArgs(workspaceId, it)) },
+                        labels = allLabels.filter { note.labels.contains(it.labelId) }
+                            .map { it.value },
+                        onClick = {
+                            navController.navigate(
+                                NavRoutes.NoteDetails.withArgs(
+                                    workspaceId,
+                                    it
+                                )
+                            )
+                        },
                         onLongPressed = {
-                            if(selectedNotes.contains(note.notesId)){
+                            if (selectedNotes.contains(note.notesId)) {
                                 onNotesEvents(NotesEvents.UnSelectNotes(note.notesId))
-                            }
-                            else{
+                            } else {
                                 onNotesEvents(NotesEvents.SelectNotes(note.notesId))
                             }
                         },
@@ -64,27 +82,38 @@ fun LazyListScope.notesHomeItems(
                     )
                     Spacer(Modifier.height(8.dp))
                 }
-                if(pinnedNotes.isNotEmpty()){
-                    item{
-                        Text("Others",
+                if (pinnedNotes.isNotEmpty()) {
+                    item {
+                        Text(
+                            "Others",
                             modifier = Modifier.padding(vertical = 8.dp),
                             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                             color = MaterialTheme.colorScheme.primary
                         )
                     }
                 }
-                items(unPinnedNotes.filter { it.title.lowercase().contains(query.lowercase()) || it.description.lowercase().contains(query.lowercase()) }) { note->
+                items(unPinnedNotes.filter {
+                    it.title.lowercase().contains(query.lowercase()) || it.description.lowercase()
+                        .contains(query.lowercase())
+                }) { note ->
                     NotesPreviewCard(
                         radius = radius,
                         isSelected = selectedNotes.contains(note.notesId),
                         note = note,
-                        labels = allLabels.filter { note.labels.contains(it.labelId) }.map { it.value },
-                        onClick = { navController.navigate(NavRoutes.NoteDetails.withArgs(workspaceId, it)) },
+                        labels = allLabels.filter { note.labels.contains(it.labelId) }
+                            .map { it.value },
+                        onClick = {
+                            navController.navigate(
+                                NavRoutes.NoteDetails.withArgs(
+                                    workspaceId,
+                                    it
+                                )
+                            )
+                        },
                         onLongPressed = {
-                            if(selectedNotes.contains(note.notesId)){
+                            if (selectedNotes.contains(note.notesId)) {
                                 onNotesEvents(NotesEvents.UnSelectNotes(note.notesId))
-                            }
-                            else{
+                            } else {
                                 onNotesEvents(NotesEvents.SelectNotes(note.notesId))
                             }
                         },

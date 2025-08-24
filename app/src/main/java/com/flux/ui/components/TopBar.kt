@@ -44,23 +44,42 @@ fun NoteDetailsTopBar(
     canRedo: Boolean,
     isPinned: Boolean,
     onBackPressed: () -> Unit,
-    onDone: ()->Unit,
+    onDone: () -> Unit,
     onDelete: () -> Unit,
     onAddLabel: () -> Unit,
     onTogglePinned: () -> Unit,
-    onAboutClicked: ()->Unit,
-    onUndo: ()->Unit,
-    onRedo: ()->Unit
-){
+    onAboutClicked: () -> Unit,
+    onUndo: () -> Unit,
+    onRedo: () -> Unit
+) {
     CenterAlignedTopAppBar(
         title = {
             Row {
-                IconButton(onClick = { if(canUndo) onUndo() }) { Icon(Icons.AutoMirrored.Filled.Undo, null, modifier = Modifier.alpha(if(canUndo) 1f else 0.5f)) }
-                IconButton(onClick = { if(canRedo) onRedo() }) { Icon(Icons.AutoMirrored.Filled.Redo, null, modifier = Modifier.alpha(if(canRedo) 1f else 0.5f)) }
+                IconButton(onClick = { if (canUndo) onUndo() }) {
+                    Icon(
+                        Icons.AutoMirrored.Filled.Undo,
+                        null,
+                        modifier = Modifier.alpha(if (canUndo) 1f else 0.5f)
+                    )
+                }
+                IconButton(onClick = { if (canRedo) onRedo() }) {
+                    Icon(
+                        Icons.AutoMirrored.Filled.Redo,
+                        null,
+                        modifier = Modifier.alpha(if (canRedo) 1f else 0.5f)
+                    )
+                }
             }
         },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
-        navigationIcon = { IconButton(onClick = onBackPressed) { Icon(Icons.AutoMirrored.Default.ArrowBack, null) }},
+        navigationIcon = {
+            IconButton(onClick = onBackPressed) {
+                Icon(
+                    Icons.AutoMirrored.Default.ArrowBack,
+                    null
+                )
+            }
+        },
         actions = {
             IconButton(onClick = {
                 onDone()
@@ -78,16 +97,16 @@ fun WorkspaceTopBar(
     onBackPressed: () -> Unit,
     onDelete: () -> Unit,
     onTogglePinned: () -> Unit,
-    onToggleLock: () ->Unit,
+    onToggleLock: () -> Unit,
     onAddCover: () -> Unit,
     onEditDetails: () -> Unit,
     onEditLabel: () -> Unit,
     onRemoveCover: () -> Unit
-){
+) {
     Box(
         modifier = Modifier
             .fillMaxWidth()
-            .height(if(workspace.cover.isNotBlank()) 160.dp else 80.dp)
+            .height(if (workspace.cover.isNotBlank()) 160.dp else 80.dp)
     ) {
         // Background image
         AsyncImage(
@@ -142,9 +161,24 @@ internal fun SelectedBar(
     onSelectAllClick: () -> Unit,
     onCloseClick: () -> Unit
 ) {
-    Row(Modifier.fillMaxWidth().padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            IconButton(onCloseClick) { Icon(Icons.Default.Close, null, tint = MaterialTheme.colorScheme.primary) }
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp),
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.SpaceBetween
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            IconButton(onCloseClick) {
+                Icon(
+                    Icons.Default.Close,
+                    null,
+                    tint = MaterialTheme.colorScheme.primary
+                )
+            }
             Text("$selectedItemsSize", color = MaterialTheme.colorScheme.primary)
         }
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {

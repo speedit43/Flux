@@ -11,7 +11,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface WorkspaceDao {
-    @Insert(onConflict=OnConflictStrategy.REPLACE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertWorkspace(space: WorkspaceModel)
 
     @Insert(onConflict=OnConflictStrategy.REPLACE)

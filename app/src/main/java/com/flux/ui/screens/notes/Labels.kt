@@ -44,20 +44,28 @@ fun EditLabels(
     isLoading: Boolean,
     workspaceId: Long,
     allLabels: List<LabelModel>,
-    onNotesEvents: (NotesEvents)->Unit,
+    onNotesEvents: (NotesEvents) -> Unit,
 ) {
     var showAddLabel by remember { mutableStateOf(false) }
     var selectedLabel by remember { mutableStateOf<LabelModel>(LabelModel()) }
 
-    if(showAddLabel){
-        AddLabelDialog(initialValue = selectedLabel.value,
+    if (showAddLabel) {
+        AddLabelDialog(
+            initialValue = selectedLabel.value,
             onConfirmation = {
-                onNotesEvents(NotesEvents.UpsertLabel(selectedLabel.copy(value = it, workspaceId = workspaceId)))
-                selectedLabel=LabelModel()
+                onNotesEvents(
+                    NotesEvents.UpsertLabel(
+                        selectedLabel.copy(
+                            value = it,
+                            workspaceId = workspaceId
+                        )
+                    )
+                )
+                selectedLabel = LabelModel()
             }
         ) {
-            showAddLabel=false
-            selectedLabel= LabelModel()
+            showAddLabel = false
+            selectedLabel = LabelModel()
         }
     }
 
@@ -76,7 +84,7 @@ fun EditLabels(
                     }
                 },
                 actions = {
-                    IconButton(onClick = { showAddLabel=true }) {
+                    IconButton(onClick = { showAddLabel = true }) {
                         Icon(
                             imageVector = Icons.Default.Add,
                             contentDescription = "Back"
@@ -87,11 +95,13 @@ fun EditLabels(
         }
     ) { innerPadding ->
         when {
-            isLoading-> Loader()
-            allLabels.isEmpty()-> EmptyLabels()
+            isLoading -> Loader()
+            allLabels.isEmpty() -> EmptyLabels()
             else -> {
                 LazyColumn(
-                    modifier = Modifier.padding(horizontal = 8.dp).padding(innerPadding),
+                    modifier = Modifier
+                        .padding(horizontal = 8.dp)
+                        .padding(innerPadding),
                     horizontalAlignment = Alignment.CenterHorizontally,
                     verticalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
@@ -99,8 +109,8 @@ fun EditLabels(
                         EditLabelBox(label.value, onDelete = {
                             onNotesEvents(NotesEvents.DeleteLabel(label))
                         }) {
-                            showAddLabel=true
-                            selectedLabel=label
+                            showAddLabel = true
+                            selectedLabel = label
                         }
                     }
                 }
@@ -110,9 +120,16 @@ fun EditLabels(
 }
 
 @Composable
-fun EditLabelBox(label: String,  onDelete: ()->Unit, onEdit:()->Unit){
-    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+fun EditLabelBox(label: String, onDelete: () -> Unit, onEdit: () -> Unit) {
+    Row(
+        Modifier.fillMaxWidth(),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
             Icon(Icons.AutoMirrored.Filled.LabelImportant, null)
             Text(label)
         }
