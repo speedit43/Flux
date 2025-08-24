@@ -1,7 +1,6 @@
 package com.flux.ui.components
 
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.combinedClickable
@@ -19,13 +18,8 @@ import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.lazy.itemsIndexed
-import androidx.compose.foundation.lazy.staggeredgrid.LazyVerticalStaggeredGrid
-import androidx.compose.foundation.lazy.staggeredgrid.StaggeredGridCells
-import androidx.compose.foundation.lazy.staggeredgrid.itemsIndexed
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -37,19 +31,14 @@ import androidx.compose.material.icons.automirrored.outlined.FormatAlignLeft
 import androidx.compose.material.icons.automirrored.outlined.FormatAlignRight
 import androidx.compose.material.icons.automirrored.outlined.FormatListBulleted
 import androidx.compose.material.icons.filled.AddPhotoAlternate
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.FormatStrikethrough
 import androidx.compose.material.icons.filled.Highlight
-import androidx.compose.material.icons.filled.PushPin
-import androidx.compose.material.icons.filled.SelectAll
 import androidx.compose.material.icons.outlined.FormatAlignCenter
 import androidx.compose.material.icons.outlined.FormatBold
 import androidx.compose.material.icons.outlined.FormatItalic
 import androidx.compose.material.icons.outlined.FormatListNumbered
 import androidx.compose.material.icons.outlined.FormatSize
 import androidx.compose.material.icons.outlined.FormatUnderlined
-import androidx.compose.material.icons.outlined.PushPin
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -184,33 +173,6 @@ fun NotesInputCard(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun NotesSelectedBar(
-    totalSelectedNotes: Int,
-    isAllSelected: Boolean,
-    isAllPinned: Boolean=false,
-    onSelectAll: ()->Unit,
-    onPinClicked: ()->Unit,
-    onClose: () -> Unit,
-    onDelete: () -> Unit
-) {
-    Row(Modifier
-        .fillMaxWidth()
-        .padding(top = 46.5.dp, bottom = 12.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            IconButton(onClick = onClose) { Icon(Icons.Default.Close, null) }
-            Text(totalSelectedNotes.toString(), style = MaterialTheme.typography.titleLarge)
-        }
-
-        Row(verticalAlignment = Alignment.CenterVertically) {
-            if(!isAllSelected){ IconButton(onClick = onSelectAll ) { Icon(Icons.Default.SelectAll, null) } }
-            IconButton(onClick = onPinClicked) { Icon(if(isAllPinned) Icons.Filled.PushPin else Icons.Outlined.PushPin, null)  }
-            IconButton(onClick = onDelete) { Icon(Icons.Default.Delete, null) }
-        }
-    }
-}
-
 @OptIn(ExperimentalRichTextApi::class)
 @Composable
 fun RichTextStyleRow(
@@ -335,108 +297,6 @@ fun RichTextStyleButton(
             containerColor = if (isSelected) { MaterialTheme.colorScheme.onSurface.copy(0.1f) } else { MaterialTheme.colorScheme.surfaceContainerLow },
         )
     ) { Icon(icon, icon.name) }
-}
-
-@OptIn(ExperimentalFoundationApi::class)
-@Composable
-fun NotesPreviewGrid(
-    radius: Int,
-    isGridView: Boolean,
-    allLabels: List<LabelModel>,
-    pinnedNotes: List<NotesModel>,
-    unPinnedNotes: List<NotesModel>,
-    selectedNotes: List<NotesModel>,
-    onClick: (Long) -> Unit,
-    onLongPressed: (NotesModel) -> Unit
-) {
-    val notesToShow = buildList {
-        if (pinnedNotes.isNotEmpty()) {
-            add(null) // Marker for "Pinned"
-            addAll(pinnedNotes)
-            if (unPinnedNotes.isNotEmpty()) {
-                add(null) // Marker for "Others"
-                addAll(unPinnedNotes)
-            }
-        } else {
-            addAll(unPinnedNotes)
-        }
-    }
-
-    if (isGridView) {
-        LazyVerticalStaggeredGrid(
-            columns = StaggeredGridCells.Fixed(2),
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
-            horizontalArrangement = Arrangement.spacedBy(8.dp),
-            verticalItemSpacing = 8.dp
-        ) {
-            itemsIndexed(notesToShow) { index, note ->
-                if (note == null) {
-                    val label = when (index) {
-                        0 -> stringResource(R.string.Pinned)
-                        else -> stringResource(R.string.Others)
-                    }
-                        Text(
-                            text = label,
-                            color = MaterialTheme.colorScheme.primary,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp, vertical = 4.dp)
-                        )
-                } else {
-                        val isSelected = selectedNotes.contains(note)
-                        NotesPreviewCard(
-                            radius = radius,
-                            isSelected = isSelected,
-                            note = note,
-                            labels = allLabels.filter { note.labels.contains(it.labelId) }.map { it.value },
-                            onClick = onClick,
-                            onLongPressed = { onLongPressed(note) },
-                            modifier = Modifier.fillMaxWidth()
-                        )
-                }
-            }
-        }
-    } else {
-        LazyColumn(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(8.dp),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            itemsIndexed(notesToShow) { index, note ->
-                if (note == null) {
-                    val label = when (index) {
-                        0 -> stringResource(R.string.Pinned)
-                        else -> stringResource(R.string.Others)
-                    }
-                        Text(
-                            text = label,
-                            color = MaterialTheme.colorScheme.primary,
-                            fontWeight = FontWeight.Bold,
-                            fontSize = 16.sp,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(horizontal = 16.dp, vertical = 4.dp)
-                        )
-                } else {
-                    val isSelected = selectedNotes.contains(note)
-                    NotesPreviewCard(
-                        radius = radius,
-                        isSelected = isSelected,
-                        note = note,
-                        labels = allLabels.filter { note.labels.contains(it.labelId) }.map { it.value },
-                        onClick = onClick,
-                        onLongPressed = { onLongPressed(note) },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                }
-            }
-        }
-    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -565,7 +425,7 @@ fun NotesPreviewCard(
 @Composable
 fun EmptyNotes(){
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxWidth().padding(top = 24.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

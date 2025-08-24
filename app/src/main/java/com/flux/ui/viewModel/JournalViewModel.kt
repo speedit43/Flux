@@ -13,10 +13,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
-import java.time.Instant
-import java.time.LocalDate
-import java.time.LocalTime
-import java.time.ZoneId
 import javax.inject.Inject
 
 @HiltViewModel
@@ -32,9 +28,8 @@ class JournalViewModel @Inject constructor(
         when (event) {
             is JournalEvents.DeleteEntry -> deleteEntry(event.entry)
             is JournalEvents.DeleteWorkspaceEntries -> deleteAllWorkspaceEntries(event.workspaceId)
-            is JournalEvents.LoadInitialEntries -> { loadInitialEntries(event.workspaceId) }
+            is JournalEvents.LoadJournalEntries -> { loadJournalEntries(event.workspaceId) }
             is JournalEvents.UpsertEntry -> upsertEntry(event.entry)
-            is JournalEvents.LoadPreviousMonthEntries -> {loadPreviousMonth(event.workspaceId)}
         }
     }
 
@@ -42,66 +37,20 @@ class JournalViewModel @Inject constructor(
     private fun deleteEntry(data: JournalModel) { viewModelScope.launch(Dispatchers.IO) { repository.deleteEntry(data) } }
     private fun upsertEntry(data: JournalModel) { viewModelScope.launch(Dispatchers.IO) { repository.upsertEntry(data) } }
 
-    fun loadInitialEntries(workspaceId: Long) {
+    fun loadJournalEntries(workspaceId: Long) {
         updateState { it.copy(isLoading = true) }
 
         viewModelScope.launch(Dispatchers.IO) {
-            val currentMonth = LocalDate.now()
-            loadMonth(workspaceId, currentMonth)
-        }
-    }
-
-    fun loadPreviousMonth(workspaceId: Long) {
-        viewModelScope.launch(Dispatchers.IO) {
-            val currentState = _state.value
-            if (currentState.isLoadingMore) return@launch
-
-            // Get the next previous month to load
-            val nextMonth = currentState.currentLoadedMonth.minusMonths(1)
-
-            updateState { it.copy(isLoadingMore = true, currentLoadedMonth = nextMonth) }
-            loadMonth(workspaceId, nextMonth)
-        }
-    }
-
-    private suspend fun loadMonth(workspaceId: Long, monthDate: LocalDate) {
-        try {
-            val zoneId = ZoneId.systemDefault()
-
-            val startOfMonth = monthDate.withDayOfMonth(1)
-                .atStartOfDay(zoneId)
-                .toInstant()
-                .toEpochMilli()
-
-            val endOfMonth = monthDate.withDayOfMonth(monthDate.lengthOfMonth())
-                .atTime(LocalTime.MAX)
-                .atZone(zoneId)
-                .toInstant()
-                .toEpochMilli()
-
-            repository.loadEntriesForMonth(workspaceId, startOfMonth, endOfMonth)
+            repository.loadAllEntries(workspaceId)
                 .distinctUntilChanged()
-                .collect { newEntries ->
+                .collect { allEntries ->
                     updateState { oldState ->
-                        val filteredEntries = oldState.allEntries.filterNot {
-                            val entryDate = Instant.ofEpochMilli(it.dateTime)
-                                .atZone(zoneId)
-                                .toLocalDate()
-                            entryDate.month == monthDate.month && entryDate.year == monthDate.year
-                        }
-
                         oldState.copy(
                             isLoading = false,
-                            isLoadingMore = false,
-                            allEntries = (filteredEntries + newEntries)
-                                .distinctBy { it.journalId }
-                                .sortedByDescending { it.dateTime }
+                            allEntries = allEntries
                         )
                     }
                 }
-        } catch (_: Exception) {
-            updateState { it.copy(isLoading = false, isLoadingMore = false) }
         }
     }
-
 }

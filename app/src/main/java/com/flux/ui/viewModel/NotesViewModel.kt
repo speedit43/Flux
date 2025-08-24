@@ -40,6 +40,10 @@ class NotesViewModel @Inject constructor(
             is NotesEvents.LoadAllNotes -> loadAllNotes(event.workspaceId)
             is NotesEvents.LoadAllLabels -> loadAllLabels(event.workspaceId)
             is NotesEvents.DeleteAllWorkspaceNotes -> deleteWorkspaceNotes(event.workspaceId)
+            is NotesEvents.ClearSelection -> { updateState { it.copy(selectedNotes = emptyList()) } }
+            is NotesEvents.SelectNotes -> { updateState { it.copy(selectedNotes=it.selectedNotes.plus(event.noteId)) } }
+            is NotesEvents.UnSelectNotes -> { updateState { it.copy(selectedNotes=it.selectedNotes.minus(event.noteId)) } }
+            is NotesEvents.SelectAllNotes -> { updateState { it.copy(selectedNotes = it.allNotes.map { note -> note.notesId }) } }
         }
     }
 

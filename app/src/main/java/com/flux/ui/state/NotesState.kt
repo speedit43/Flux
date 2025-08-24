@@ -6,6 +6,7 @@ import com.flux.data.model.NotesModel
 data class NotesState(
     val isNotesLoading: Boolean = true,
     val isLabelsLoading: Boolean = true,
+    val selectedNotes: List<Long> = emptyList(),
     val allNotes: List<NotesModel> = emptyList(),
     val allLabels: List<LabelModel> = emptyList()
 )

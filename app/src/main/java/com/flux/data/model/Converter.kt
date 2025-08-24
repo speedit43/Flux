@@ -59,6 +59,17 @@ class Converter {
     }
 
     @TypeConverter
+    fun fromIntList(value: List<Int>): String {
+        return value.joinToString(separator = ",")
+    }
+
+    @TypeConverter
+    fun toIntList(value: String): List<Int> {
+        return if (value.isEmpty()) emptyList()
+        else value.split(",").map { it.toInt() }
+    }
+
+    @TypeConverter
     fun fromStringList(value: List<String>): String {
         return Gson().toJson(value)
     }

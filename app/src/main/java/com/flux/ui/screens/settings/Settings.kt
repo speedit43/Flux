@@ -6,6 +6,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.rounded.ContactSupport
 import androidx.compose.material.icons.filled.Coffee
+import androidx.compose.material.icons.rounded.Backup
 import androidx.compose.material.icons.rounded.Info
 import androidx.compose.material.icons.rounded.Language
 import androidx.compose.material.icons.rounded.Palette
@@ -69,10 +70,25 @@ fun Settings(
 
             item {
                 SettingCategory(
+                    isLast = true,
+                    title = "Backup",
+                    subTitle = "Backup • Restore",
+                    icon = Icons.Rounded.Backup,
+                    shape = shapeManager(radius = settings.data.cornerRadius, isLast = true),
+                    action = {
+                        navController.navigate(NavRoutes.Backup.route) {
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                    })
+            }
+
+            item {
+                SettingCategory(
                     title = stringResource(R.string.Customize),
                     subTitle = stringResource(R.string.Customize_desc),
                     icon = Icons.Rounded.Palette,
-                    shape = shapeManager(radius = settings.data.cornerRadius),
+                    shape = shapeManager(radius = settings.data.cornerRadius, isFirst = true),
                     action = {
                         navController.navigate(NavRoutes.Customize.route) {
                             launchSingleTop = true

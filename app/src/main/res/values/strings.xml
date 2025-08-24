@@ -13,7 +13,7 @@
     <string name="About">About</string>
     <string name="About_desc">Version • Developers • Source Code</string>
     <string name="Privacy">Privacy</string>
-    <string name="Privacy_desc">Screen Protection • App Lock</string>
+    <string name="Privacy_desc">Screen Protection • App Lock • Encryption</string>
     <string name="Screen_Protection">Screen Protection</string>
     <string name="Screen_Protection_Desc">Disable Screenshots</string>
     <string name="App_Lock">App Lock</string>

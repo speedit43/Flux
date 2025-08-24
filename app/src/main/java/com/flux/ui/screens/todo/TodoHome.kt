@@ -6,12 +6,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -50,8 +48,7 @@ import com.flux.ui.components.shapeManager
 import com.flux.ui.events.TodoEvents
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun TodoHome(
+fun LazyListScope.todoHomeItems(
     navController: NavController,
     radius: Int,
     allList: List<TodoModel>,
@@ -59,55 +56,57 @@ fun TodoHome(
     isLoading: Boolean,
     onTodoEvents: (TodoEvents)->Unit
 ) {
-    var expanded by remember { mutableLongStateOf(-1L) }
-
-    if (isLoading) { Loader() }
-    else if(allList.isEmpty()) { EmptyTodoList() }
+    if (isLoading) item { Loader() }
+    else if(allList.isEmpty()) item { EmptyTodoList() }
     else{
-        ElevatedCard(
-            modifier = Modifier.padding(16.dp),
-            shape = shapeManager(radius=radius*2),
-            colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
-        ) {
-            LazyColumn{
-                items(allList) { item->
-                    Row(
-                        modifier = Modifier.fillMaxWidth().clickable { navController.navigate(NavRoutes.TodoDetail.withArgs(workspaceId, item.id)) },
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
+        item {
+            var expanded by remember { mutableLongStateOf(-1L) }
+
+            ElevatedCard(
+                modifier = Modifier.padding(top = 8.dp),
+                shape = shapeManager(radius=radius*2),
+                colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
+            ) {
+                Column{
+                    allList.forEach { item->
                         Row(
-                            modifier = Modifier.weight(1f).padding(end = 3.dp),
+                            modifier = Modifier.fillMaxWidth().clickable { navController.navigate(NavRoutes.TodoDetail.withArgs(workspaceId, item.id)) },
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            horizontalArrangement = Arrangement.SpaceBetween
                         ) {
-                            IconButton(onClick = { expanded = if(expanded!=item.id) item.id else -1 }) {
-                                Icon(
-                                    if(expanded==item.id) Icons.Default.KeyboardArrowDown else Icons.AutoMirrored.Default.KeyboardArrowRight,
-                                    null
+                            Row(
+                                modifier = Modifier.weight(1f).padding(end = 3.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                IconButton(onClick = { expanded = if(expanded!=item.id) item.id else -1 }) {
+                                    Icon(
+                                        if(expanded==item.id) Icons.Default.KeyboardArrowDown else Icons.AutoMirrored.Default.KeyboardArrowRight,
+                                        null
+                                    )
+                                }
+                                Text(
+                                    item.title,
+                                    fontSize = 16.sp,
+                                    overflow = TextOverflow.Ellipsis,
+                                    maxLines = 1
                                 )
                             }
-                            Text(
-                                item.title,
-                                fontSize = 16.sp,
-                                overflow = TextOverflow.Ellipsis,
-                                maxLines = 1
-                            )
+                            IconButton(onClick = {onTodoEvents(TodoEvents.DeleteList(item))}) { Icon(Icons.Default.Remove, null, tint = MaterialTheme.colorScheme.error) }
                         }
-                        IconButton(onClick = {onTodoEvents(TodoEvents.DeleteList(item))}) { Icon(Icons.Default.Remove, null, tint = MaterialTheme.colorScheme.error) }
-                    }
-                    if(expanded==item.id){
-                        item.items.take(3).forEach { checkItem->
-                            Row(Modifier.fillMaxWidth().padding(vertical = 2.dp).padding(start = 64.dp, end = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                                Box(Modifier.clip(RoundedCornerShape(50)).size(8.dp).background(MaterialTheme.colorScheme.onSurface.copy(0.75f)))
-                                Text(checkItem.value, textDecoration = if(checkItem.isChecked) TextDecoration.LineThrough else TextDecoration.None)
+                        if(expanded==item.id){
+                            item.items.take(3).forEach { checkItem->
+                                Row(Modifier.fillMaxWidth().padding(vertical = 2.dp).padding(start = 64.dp, end = 8.dp), horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                                    Box(Modifier.clip(RoundedCornerShape(50)).size(8.dp).background(MaterialTheme.colorScheme.onSurface.copy(0.75f)))
+                                    Text(checkItem.value, textDecoration = if(checkItem.isChecked) TextDecoration.LineThrough else TextDecoration.None)
+                                }
+                            }
+                            if(item.items.size>3){
+                                Text(stringResource(R.string.more), modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp).padding(start = 70.dp, end = 8.dp))
                             }
                         }
-                        if(item.items.size>3){
-                            Text(stringResource(R.string.more), modifier = Modifier.fillMaxWidth().padding(vertical = 2.dp).padding(start = 70.dp, end = 8.dp))
-                        }
+                        HorizontalDivider(Modifier.alpha(0.5f))
                     }
-                    HorizontalDivider(Modifier.alpha(0.5f))
                 }
             }
         }
@@ -117,7 +116,7 @@ fun TodoHome(
 @Composable
 fun EmptyTodoList(){
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxWidth().padding(16.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

@@ -1,5 +1,7 @@
 package com.flux.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
@@ -16,6 +18,7 @@ import com.flux.ui.screens.journal.EditJournal
 import com.flux.ui.screens.notes.EditLabels
 import com.flux.ui.screens.notes.NoteDetails
 import com.flux.ui.screens.settings.About
+import com.flux.ui.screens.settings.Backup
 import com.flux.ui.screens.settings.Contact
 import com.flux.ui.screens.settings.Customize
 import com.flux.ui.screens.settings.Languages
@@ -63,6 +66,7 @@ sealed class NavRoutes(val route: String) {
     data object Languages : NavRoutes("settings/language")
     data object About : NavRoutes("settings/about")
     data object Contact : NavRoutes("settings/contact")
+    data object Backup : NavRoutes("setting/backup")
 
     fun withArgs(vararg args: Long): String {
         return buildString {
@@ -128,6 +132,9 @@ val SettingsScreens =
         },
         NavRoutes.Contact.route to { navController, _, states, _ ->
             Contact(navController, states.settings.data.cornerRadius)
+        } ,
+        NavRoutes.Backup.route to { navController, _, states, _ ->
+            Backup(navController, states.settings.data.cornerRadius)
         }
     )
 
@@ -138,13 +145,14 @@ val EventScreens =
         }
     )
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 val WorkspaceScreens =
     mapOf<String, @Composable (navController: NavController, snackbarHostState: SnackbarHostState, states: States, viewModels: ViewModels, workspaceId: Long) -> Unit> (
         NavRoutes.Workspace.route to { navController, snackbarHostState, states, viewModels, _ ->
             WorkSpaces(snackbarHostState, navController, states.settings.data.cornerRadius, states.workspaceState.allSpaces, viewModels.notesViewModel::onEvent, viewModels.eventViewModel::onEvent, viewModels.habitViewModel::onEvent, viewModels.todoViewModel::onEvent, viewModels.workspaceViewModel::onEvent, viewModels.journalViewModel::onEvent)
         },
         NavRoutes.WorkspaceHome.route + "/{workspaceId}" to { navController, snackbarHostState, states, viewModels, workspaceId ->
-            WorkspaceDetails(
+            WorkspaceDetails (
                 navController,
                 states.notesState.allLabels.filter { it.workspaceId==workspaceId },
                 states.settings,
@@ -153,10 +161,13 @@ val WorkspaceScreens =
                 states.eventState.isDatedEventLoading,
                 states.todoState.isLoading,
                 states.journalState.isLoading,
-                states.journalState.isLoadingMore,
+                states.habitState.isLoading,
                 states.workspaceState.allSpaces.first { it.workspaceId==workspaceId },
                 states.eventState.allEvent,
                 states.notesState.allNotes.filter { it.workspaceId==workspaceId },
+                states.notesState.selectedNotes,
+                states.eventState.selectedYearMonth,
+                states.eventState.selectedDate,
                 states.eventState.todayEvents,
                 states.eventState.datedEvents,
                 states.habitState.allHabits,
@@ -169,8 +180,8 @@ val WorkspaceScreens =
                 viewModels.eventViewModel::onEvent,
                 viewModels.habitViewModel::onEvent,
                 viewModels.todoViewModel::onEvent,
-                viewModels.journalViewModel::onEvent,
-                viewModels.settingsViewModel::onEvent)
+                viewModels.settingsViewModel::onEvent
+            )
         }
     )
 

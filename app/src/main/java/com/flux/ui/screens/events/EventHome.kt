@@ -5,15 +5,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.RadioButtonUnchecked
@@ -56,8 +55,7 @@ import java.util.Date
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun EventHome(
+fun LazyListScope.eventHomeItems(
     navController: NavController,
     radius: Int,
     isLoading: Boolean,
@@ -66,8 +64,8 @@ fun EventHome(
     workspaceId: Long,
     onTaskEvents: (TaskEvents)->Unit
 ) {
-    if(isLoading) { Loader() }
-    else if(allEvents.isEmpty()){ EmptyEvents() }
+    if(isLoading) item { Loader() }
+    else if(allEvents.isEmpty()) item { EmptyEvents() }
     else {
         val today = LocalDate.now()
 
@@ -86,7 +84,7 @@ fun EventHome(
                     .find { it.eventId == event.eventId && it.instanceDate == today }
                     ?.status == EventStatus.COMPLETED
             }
-
+            
         Column(
             modifier = Modifier.padding(top = 24.dp, end = 8.dp).verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(8.dp)
@@ -116,7 +114,6 @@ fun EventHome(
                     )
                 }
             }
-
             if (upcomingEvents.isNotEmpty()) {
                 Text(
                     text = stringResource(R.string.Upcoming),
@@ -151,7 +148,7 @@ fun EventHome(
 @Composable
 fun EmptyEvents(){
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier.fillMaxWidth().padding(24.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -211,7 +208,9 @@ fun EventCard(
             }
         )
         OutlinedCard(
-            modifier = Modifier.fillMaxWidth().height(if (description.isEmpty()) 55.dp else 76.dp),
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(if (description.isEmpty()) 55.dp else 76.dp),
             colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surfaceContainerLow),
             shape = shapeManager(radius=radius*2),
             onClick = onClick
@@ -222,12 +221,14 @@ fun EventCard(
                         .width(16.dp)
                         .height(if (description.isEmpty()) 55.dp else 76.dp)
                         .background(
-                            if(eventStatus== EventStatus.PENDING) pending else completed,
+                            if (eventStatus == EventStatus.PENDING) pending else completed,
                             RoundedCornerShape(topStart = 24.dp, bottomStart = 24.dp)
                         )
                 )
 
-                Column(modifier = Modifier.weight(1f).padding(horizontal = 8.dp, vertical = 4.dp)) {
+                Column(modifier = Modifier
+                    .weight(1f)
+                    .padding(horizontal = 8.dp, vertical = 4.dp)) {
                     Text(title, style = MaterialTheme.typography.titleMedium)
                     Row(Modifier.padding(vertical = 2.dp), verticalAlignment = Alignment.CenterVertically) {
                         if(repeat!= Repetition.NONE){
