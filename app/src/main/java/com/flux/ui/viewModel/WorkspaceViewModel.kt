@@ -27,13 +27,12 @@ class WorkspaceViewModel @Inject constructor (
     val state: StateFlow<WorkspaceState> = _state.asStateFlow()
     val effect = _effect.receiveAsFlow()
 
+    init { loadWorkspace()  }
+
     private fun setEffect(builder: () -> ScreenEffect) {
         val effectValue = builder()
         viewModelScope.launch { _effect.send(effectValue) }
     }
-
-    init { loadWorkspace()  }
-
     fun onEvent(event: WorkspaceEvents) { viewModelScope.launch { reduce(event = event) } }
     private fun updateState(reducer: (WorkspaceState) -> WorkspaceState) { _state.value = reducer(_state.value) }
 
@@ -41,6 +40,21 @@ class WorkspaceViewModel @Inject constructor (
         when (event) {
             is WorkspaceEvents.DeleteSpace -> deleteWorkspace(event.space)
             is WorkspaceEvents.UpsertSpace -> upsertWorkspace(event.space)
+            is WorkspaceEvents.UpsertSpaces -> togglePinWorkspaces(event.spaces)
+        }
+    }
+
+    private fun togglePinWorkspaces(spaces: List<WorkspaceModel>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val isAllPinned=spaces.all { it.isPinned }
+            if(isAllPinned){
+                val updatedWorkspaces = spaces.map { it.copy(isPinned = false) }
+                repository.upsertWorkspaces(updatedWorkspaces)
+            }
+            else{
+                val updatedWorkspaces = spaces.map { it.copy(isPinned = true) }
+                repository.upsertWorkspaces(updatedWorkspaces)
+            }
         }
     }
 

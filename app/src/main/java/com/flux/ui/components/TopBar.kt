@@ -133,6 +133,7 @@ fun WorkspaceTopBar(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 internal fun SelectedBar(
+    showDeleteOption: Boolean=true,
     isAllSelected: Boolean,
     isAllSelectedPinned: Boolean,
     selectedItemsSize: Int,
@@ -147,9 +148,15 @@ internal fun SelectedBar(
             Text("$selectedItemsSize", color = MaterialTheme.colorScheme.primary)
         }
         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            IconButton(onClick = onPinClick) { Icon(if(isAllSelectedPinned) Icons.Filled.PushPin else Icons.Outlined.PushPin, null, tint = MaterialTheme.colorScheme.primary)  }
+            IconButton(onClick = {
+                onPinClick()
+                onCloseClick()
+            }) { Icon(if(isAllSelectedPinned) Icons.Filled.PushPin else Icons.Outlined.PushPin, null, tint = MaterialTheme.colorScheme.primary)  }
             IconButton(onSelectAllClick) { Icon(if(isAllSelected) Icons.Default.Deselect else Icons.Default.SelectAll, null, tint = MaterialTheme.colorScheme.primary) }
-            IconButton(onDeleteClick) { Icon(Icons.Default.Delete, null, tint = MaterialTheme.colorScheme.primary) }
+            if(showDeleteOption) IconButton({
+                onDeleteClick()
+                onCloseClick()
+            } ) { Icon(Icons.Default.Delete, null, tint = MaterialTheme.colorScheme.primary) }
         }
     }
 }

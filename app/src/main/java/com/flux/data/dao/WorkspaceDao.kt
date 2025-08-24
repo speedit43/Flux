@@ -5,6 +5,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.OnConflictStrategy
 import androidx.room.Query
+import com.flux.data.model.NotesModel
 import com.flux.data.model.WorkspaceModel
 import kotlinx.coroutines.flow.Flow
 
@@ -12,6 +13,9 @@ import kotlinx.coroutines.flow.Flow
 interface WorkspaceDao {
     @Insert(onConflict=OnConflictStrategy.REPLACE)
     suspend fun upsertWorkspace(space: WorkspaceModel)
+
+    @Insert(onConflict=OnConflictStrategy.REPLACE)
+    suspend fun upsertWorkspaces(spaces: List<WorkspaceModel>)
 
     @Delete
     suspend fun deleteWorkspace(workspace: WorkspaceModel)

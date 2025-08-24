@@ -160,6 +160,7 @@ fun WorkspaceDetails(
             item {
                 if(SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Notes" && selectedNotes.isNotEmpty()){
                     SelectedBar(
+                        true,
                         allNotes.size==selectedNotes.size,
                         allNotes.filter { selectedNotes.contains(it.notesId) }.all { it.isPinned },
                         selectedNotes.size,

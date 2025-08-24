@@ -13,6 +13,7 @@ class WorkspaceRepositoryImpl @Inject constructor(
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ): WorkspaceRepository {
     override suspend fun upsertWorkspace(workspace: WorkspaceModel) { return withContext(ioDispatcher) { dao.upsertWorkspace(workspace) } }
+    override suspend fun upsertWorkspaces(spaces: List<WorkspaceModel>) { return withContext(ioDispatcher) { dao.upsertWorkspaces(spaces) } }
     override suspend fun deleteWorkspace(workspace: WorkspaceModel) { return withContext(ioDispatcher) { dao.deleteWorkspace(workspace) } }
     override fun loadAllWorkspaces(): Flow<List<WorkspaceModel>> { return dao.loadAllWorkspaces() }
 }

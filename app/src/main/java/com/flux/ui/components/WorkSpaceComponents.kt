@@ -1,6 +1,8 @@
 package com.flux.ui.components
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.combinedClickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,8 +15,8 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Lock
 import androidx.compose.material.icons.filled.Workspaces
+import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -23,6 +25,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -42,7 +45,9 @@ fun WorkspaceCard(
     title: String,
     description: String,
     iconIndex: Int,
-    onClick: ()->Unit
+    isSelected: Boolean,
+    onClick: ()->Unit,
+    onLongPressed: ()->Unit
 ){
     val coverHeight = when (gridColumns) {
         1 -> 120.dp
@@ -84,12 +89,16 @@ fun WorkspaceCard(
         else-> MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.ExtraLight)
     }
 
-    ElevatedCard(
+    Card(
         shape = shapeManager(radius = radius*2),
-        modifier = Modifier.fillMaxWidth().padding(horizontal = paddingValues),
-        elevation = CardDefaults.cardElevation(2.dp),
-        onClick = onClick,
-        colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
+        modifier = Modifier.fillMaxWidth().padding(horizontal = paddingValues)
+            .clip(shapeManager(radius = radius*2))
+            .combinedClickable(
+            onClick = onClick,
+            onLongClick = onLongPressed
+        ),
+        colors = CardDefaults.elevatedCardColors(containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)),
+        border = if (isSelected) BorderStroke(2.dp, MaterialTheme.colorScheme.primary) else null
     ) {
         Column(Modifier.fillMaxSize().padding(bottom = 4.dp)){
             if(cover.isBlank()){ Box(Modifier.fillMaxWidth().height(coverHeight).alpha(0.125f).background(MaterialTheme.colorScheme.onSurface)) }

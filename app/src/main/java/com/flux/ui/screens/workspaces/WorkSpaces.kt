@@ -65,7 +65,7 @@ fun WorkSpaces(
     onTodoEvents: (TodoEvents)->Unit,
     onWorkSpaceEvents: (WorkspaceEvents) -> Unit,
     onJournalEvents: (JournalEvents)->Unit
-){
+) {
     var query by rememberSaveable { mutableStateOf("") }
     var addWorkspace by remember { mutableStateOf(false) }
     var selectedWorkspace = remember { mutableStateListOf<WorkspaceModel>() }
@@ -119,15 +119,22 @@ fun WorkSpaces(
                     onCloseClicked = { query = "" }
                 )
             } else{
-                Box(Modifier.padding(top = 48.dp)){
+                Box(Modifier.padding(top = 42.dp)){
                     SelectedBar(
                         false,
-                        false,
-                        0,
-                        onPinClick = {},
+                        selectedWorkspace.containsAll(allSpaces),
+                        selectedWorkspace.all { it.isPinned },
+                        selectedWorkspace.size,
+                        onPinClick = { onWorkSpaceEvents(WorkspaceEvents.UpsertSpaces(selectedWorkspace.toList())) },
                         onDeleteClick = {},
-                        onSelectAllClick = {},
-                        onCloseClick = {  }
+                        onSelectAllClick = {
+                            if (selectedWorkspace.containsAll(allSpaces)){ selectedWorkspace.clear() }
+                            else {
+                                selectedWorkspace.clear()
+                                selectedWorkspace.addAll(allSpaces)
+                            }
+                        },
+                        onCloseClick = { selectedWorkspace.clear() }
                     )
                 }
             }
@@ -170,10 +177,19 @@ fun WorkSpaces(
                         cover = space.cover,
                         title = space.title,
                         description = space.description,
-                        onClick = { handleWorkspaceClick(space) }
+                        isSelected = selectedWorkspace.contains(space),
+                        onClick = { handleWorkspaceClick(space) },
+                        onLongPressed = {
+                            if(selectedWorkspace.contains(space)){
+                                selectedWorkspace.remove(space)
+                            }
+                            else{
+                                selectedWorkspace.add(space)
+                            }
+                        }
                     )
                 }
-                if(allSpaces.any { it.isPinned && (it.title.contains(query, ignoreCase = true) || it.description.contains(query, ignoreCase = true)) }){
+                if(allSpaces.any { it.isPinned && (it.title.contains(query, ignoreCase = true) || it.description.contains(query, ignoreCase = true)) }) {
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         Text(
                             "Others",
@@ -192,7 +208,16 @@ fun WorkSpaces(
                         cover = space.cover,
                         title = space.title,
                         description = space.description,
-                        onClick = { handleWorkspaceClick(space) }
+                        isSelected = selectedWorkspace.contains(space),
+                        onClick = { handleWorkspaceClick(space) },
+                        onLongPressed = {
+                            if(selectedWorkspace.contains(space)){
+                                selectedWorkspace.remove(space)
+                            }
+                            else{
+                                selectedWorkspace.add(space)
+                            }
+                        }
                     )
                 }
             }
