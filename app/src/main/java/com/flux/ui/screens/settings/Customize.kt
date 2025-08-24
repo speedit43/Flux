@@ -19,6 +19,8 @@ import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.rounded.GridOn
 import androidx.compose.material.icons.rounded.GridView
 import androidx.compose.material.icons.rounded.RoundedCorner
+import androidx.compose.material.icons.rounded.ViewCompact
+import androidx.compose.material.icons.rounded.ViewCompactAlt
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.SegmentedButton
@@ -163,15 +165,51 @@ fun Customize(
             }
             item {
                 SettingOption(
+                    title = "Compact Mode",
+                    description = "Show workspace in compact mode",
+                    icon = Icons.Rounded.ViewCompactAlt,
+                    radius = shapeManager(radius = settings.data.cornerRadius),
+                    variable = settings.data.workspaceGridColumns>1,
+                    actionType = ActionType.SWITCH,
+                    switchEnabled = {
+                        if(it){
+                            onSettingsEvents(SettingEvents.UpdateSettings(settings.data.copy(workspaceGridColumns = 2)))
+                        }
+                        else {
+                            onSettingsEvents(SettingEvents.UpdateSettings(settings.data.copy(workspaceGridColumns = 1)))
+                        }
+                    }
+                )
+            }
+            item {
+                val isEnabled = settings.data.workspaceGridColumns>1
+                SettingOption(
+                    title = "Extreme Compact Mode",
+                    description = "Tighter the spacing between workspaces",
+                    icon = Icons.Rounded.ViewCompact,
+                    isEnabled = isEnabled,
+                    radius = shapeManager(radius = settings.data.cornerRadius),
+                    variable = settings.data.workspaceGridColumns==3,
+                    actionType = ActionType.SWITCH,
+                    switchEnabled = {
+                        if(it){
+                            onSettingsEvents(SettingEvents.UpdateSettings(settings.data.copy(workspaceGridColumns = 3)))
+                        }
+                        else {
+                            onSettingsEvents(SettingEvents.UpdateSettings(settings.data.copy(workspaceGridColumns = 2)))
+                        }
+                    }
+                )
+            }
+            item {
+                SettingOption(
                     title = stringResource(R.string.Grid_View),
                     description = stringResource(R.string.Grid_View_Desc),
                     icon = Icons.Rounded.GridView,
-                    radius = shapeManager(
-                        radius = settings.data.cornerRadius,
-                    ),
+                    radius = shapeManager(radius = settings.data.cornerRadius),
                     variable = settings.data.isGridView,
                     actionType = ActionType.SWITCH,
-                    switchEnabled = { onSettingsEvents(SettingEvents.UpdateSettings(settings.data.copy(isGridView = it))) },
+                    switchEnabled = { onSettingsEvents(SettingEvents.UpdateSettings(settings.data.copy(isGridView = it))) }
                 )
             }
 

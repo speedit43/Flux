@@ -149,7 +149,7 @@ val EventScreens =
 val WorkspaceScreens =
     mapOf<String, @Composable (navController: NavController, snackbarHostState: SnackbarHostState, states: States, viewModels: ViewModels, workspaceId: Long) -> Unit> (
         NavRoutes.Workspace.route to { navController, snackbarHostState, states, viewModels, _ ->
-            WorkSpaces(snackbarHostState, navController, states.settings.data.cornerRadius, states.workspaceState.allSpaces, viewModels.notesViewModel::onEvent, viewModels.eventViewModel::onEvent, viewModels.habitViewModel::onEvent, viewModels.todoViewModel::onEvent, viewModels.workspaceViewModel::onEvent, viewModels.journalViewModel::onEvent)
+            WorkSpaces(snackbarHostState, navController, states.settings.data.workspaceGridColumns, states.settings.data.cornerRadius, states.workspaceState.allSpaces, viewModels.notesViewModel::onEvent, viewModels.eventViewModel::onEvent, viewModels.habitViewModel::onEvent, viewModels.todoViewModel::onEvent, viewModels.workspaceViewModel::onEvent, viewModels.journalViewModel::onEvent)
         },
         NavRoutes.WorkspaceHome.route + "/{workspaceId}" to { navController, snackbarHostState, states, viewModels, workspaceId ->
             WorkspaceDetails (

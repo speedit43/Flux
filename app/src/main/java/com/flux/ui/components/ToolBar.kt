@@ -10,32 +10,20 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.BasicTextField
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowDropDown
 import androidx.compose.material.icons.filled.CalendarViewDay
 import androidx.compose.material.icons.filled.CalendarViewMonth
-import androidx.compose.material.icons.filled.Close
-import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Deselect
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.GridView
-import androidx.compose.material.icons.filled.PushPin
 import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.SelectAll
 import androidx.compose.material.icons.filled.ViewStream
-import androidx.compose.material.icons.outlined.PushPin
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -64,6 +52,7 @@ import com.flux.other.requestExactAlarmPermission
 fun SpacesToolBar(
     title: String,
     icon: ImageVector,
+    isEmptyWorkspace: Boolean,
     onMainClick: () -> Unit,
     onEditClick: () -> Unit
 ) {
@@ -72,53 +61,68 @@ fun SpacesToolBar(
             .clip(RoundedCornerShape(50))
             .background(MaterialTheme.colorScheme.surfaceColorAtElevation(4.dp))
     ) {
-        Row(
-            modifier = Modifier
-                .height(IntrinsicSize.Min)
-                .padding(horizontal = 8.dp, vertical = 4.dp),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
+        if(isEmptyWorkspace){
             Row(
-                modifier = Modifier
-                    .clip(RoundedCornerShape(50))
-                    .clickable { onMainClick() }
-                    .padding(horizontal = 4.dp, vertical = 2.dp),
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(2.dp)
-            ) {
-                Icon(
-                    icon,
-                    contentDescription = "space",
-                    tint = MaterialTheme.colorScheme.primary
-                )
-                Text(
-                    text = title,
-                    style = MaterialTheme.typography.bodyLarge,
-                    color = MaterialTheme.colorScheme.primary
-                )
-                Icon(
-                    Icons.Default.ArrowDropDown,
-                    contentDescription = "space",
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
-
-            VerticalDivider(Modifier.fillMaxHeight())
-
-            // Right section (Edit icon)
-            Row(
-                modifier = Modifier
-                    .padding(start = 4.dp)
-                    .clip(RoundedCornerShape(50))
-                    .clickable { onEditClick() },
+                modifier =  Modifier
+                    .clickable { onEditClick() }
+                    .padding(vertical = 6.dp, horizontal = 8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Icon(
-                    Icons.Default.Edit,
-                    modifier = Modifier.padding(4.dp),
-                    contentDescription = "Edit-space",
+                    Icons.Default.Add,
+                    contentDescription = "Add-spaces",
                     tint = MaterialTheme.colorScheme.primary
                 )
+                Text(
+                    text = "Add Space",
+                    style = MaterialTheme.typography.bodyLarge,
+                    color = MaterialTheme.colorScheme.primary
+                )
+            }
+        }
+        else{
+            Row(
+                modifier = Modifier.height(IntrinsicSize.Min),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Row(
+                    modifier = Modifier
+                        .clickable { onMainClick() }
+                        .padding(horizontal = 8.dp, vertical = 6.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                    horizontalArrangement = Arrangement.spacedBy(2.dp)
+                ) {
+                    Icon(
+                        icon,
+                        contentDescription = "space",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                    Text(
+                        text = title,
+                        style = MaterialTheme.typography.bodyLarge,
+                        color = MaterialTheme.colorScheme.primary
+                    )
+                    Icon(
+                        Icons.Default.ArrowDropDown,
+                        contentDescription = "space",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
+
+                VerticalDivider(Modifier.fillMaxHeight())
+
+                // Right section (Edit icon)
+                Row(
+                    modifier = Modifier.clickable { onEditClick() },
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(
+                        Icons.Default.Edit,
+                        modifier = Modifier.padding(6.dp),
+                        contentDescription = "Edit-space",
+                        tint = MaterialTheme.colorScheme.primary
+                    )
+                }
             }
         }
     }
@@ -206,95 +210,5 @@ fun NotesToolBar(navController: NavController, workspaceId: Long, query: String,
             onCloseClicked = { onSearchClicked = false },
             modifier = Modifier.width(200.dp)
         )
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-internal fun SelectedNotesToolBar(
-    isAllSelected: Boolean,
-    isAllSelectedPinned: Boolean,
-    selectedNotes: List<Long>,
-    onPinClick: () -> Unit,
-    onDeleteClick: () -> Unit,
-    onSelectAllClick: () -> Unit,
-    onCloseClick: () -> Unit
-) {
-    Row(Modifier.fillMaxWidth().padding(vertical = 8.dp), verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.SpaceBetween) {
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            IconButton(onCloseClick) { Icon(Icons.Default.Close, null, tint = MaterialTheme.colorScheme.primary) }
-            Text("${selectedNotes.size}", color = MaterialTheme.colorScheme.primary)
-        }
-        Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            IconButton(onClick = onPinClick) { Icon(if(isAllSelectedPinned) Icons.Filled.PushPin else Icons.Outlined.PushPin, null, tint = MaterialTheme.colorScheme.primary)  }
-            IconButton(onSelectAllClick) { Icon(if(isAllSelected) Icons.Default.Deselect else Icons.Default.SelectAll, null, tint = MaterialTheme.colorScheme.primary) }
-            IconButton(onDeleteClick) { Icon(Icons.Default.Delete, null, tint = MaterialTheme.colorScheme.primary) }
-        }
-    }
-}
-
-@Composable
-fun NotesSearchBar(
-    query: String,
-    onQueryChange: (String) -> Unit,
-    onCloseClicked: ()->Unit,
-    modifier: Modifier = Modifier,
-    placeholder: String = "Search..."
-) {
-    Box(
-        modifier = modifier
-            .height(40.dp)
-            .clip(RoundedCornerShape(50))
-            .background(MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp))
-            .padding(horizontal = 12.dp)
-    ) {
-        Row(
-            modifier = Modifier.fillMaxSize(),
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Icon(
-                imageVector = Icons.Default.Search,
-                contentDescription = "Search",
-                tint = MaterialTheme.colorScheme.primary
-            )
-
-            Spacer(Modifier.width(6.dp))
-
-            BasicTextField(
-                value = query,
-                onValueChange = onQueryChange,
-                singleLine = true,
-                textStyle = MaterialTheme.typography.bodySmall.copy(
-                    color = MaterialTheme.colorScheme.onSurface
-                ),
-                modifier = Modifier
-                    .weight(1f)
-                    .padding(vertical = 2.dp), // keeps text centered vertically
-                decorationBox = { innerTextField ->
-                    if (query.isEmpty()) {
-                        Text(
-                            text = placeholder,
-                            style = MaterialTheme.typography.bodySmall.copy(
-                                color = MaterialTheme.colorScheme.primary
-                            )
-                        )
-                    }
-                    innerTextField()
-                }
-            )
-
-            IconButton(
-                onClick = {
-                    onCloseClicked()
-                    onQueryChange("") },
-                modifier = Modifier.size(24.dp)
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Close,
-                    contentDescription = "Clear",
-                    tint = MaterialTheme.colorScheme.primary
-                )
-            }
-        }
     }
 }
