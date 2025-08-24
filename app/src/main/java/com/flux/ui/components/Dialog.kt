@@ -20,19 +20,12 @@ import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.Label
-import androidx.compose.material.icons.automirrored.filled.Notes
 import androidx.compose.material.icons.automirrored.outlined.LabelImportant
 import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.filled.Analytics
-import androidx.compose.material.icons.filled.AutoStories
-import androidx.compose.material.icons.filled.CalendarMonth
-import androidx.compose.material.icons.filled.Checklist
 import androidx.compose.material.icons.filled.DeleteOutline
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.EditCalendar
-import androidx.compose.material.icons.filled.Event
-import androidx.compose.material.icons.filled.EventAvailable
 import androidx.compose.material.icons.filled.NewLabel
 import androidx.compose.material.icons.filled.Repeat
 import androidx.compose.material.icons.outlined.NotificationsActive
@@ -78,7 +71,6 @@ import androidx.compose.ui.window.DialogProperties
 import com.flux.R
 import com.flux.data.model.LabelModel
 import com.flux.data.model.Repetition
-import com.flux.data.model.WorkspaceModel
 import com.flux.ui.screens.events.getRepetitionText
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -137,184 +129,6 @@ fun AddLabelDialog(
         },
         dismissButton = { TextButton(onClick = { onDismissRequest() }) { Text(stringResource(R.string.Dismiss)) } }
     )
-}
-
-@Composable
-fun AddSpacesDialog(
-    workspace: WorkspaceModel,
-    onDismissRequest: () -> Unit,
-    onConfirmation: (WorkspaceModel) -> Unit
-) {
-    var notesChecked by remember { mutableStateOf(false) }
-    var todoChecked by remember { mutableStateOf(false) }
-    var calendarChecked by remember { mutableStateOf(false) }
-    var habitsChecked by remember { mutableStateOf(false) }
-    var eventsChecked by remember { mutableStateOf(false) }
-    var analyticsChecked by remember { mutableStateOf(false) }
-    var journalChecked by remember { mutableStateOf(false) }
-
-    AlertDialog(
-        icon = {
-            CircleWrapper(MaterialTheme.colorScheme.primary) {
-                Icon(
-                    Icons.Default.Add,
-                    contentDescription = "Label Icon",
-                    tint = MaterialTheme.colorScheme.onPrimary
-                )
-            }
-        },
-        title = { Text(text = stringResource(R.string.Add_Spaces)) },
-        text = {
-            LazyColumn(Modifier.heightIn(max = 250.dp)) {
-                if (!workspace.isNotesAdded) {
-                    item {
-                        SpaceCheckboxCard(
-                            Icons.AutoMirrored.Default.Notes,
-                            stringResource(R.string.Notes),
-                            notesChecked
-                        ) {
-                            notesChecked = it
-                        }
-                    }
-                }
-                if (!workspace.isJournalAdded) {
-                    item {
-                        SpaceCheckboxCard(
-                            Icons.Default.AutoStories,
-                            stringResource(R.string.Journal),
-                            journalChecked
-                        ) {
-                            journalChecked = it
-                        }
-                    }
-                }
-                if (!workspace.isTodoAdded) {
-                    item {
-                        SpaceCheckboxCard(
-                            Icons.Default.Checklist,
-                            stringResource(R.string.To_Do),
-                            todoChecked
-                        ) {
-                            todoChecked = it
-                        }
-                    }
-                }
-                if (!workspace.isEventsAdded) {
-                    item {
-                        SpaceCheckboxCard(
-                            Icons.Default.Event,
-                            stringResource(R.string.Events),
-                            eventsChecked
-                        ) {
-                            eventsChecked = it
-                        }
-                    }
-                }
-                if (!workspace.isCalendarAdded) {
-                    item {
-                        SpaceCheckboxCard(
-                            Icons.Default.CalendarMonth,
-                            stringResource(R.string.Calendar),
-                            calendarChecked
-                        ) {
-                            calendarChecked = it
-                        }
-                    }
-                }
-                if (!workspace.isHabitsAdded) {
-                    item {
-                        SpaceCheckboxCard(
-                            Icons.Default.EventAvailable,
-                            stringResource(R.string.Habits),
-                            habitsChecked
-                        ) {
-                            habitsChecked = it
-                        }
-                    }
-                }
-                if (!workspace.isAnalyticsAdded) {
-                    item {
-                        SpaceCheckboxCard(
-                            Icons.Default.Analytics,
-                            stringResource(R.string.Analytics),
-                            analyticsChecked
-                        ) {
-                            analyticsChecked = it
-                        }
-                    }
-                }
-            }
-        },
-        onDismissRequest = onDismissRequest,
-        confirmButton = {
-            TextButton(
-                onClick = {
-                    val updated = workspace.copy(
-                        isNotesAdded = workspace.isNotesAdded || notesChecked,
-                        isTodoAdded = workspace.isTodoAdded || todoChecked,
-                        isCalendarAdded = workspace.isCalendarAdded || calendarChecked,
-                        isHabitsAdded = workspace.isHabitsAdded || habitsChecked,
-                        isEventsAdded = workspace.isEventsAdded || eventsChecked,
-                        isAnalyticsAdded = workspace.isAnalyticsAdded || analyticsChecked,
-                        isJournalAdded = workspace.isJournalAdded || journalChecked
-                    )
-                    onConfirmation(updated)
-                    onDismissRequest()
-                },
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.primary,
-                    contentColor = MaterialTheme.colorScheme.onPrimary
-                )
-            ) {
-                Text(stringResource(R.string.Confirm))
-            }
-        },
-        dismissButton = {
-            TextButton(onClick = onDismissRequest) {
-                Text(stringResource(R.string.Dismiss))
-            }
-        }
-    )
-}
-
-@Composable
-fun SpaceCheckboxCard(
-    icon: ImageVector,
-    title: String,
-    isChecked: Boolean,
-    onCheckChange: (Boolean) -> Unit
-) {
-    Card(
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 2.dp)
-            .clip(RoundedCornerShape(16.dp))
-            .clickable { onCheckChange(!isChecked) },
-        shape = RoundedCornerShape(16.dp)
-    ) {
-        Row(
-            Modifier
-                .padding(8.dp)
-                .fillMaxWidth(),
-            verticalAlignment = Alignment.CenterVertically,
-            horizontalArrangement = Arrangement.SpaceBetween
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                CircleWrapper(color = MaterialTheme.colorScheme.primary) {
-                    Icon(icon, null, tint = MaterialTheme.colorScheme.onPrimary)
-                }
-                Text(title, fontWeight = FontWeight.Bold)
-            }
-
-            Checkbox(
-                checked = isChecked,
-                onCheckedChange = onCheckChange
-            )
-        }
-    }
 }
 
 @Composable
@@ -520,7 +334,6 @@ fun TimePicker(
     onConfirm: (TimePickerState) -> Unit,
     onDismiss: () -> Unit,
 ) {
-
     val currentTime = Calendar.getInstance().apply { timeInMillis = initialTime }
 
     val timePickerState = rememberTimePickerState(
@@ -880,9 +693,7 @@ fun CustomNotificationDialog(
                         Text(unit, modifier = Modifier.padding(start = 8.dp))
                     }
                 }
-
                 Spacer(Modifier.height(16.dp))
-
                 OutlinedTextField(
                     value = amountText,
                     onValueChange = { if (it.all { c -> c.isDigit() }) amountText = it },

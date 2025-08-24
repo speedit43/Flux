@@ -22,11 +22,15 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AlarmAdd
 import androidx.compose.material.icons.filled.Create
 import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Remove
+import androidx.compose.material3.Card
+import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.FilledTonalIconButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.OutlinedButton
@@ -34,14 +38,17 @@ import androidx.compose.material3.SheetState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
+import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.graphics.Color
@@ -53,6 +60,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.flux.R
 import com.flux.data.model.HabitModel
+import com.flux.data.model.Space
+import com.flux.data.model.SpacesList
 import com.flux.data.model.WorkspaceModel
 import com.flux.other.icons
 import com.flux.other.workspaceIconList
@@ -85,7 +94,6 @@ fun HabitBottomSheet(
     ModalBottomSheet(
         sheetState = sheetState,
         onDismissRequest = onDismissRequest,
-        sheetMaxWidth = 500.dp,
         containerColor = MaterialTheme.colorScheme.surfaceContainer
     ) {
         Column(
@@ -199,7 +207,6 @@ fun HabitBottomSheet(
                 }) { Text(stringResource(R.string.Dismiss)) }
 
                 Spacer(Modifier.width(8.dp))
-
                 FilledTonalButton(
                     onClick = {
                         if (habit == null) {
@@ -218,7 +225,6 @@ fun HabitBottomSheet(
                                 ), getAdjustedTime(newHabitTime)
                             )
                         }
-
                         keyboardController?.hide()
                         onDismissRequest()
                     }, enabled = newHabitTitle.isNotBlank()
@@ -285,7 +291,6 @@ fun NewWorkspaceBottomSheet(
                 description = workspace.description
             },
             sheetState = sheetState,
-            sheetMaxWidth = 500.dp,
             containerColor = MaterialTheme.colorScheme.surfaceContainer
         ) {
             Column(
@@ -429,6 +434,121 @@ fun ChangeIconBottomSheet(
                         }
                     }
                 }
+            }
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun AddNewSpacesBottomSheet(
+    isVisible: Boolean,
+    sheetState: SheetState,
+    selectedSpaces: List<Space>,
+    onDismiss: () -> Unit,
+    onRemove: (Int) -> Unit,
+    onSelect: (Int) -> Unit
+) {
+    var showDeleteDialog by remember { mutableStateOf(false) }
+    var removeSpace by remember { mutableIntStateOf(-1) }
+    if (showDeleteDialog) {
+        DeleteAlert(onConfirmation = {
+            onRemove(removeSpace)
+            removeSpace = -1
+            showDeleteDialog = false
+        }, onDismissRequest = {
+            showDeleteDialog = false
+        })
+    }
+
+    if (isVisible) {
+        ModalBottomSheet(
+            onDismissRequest = { onDismiss() },
+            sheetState = sheetState,
+            containerColor = MaterialTheme.colorScheme.surfaceContainer
+        ) {
+            LazyColumn(Modifier.fillMaxWidth()) {
+                if (selectedSpaces.isNotEmpty()) {
+                    item {
+                        Text(
+                            "Current",
+                            modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
+                            fontWeight = FontWeight.Bold,
+                            color = MaterialTheme.colorScheme.primary
+                        )
+                    }
+                }
+                item {
+                    FlowRow(
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        selectedSpaces.forEach { space ->
+                            SpaceCard(space, true, { onSelect(space.id) }, {
+                                removeSpace = space.id
+                                showDeleteDialog = true
+                            })
+                        }
+                    }
+                }
+                if (selectedSpaces.size != SpacesList.size) {
+                    item {
+                        Text(
+                            "Available Spaces",
+                            modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
+                            fontWeight = FontWeight.Bold
+                        )
+                    }
+                }
+                item {
+                    FlowRow(
+                        modifier = Modifier.padding(horizontal = 8.dp),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        SpacesList.filterNot { id -> selectedSpaces.contains(id) }
+                            .forEach { space ->
+                                SpaceCard(space, false, { onSelect(space.id) }, { })
+                            }
+                    }
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun SpaceCard(space: Space, isSelected: Boolean, onSelect: () -> Unit, onRemove: () -> Unit) {
+    val cardContainerColor =
+        if (isSelected) MaterialTheme.colorScheme.surfaceColorAtElevation(8.dp) else MaterialTheme.colorScheme.surfaceContainerHigh
+    val cardContentColor =
+        if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.onSurface
+    val iconContainerColor =
+        if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surface
+    val iconContentColor =
+        if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurface
+
+    Card(
+        modifier = Modifier.clip(RoundedCornerShape(50)),
+        shape = RoundedCornerShape(50),
+        onClick = onSelect,
+        colors = CardDefaults.cardColors(
+            containerColor = cardContainerColor,
+            contentColor = cardContentColor
+        )
+    ) {
+        Row(verticalAlignment = Alignment.CenterVertically) {
+            IconButton(
+                onClick = onSelect,
+                colors = IconButtonDefaults.iconButtonColors(
+                    containerColor = iconContainerColor,
+                    contentColor = iconContentColor
+                )
+            ) { Icon(space.icon, null) }
+            Text(space.title, modifier = Modifier.padding(end = if (isSelected) 0.dp else 16.dp))
+            if (isSelected) {
+                IconButton(onRemove) { Icon(Icons.Default.Remove, null) }
             }
         }
     }

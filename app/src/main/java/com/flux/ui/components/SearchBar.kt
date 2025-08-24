@@ -36,12 +36,8 @@ import androidx.compose.ui.semantics.semantics
 import androidx.compose.ui.semantics.traversalIndex
 import androidx.compose.ui.unit.dp
 import com.flux.R
-import com.flux.data.model.LabelModel
-import com.flux.data.model.NotesModel
 import com.flux.data.model.WorkspaceModel
-import com.flux.ui.events.SettingEvents
 import com.flux.ui.events.WorkspaceEvents
-import com.flux.ui.state.Settings
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -116,6 +112,9 @@ fun WorkspaceSearchBar(
                                 expanded = false
                                 onClick(space)
                             },
+                            onDeleteClick = {
+
+                            },
                             onWorkspaceEvents = onWorkspaceEvents
                         )
                         if (index != searchResults.lastIndex) {
@@ -153,122 +152,6 @@ fun WorkspaceSearchInputField(
                 if (!expanded) {
                     SettingsButton(onSettingsClicked)
                 }
-            }
-        }
-    )
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun NotesSearchBar(
-    settings: Settings,
-    textFieldState: TextFieldState,
-    onSearch: (String) -> Unit,
-    searchResults: List<NotesModel>,
-    allLabels: List<LabelModel>,
-    onCloseClicked: () -> Unit,
-    onSettingsEvents: (SettingEvents) -> Unit,
-    selectedNotes: List<NotesModel>,
-    onNotesClick: (Long) -> Unit,
-    onNotesLongPress: (NotesModel) -> Unit
-) {
-    val query = textFieldState.text.toString()
-    var expanded by rememberSaveable { mutableStateOf(false) }
-    val keyboardController = LocalSoftwareKeyboardController.current
-    val radius = settings.data.cornerRadius
-    val isGridView = settings.data.isGridView
-    val filteredResults = searchResults.filter {
-        it.title.contains(
-            query,
-            ignoreCase = true
-        ) || it.description.contains(query, ignoreCase = true)
-    }
-    val pinnedNotes = filteredResults.filter { it.isPinned }
-    val unPinnedNotes = filteredResults.filter { !it.isPinned }
-
-    Box(
-        modifier = Modifier
-            .fillMaxWidth()
-            .semantics { isTraversalGroup = true }) {
-        SearchBar(
-            modifier = Modifier
-                .align(Alignment.TopCenter)
-                .wrapContentHeight()
-                .semantics { traversalIndex = 0f },
-            inputField = {
-                NotesSearchInputField(
-                    isGridView, query, expanded,
-                    {
-                        textFieldState.edit { replace(0, length, it) }
-                        onSearch(it)
-                        if (it.isBlank()) {
-                            expanded = false
-                        }
-                    }, {
-                        keyboardController?.hide()
-                        onSearch(query)
-                    }, {
-                        textFieldState.edit { replace(0, length, "") }
-                        onCloseClicked()
-                        onSearch("")
-                        expanded = false
-                    },
-                    { expanded = it },
-                    { onSettingsEvents(SettingEvents.UpdateSettings(settings.data.copy(isGridView = !isGridView))) }
-                )
-            },
-            colors = SearchBarDefaults.colors(
-                containerColor = if (expanded) MaterialTheme.colorScheme.surfaceContainerLow else MaterialTheme.colorScheme.surfaceColorAtElevation(
-                    6.dp
-                )
-            ),
-            expanded = expanded,
-            onExpandedChange = { expanded = it },
-        ) {
-            if (pinnedNotes.isEmpty() && unPinnedNotes.isEmpty()) {
-                EmptyNotes()
-            } else {
-                NotesPreviewGrid(
-                    radius,
-                    isGridView,
-                    allLabels,
-                    pinnedNotes,
-                    unPinnedNotes,
-                    selectedNotes,
-                    onNotesClick,
-                    onNotesLongPress
-                )
-            }
-        }
-    }
-}
-
-@OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun NotesSearchInputField(
-    isGridView: Boolean,
-    query: String,
-    expanded: Boolean,
-    onQueryChange: (String) -> Unit,
-    onSearch: (String) -> Unit,
-    onSearchClosed: () -> Unit,
-    onExpandedChange: (Boolean) -> Unit,
-    onGridViewChange: () -> Unit
-) {
-    SearchBarDefaults.InputField(
-        query = query,
-        onQueryChange = onQueryChange,
-        onSearch = onSearch,
-        expanded = expanded,
-        onExpandedChange = onExpandedChange,
-        placeholder = { Text(stringResource(R.string.Search_Notes)) },
-        leadingIcon = { Icon(Icons.Rounded.Search, "Search") },
-        trailingIcon = {
-            Row {
-                if (query.isNotBlank()) {
-                    CloseButton(onSearchClosed)
-                }
-                GridViewButton(isGridView, onGridViewChange)
             }
         }
     )

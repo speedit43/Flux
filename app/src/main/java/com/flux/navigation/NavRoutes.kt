@@ -1,5 +1,7 @@
 package com.flux.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavController
@@ -16,6 +18,7 @@ import com.flux.ui.screens.journal.EditJournal
 import com.flux.ui.screens.notes.EditLabels
 import com.flux.ui.screens.notes.NoteDetails
 import com.flux.ui.screens.settings.About
+import com.flux.ui.screens.settings.Backup
 import com.flux.ui.screens.settings.Contact
 import com.flux.ui.screens.settings.Customize
 import com.flux.ui.screens.settings.Languages
@@ -29,38 +32,30 @@ import com.flux.ui.viewModel.ViewModels
 import java.time.LocalDate
 
 sealed class NavRoutes(val route: String) {
-    // auth screen
     data object AuthScreen : NavRoutes("biometric")
 
-    // workspaces
     data object Workspace : NavRoutes("workspace")
     data object WorkspaceHome : NavRoutes("workspace/details")
 
-    //Labels
     data object EditLabels : NavRoutes("workspace/labels/edit")
 
-    // Notes
     data object NoteDetails : NavRoutes("workspace/note/details")
 
-    // Habits
     data object HabitDetails : NavRoutes("workspace/habit/details")
 
-    // Events
     data object EventDetails : NavRoutes("workspace/event/details")
 
-    // TodoList
     data object TodoDetail : NavRoutes("workspace/todo/details")
 
-    // Journal
     data object EditJournal : NavRoutes("workspace/journal/edit")
 
-    // Settings
     data object Settings : NavRoutes("settings")
     data object Privacy : NavRoutes("settings/privacy")
     data object Customize : NavRoutes("settings/customize")
     data object Languages : NavRoutes("settings/language")
     data object About : NavRoutes("settings/about")
     data object Contact : NavRoutes("settings/contact")
+    data object Backup : NavRoutes("setting/backup")
 
     fun withArgs(vararg args: Long): String {
         return buildString {
@@ -153,6 +148,9 @@ val SettingsScreens =
         },
         NavRoutes.Contact.route to { navController, _, states, _ ->
             Contact(navController, states.settings.data.cornerRadius)
+        },
+        NavRoutes.Backup.route to { navController, _, states, _ ->
+            Backup(navController, states.settings.data.cornerRadius)
         }
     )
 
@@ -170,6 +168,7 @@ val EventScreens =
         }
     )
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 val WorkspaceScreens =
     mapOf<String, @Composable (navController: NavController, snackbarHostState: SnackbarHostState, states: States, viewModels: ViewModels, workspaceId: Long) -> Unit>(
         NavRoutes.Workspace.route to { navController, snackbarHostState, states, viewModels, _ ->
@@ -192,15 +191,17 @@ val WorkspaceScreens =
                 states.notesState.allLabels.filter { it.workspaceId == workspaceId },
                 states.settings,
                 states.notesState.isNotesLoading,
-                states.eventState.isTodayEventLoading,
+                states.eventState.isAllEventsLoading,
                 states.eventState.isDatedEventLoading,
                 states.todoState.isLoading,
                 states.journalState.isLoading,
-                states.journalState.isLoadingMore,
+                states.habitState.isLoading,
                 states.workspaceState.allSpaces.first { it.workspaceId == workspaceId },
                 states.eventState.allEvent,
                 states.notesState.allNotes.filter { it.workspaceId == workspaceId },
-                states.eventState.todayEvents,
+                states.notesState.selectedNotes,
+                states.eventState.selectedYearMonth,
+                states.eventState.selectedDate,
                 states.eventState.datedEvents,
                 states.habitState.allHabits,
                 states.todoState.allLists,
@@ -212,7 +213,6 @@ val WorkspaceScreens =
                 viewModels.eventViewModel::onEvent,
                 viewModels.habitViewModel::onEvent,
                 viewModels.todoViewModel::onEvent,
-                viewModels.journalViewModel::onEvent,
                 viewModels.settingsViewModel::onEvent
             )
         }

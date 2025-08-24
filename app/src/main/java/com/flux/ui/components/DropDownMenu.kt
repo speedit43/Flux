@@ -1,25 +1,35 @@
 package com.flux.ui.components
 
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Notes
 import androidx.compose.material.icons.automirrored.outlined.Label
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.KeyboardDoubleArrowRight
 import androidx.compose.material.icons.filled.MoreHoriz
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material.icons.filled.PushPin
+import androidx.compose.material.icons.filled.RemoveCircleOutline
+import androidx.compose.material.icons.outlined.Analytics
+import androidx.compose.material.icons.outlined.AutoStories
+import androidx.compose.material.icons.outlined.CalendarMonth
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.material.icons.outlined.Edit
+import androidx.compose.material.icons.outlined.Event
+import androidx.compose.material.icons.outlined.EventAvailable
 import androidx.compose.material.icons.outlined.Info
 import androidx.compose.material.icons.outlined.Lock
 import androidx.compose.material.icons.outlined.LockOpen
 import androidx.compose.material.icons.outlined.PhotoSizeSelectActual
 import androidx.compose.material.icons.outlined.PushPin
-import androidx.compose.material.icons.outlined.Workspaces
+import androidx.compose.material.icons.outlined.TaskAlt
 import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.MenuDefaults
 import androidx.compose.material3.Text
@@ -30,7 +40,9 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
 import com.flux.R
+import com.flux.data.model.WorkspaceModel
 
 @Composable
 fun DropdownMenuWithDetails(
@@ -105,13 +117,100 @@ fun DropdownMenuWithDetails(
 }
 
 @Composable
+fun SpacesMenu(
+    expanded: Boolean,
+    workspace: WorkspaceModel,
+    onConfirm: (Int) -> Unit,
+    onDismiss: () -> Unit
+) {
+    val selectedSpaces = workspace.selectedSpaces
+    DropdownMenu(
+        shape = RoundedCornerShape(16.dp),
+        expanded = expanded,
+        onDismissRequest = onDismiss
+    ) {
+        if (selectedSpaces.contains(1)) {
+            DropdownMenuItem(
+                text = { Text("Notes") },
+                leadingIcon = { Icon(Icons.AutoMirrored.Default.Notes, contentDescription = null) },
+                onClick = {
+                    onConfirm(1)
+                    onDismiss()
+                }
+            )
+        }
+        if (selectedSpaces.contains(2)) {
+            DropdownMenuItem(
+                text = { Text("To-Do") },
+                leadingIcon = { Icon(Icons.Outlined.TaskAlt, contentDescription = null) },
+                onClick = {
+                    onConfirm(2)
+                    onDismiss()
+                }
+            )
+        }
+        if (selectedSpaces.contains(3)) {
+            DropdownMenuItem(
+                text = { Text("Events") },
+                leadingIcon = { Icon(Icons.Outlined.Event, contentDescription = null) },
+                onClick = {
+                    onConfirm(3)
+                    onDismiss()
+                }
+            )
+        }
+        if (selectedSpaces.contains(4)) {
+            DropdownMenuItem(
+                text = { Text("Calendar") },
+                leadingIcon = { Icon(Icons.Outlined.CalendarMonth, contentDescription = null) },
+                onClick = {
+                    onConfirm(4)
+                    onDismiss()
+                }
+            )
+        }
+        if (selectedSpaces.contains(5)) {
+            DropdownMenuItem(
+                text = { Text("Journal") },
+                leadingIcon = { Icon(Icons.Outlined.AutoStories, contentDescription = null) },
+                onClick = {
+                    onConfirm(5)
+                    onDismiss()
+                }
+            )
+        }
+        if (selectedSpaces.contains(6)) {
+            DropdownMenuItem(
+                text = { Text("Habits") },
+                leadingIcon = { Icon(Icons.Outlined.EventAvailable, contentDescription = null) },
+                onClick = {
+                    onConfirm(6)
+                    onDismiss()
+                }
+            )
+        }
+        if (selectedSpaces.contains(7)) {
+            DropdownMenuItem(
+                text = { Text("Analytics") },
+                leadingIcon = { Icon(Icons.Outlined.Analytics, contentDescription = null) },
+                onClick = {
+                    onConfirm(7)
+                    onDismiss()
+                }
+            )
+        }
+    }
+}
+
+@Composable
 fun WorkspaceMore(
     isLocked: Boolean,
+    isCoverAdded: Boolean,
     showEditLabel: Boolean,
     isPinned: Boolean,
     onEditDetails: () -> Unit,
     onEditLabel: () -> Unit,
-    onEditIcon: () -> Unit,
+    onRemoveCover: () -> Unit,
     onAddCover: () -> Unit,
     onDelete: () -> Unit,
     onTogglePinned: () -> Unit,
@@ -120,12 +219,12 @@ fun WorkspaceMore(
     var expanded by remember { mutableStateOf(false) }
 
     Box(modifier = Modifier) {
-        IconButton(onClick = { expanded = true }) {
-            Icon(
-                Icons.Default.MoreVert,
-                contentDescription = "More options"
+        IconButton(
+            onClick = { expanded = true }, colors = IconButtonDefaults.iconButtonColors(
+                containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+                contentColor = MaterialTheme.colorScheme.onSurface
             )
-        }
+        ) { Icon(Icons.Default.MoreVert, contentDescription = "More options") }
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
@@ -138,7 +237,6 @@ fun WorkspaceMore(
                     onEditDetails()
                 }
             )
-            HorizontalDivider()
             DropdownMenuItem(
                 text = { Text(if (isPinned) stringResource(R.string.Unpin) else stringResource(R.string.Pin)) },
                 leadingIcon = {
@@ -152,16 +250,6 @@ fun WorkspaceMore(
                     onTogglePinned()
                 }
             )
-            HorizontalDivider()
-            DropdownMenuItem(
-                text = { Text(stringResource(R.string.Change_Icon)) },
-                leadingIcon = { Icon(Icons.Outlined.Workspaces, contentDescription = null) },
-                onClick = {
-                    expanded = false
-                    onEditIcon()
-                }
-            )
-            HorizontalDivider()
             DropdownMenuItem(
                 text = { Text(stringResource(R.string.Change_Cover)) },
                 leadingIcon = {
@@ -175,6 +263,25 @@ fun WorkspaceMore(
                     onAddCover()
                 }
             )
+            if (isCoverAdded) {
+                DropdownMenuItem(
+                    colors = MenuDefaults.itemColors(
+                        leadingIconColor = MaterialTheme.colorScheme.error,
+                        textColor = MaterialTheme.colorScheme.error
+                    ),
+                    text = { Text("Remove Cover") },
+                    leadingIcon = {
+                        Icon(
+                            Icons.Default.RemoveCircleOutline,
+                            contentDescription = null
+                        )
+                    },
+                    onClick = {
+                        expanded = false
+                        onRemoveCover()
+                    }
+                )
+            }
 
             if (showEditLabel) {
                 HorizontalDivider()
@@ -186,13 +293,15 @@ fun WorkspaceMore(
                             contentDescription = null
                         )
                     },
+                    trailingIcon = { Icon(Icons.Default.KeyboardDoubleArrowRight, null) },
                     onClick = {
                         expanded = false
                         onEditLabel()
                     }
                 )
+                HorizontalDivider()
             }
-            HorizontalDivider()
+
             DropdownMenuItem(
                 text = {
                     Text(
@@ -212,7 +321,6 @@ fun WorkspaceMore(
                     onToggleLock()
                 }
             )
-            HorizontalDivider()
             DropdownMenuItem(
                 colors = MenuDefaults.itemColors(
                     leadingIconColor = MaterialTheme.colorScheme.error,

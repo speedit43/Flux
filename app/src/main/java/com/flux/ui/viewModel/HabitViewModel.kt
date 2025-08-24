@@ -6,6 +6,7 @@ import androidx.lifecycle.viewModelScope
 import com.flux.data.model.HabitInstanceModel
 import com.flux.data.model.HabitModel
 import com.flux.data.repository.HabitRepository
+import com.flux.other.cancelReminder
 import com.flux.other.scheduleReminder
 import com.flux.ui.events.HabitEvents
 import com.flux.ui.state.HabitState
@@ -47,12 +48,60 @@ class HabitViewModel @Inject constructor(private val repository: HabitRepository
             is HabitEvents.LoadAllInstances -> loadAllInstances(event.workspaceId)
             is HabitEvents.MarkDone -> upsertInstance(event.habitInstance)
             is HabitEvents.MarkUndone -> deleteInstance(event.habitInstance)
-            is HabitEvents.DeleteAllWorkspaceHabits -> deleteWorkspaceHabits(event.workspaceId)
+            is HabitEvents.DeleteAllWorkspaceHabits -> deleteWorkspaceHabits(
+                event.workspaceId,
+                event.context
+            )
         }
     }
 
     private fun deleteInstance(instance: HabitInstanceModel) {
         viewModelScope.launch(Dispatchers.IO) { repository.deleteInstance(instance) }
+    }
+
+    private fun upsertInstance(instance: HabitInstanceModel) {
+        viewModelScope.launch(Dispatchers.IO) { repository.upsertHabitInstance(instance) }
+    }
+
+    private fun deleteHabit(data: HabitModel) {
+        viewModelScope.launch(Dispatchers.IO) { repository.deleteHabit(data) }
+    }
+
+    private fun upsertHabit(context: Context, data: HabitModel, adjustedTime: Long) {
+        viewModelScope.launch(Dispatchers.IO) {
+            val id = repository.upsertHabit(data)
+            scheduleReminder(
+                context = context,
+                id = id,
+                type = "HABIT",
+                repeat = "DAILY",
+                timeInMillis = adjustedTime,
+                title = data.title,
+                description = data.description
+            )
+        }
+    }
+
+    private fun deleteWorkspaceHabits(workspaceId: Long, context: Context) {
+        viewModelScope.launch(Dispatchers.IO) {
+            _state.value.allHabits.forEach { habit ->
+                cancelReminder(
+                    context,
+                    habit.habitId,
+                    "HABIT",
+                    habit.title,
+                    habit.description,
+                    "DAILY"
+                )
+            }
+            repository.deleteAllWorkspaceHabit(workspaceId)
+        }
+    }
+
+    private suspend fun loadAllInstances(workspaceId: Long) {
+        updateState { it.copy(isLoading = true) }
+        repository.loadAllHabitInstance(workspaceId).distinctUntilChanged()
+            .collect { data -> updateState { it.copy(isLoading = false, allInstances = data) } }
     }
 
     private fun upsertInstance(instance: HabitInstanceModel) {

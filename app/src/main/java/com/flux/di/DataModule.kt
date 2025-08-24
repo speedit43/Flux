@@ -18,6 +18,7 @@ import com.flux.data.database.HabitDatabase
 import com.flux.data.database.HabitInstanceDatabase
 import com.flux.data.database.JournalDatabase
 import com.flux.data.database.LabelDatabase
+import com.flux.data.database.MIGRATION_2_3
 import com.flux.data.database.NotesDatabase
 import com.flux.data.database.SettingsDatabase
 import com.flux.data.database.TodoDatabase
@@ -83,7 +84,7 @@ object DataModule {
         app,
         WorkspaceDatabase::class.java,
         "WorkspaceDatabase"
-    ).build()
+    ).addMigrations(MIGRATION_2_3).build()
 
     @Singleton
     @Provides

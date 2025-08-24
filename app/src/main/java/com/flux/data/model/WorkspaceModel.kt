@@ -1,5 +1,14 @@
 package com.flux.data.model
 
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.Notes
+import androidx.compose.material.icons.filled.Analytics
+import androidx.compose.material.icons.filled.AutoStories
+import androidx.compose.material.icons.filled.CalendarMonth
+import androidx.compose.material.icons.filled.Event
+import androidx.compose.material.icons.filled.EventAvailable
+import androidx.compose.material.icons.filled.TaskAlt
+import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 
@@ -14,11 +23,21 @@ data class WorkspaceModel(
     val icon: Int = 48,
     val passKey: String = "",
     val isPinned: Boolean = false,
-    val isNotesAdded: Boolean = false,
-    val isJournalAdded: Boolean = false,
-    val isTodoAdded: Boolean = false,
-    val isEventsAdded: Boolean = false,
-    val isCalendarAdded: Boolean = false,
-    val isHabitsAdded: Boolean = false,
-    val isAnalyticsAdded: Boolean = false,
+    val selectedSpaces: List<Int> = emptyList()
+)
+
+data class Space(
+    val id: Int,
+    val title: String,
+    val icon: ImageVector
+)
+
+val SpacesList = listOf<Space>(
+    Space(1, "Notes", Icons.AutoMirrored.Default.Notes),
+    Space(2, "To-Do", Icons.Default.TaskAlt),
+    Space(3, "Events", Icons.Default.Event),
+    Space(4, "Calendar", Icons.Default.CalendarMonth),
+    Space(5, "Journal", Icons.Default.AutoStories),
+    Space(6, "Habits", Icons.Default.EventAvailable),
+    Space(7, "Analytics", Icons.Default.Analytics)
 )

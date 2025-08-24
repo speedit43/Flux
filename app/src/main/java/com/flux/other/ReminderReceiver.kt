@@ -126,7 +126,9 @@ fun scheduleReminder(
         alarmManager.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, timeInMillis, pendingIntent)
     } catch (e: SecurityException) {
         e.printStackTrace()
-        Toast.makeText(context, "Error: Failed to schedule alarm", Toast.LENGTH_LONG).show()
+        android.os.Handler(context.mainLooper).post {
+            Toast.makeText(context, "Error: Failed to schedule alarm", Toast.LENGTH_LONG).show()
+        }
     }
 }
 

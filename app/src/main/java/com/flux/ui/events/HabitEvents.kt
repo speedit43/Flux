@@ -5,7 +5,7 @@ import com.flux.data.model.HabitInstanceModel
 import com.flux.data.model.HabitModel
 
 sealed class HabitEvents {
-    data class DeleteAllWorkspaceHabits(val workspaceId: Long) : HabitEvents()
+    data class DeleteAllWorkspaceHabits(val workspaceId: Long, val context: Context) : HabitEvents()
     data class LoadAllHabits(val workspaceId: Long) : HabitEvents()
     data class LoadAllInstances(val workspaceId: Long) : HabitEvents()
     data class DeleteHabit(val habit: HabitModel) : HabitEvents()

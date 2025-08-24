@@ -13,7 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -67,8 +67,7 @@ import java.time.LocalDateTime
 import java.time.ZoneId
 import java.time.temporal.ChronoUnit
 
-@Composable
-fun Analytics(
+fun LazyListScope.analyticsItems(
     workspace: WorkspaceModel,
     radius: Int,
     allHabitInstances: List<HabitInstanceModel>,
@@ -78,14 +77,9 @@ fun Analytics(
     allEvents: List<EventModel>,
     allEventInstances: List<EventInstanceModel>
 ) {
-    if (!workspace.isNotesAdded && !workspace.isJournalAdded && !workspace.isEventsAdded && !workspace.isHabitsAdded) {
-        EmptyAnalytics()
-    }
-    LazyColumn(
-        Modifier.padding(vertical = 16.dp, horizontal = 8.dp),
-        verticalArrangement = Arrangement.spacedBy(12.dp)
-    ) {
-        if (workspace.isNotesAdded) {
+    when {
+        workspace.selectedSpaces.isEmpty() -> item { EmptyAnalytics() }
+        else -> {
             item {
                 SettingOption(
                     title = stringResource(R.string.Notes),
@@ -94,20 +88,21 @@ fun Analytics(
                     radius = shapeManager(radius = radius, isBoth = true),
                     actionType = ActionType.None
                 )
+                Spacer(Modifier.height(8.dp))
             }
-        }
-        if (workspace.isJournalAdded) {
-            item { JournalAnalytics(radius, journalEntries) }
-        }
-        if (workspace.isEventsAdded) {
+            item {
+                JournalAnalytics(radius, journalEntries)
+                Spacer(Modifier.height(8.dp))
+            }
             item {
                 ChartCirclePie(
                     radius = radius,
                     weeklyEventStats = calculateWeeklyEventStats(allEvents, allEventInstances)
                 )
+                Spacer(Modifier.height(8.dp))
             }
+            item { HabitHeatMap(radius, allHabitInstances, totalHabits) }
         }
-        if (workspace.isHabitsAdded) item { HabitHeatMap(radius, allHabitInstances, totalHabits) }
     }
 }
 
@@ -135,7 +130,6 @@ fun calculateWeeklyEventStats(
 
     fun dateRange(start: LocalDate, endInclusive: LocalDate): Sequence<LocalDate> =
         generateSequence(start) { it.plusDays(1) }.takeWhile { it <= endInclusive }
-
 
     events.forEach { event ->
         val baseDateTime = Instant.ofEpochMilli(event.startDateTime)
@@ -173,7 +167,6 @@ fun calculateWeeklyEventStats(
 
     return WeeklyEventStats(upcoming, completed, failed)
 }
-
 
 @Composable
 fun HabitHeatMap(radius: Int, allHabitInstances: List<HabitInstanceModel>, totalHabits: Int) {
@@ -546,7 +539,6 @@ fun JournalAnalyticsCard(
                 trackColor = MaterialTheme.colorScheme.primary.copy(0.35f),
                 strokeCap = StrokeCap.Round,
             )
-
             Row(
                 Modifier
                     .align(Alignment.Start)
@@ -590,7 +582,6 @@ fun JournalAnalyticsCard(
         }
     }
 }
-
 
 fun calculateWeeklyStreak(entries: List<JournalModel>): Int {
     val zoneId = ZoneId.systemDefault()

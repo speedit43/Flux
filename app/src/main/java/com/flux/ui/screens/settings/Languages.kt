@@ -57,8 +57,7 @@ fun Languages(navController: NavController, settings: Settings) {
             Modifier
                 .padding(innerPadding)
                 .padding(16.dp)
-        )
-        {
+        ) {
             item {
                 LanguageItem(
                     title = stringResource(R.string.System_language),
@@ -127,6 +126,12 @@ private fun getLanguageInfo(languageCode: String): LanguageInfo {
             displayName = "English",
             description = "Change your language to English",
             iconRes = R.drawable.english
+        )
+
+        "fr" -> LanguageInfo(
+            displayName = "Français",
+            description = "Changer la langue en français",
+            iconRes = R.drawable.french
         )
 
         "hi" -> LanguageInfo(

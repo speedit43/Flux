@@ -13,7 +13,7 @@ import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.ExtendedFloatingActionButton
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
@@ -40,6 +40,7 @@ import androidx.navigation.NavController
 import com.flux.R
 import com.flux.data.model.WorkspaceModel
 import com.flux.navigation.NavRoutes
+import com.flux.ui.components.DeleteAlert
 import com.flux.ui.components.EmptySpaces
 import com.flux.ui.components.NewWorkspaceBottomSheet
 import com.flux.ui.components.PinnedSpacesCard
@@ -71,6 +72,8 @@ fun WorkSpaces(
 ) {
     var query by rememberSaveable { mutableStateOf("") }
     var addWorkspace by remember { mutableStateOf(false) }
+    var selectedWorkspace by remember { mutableStateOf<WorkspaceModel?>(null) }
+    var showDeleteAlert by remember { mutableStateOf(false) }
     var lockedWorkspace by remember { mutableStateOf<WorkspaceModel?>(null) }
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
@@ -83,11 +86,10 @@ fun WorkSpaces(
                 onNotesEvents(NotesEvents.LoadAllLabels(it.workspaceId))
                 onTaskEvents(TaskEvents.LoadAllInstances(it.workspaceId))
                 onTaskEvents(TaskEvents.LoadAllTask(it.workspaceId))
-                onTaskEvents(TaskEvents.LoadTodayTask(it.workspaceId))
                 onHabitEvents(HabitEvents.LoadAllHabits(it.workspaceId))
                 onHabitEvents(HabitEvents.LoadAllInstances(it.workspaceId))
                 onTodoEvents(TodoEvents.LoadAllLists(it.workspaceId))
-                onJournalEvents(JournalEvents.LoadInitialEntries(it.workspaceId))
+                onJournalEvents(JournalEvents.LoadJournalEntries(it.workspaceId))
                 navController.navigate(NavRoutes.WorkspaceHome.withArgs(it.workspaceId))
             } else {
                 Toast.makeText(context, "Wrong Passkey", Toast.LENGTH_SHORT).show()
@@ -103,24 +105,42 @@ fun WorkSpaces(
             onNotesEvents(NotesEvents.LoadAllLabels(space.workspaceId))
             onTaskEvents(TaskEvents.LoadAllInstances(space.workspaceId))
             onTaskEvents(TaskEvents.LoadAllTask(space.workspaceId))
-            onTaskEvents(TaskEvents.LoadTodayTask(space.workspaceId))
             onHabitEvents(HabitEvents.LoadAllHabits(space.workspaceId))
             onHabitEvents(HabitEvents.LoadAllInstances(space.workspaceId))
             onTodoEvents(TodoEvents.LoadAllLists(space.workspaceId))
-            onJournalEvents(JournalEvents.LoadInitialEntries(space.workspaceId))
+            onJournalEvents(JournalEvents.LoadJournalEntries(space.workspaceId))
             navController.navigate(NavRoutes.WorkspaceHome.withArgs(space.workspaceId))
         }
     }
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surfaceContainerLow,
+        topBar = {
+            WorkspaceSearchBar(
+                textFieldState = TextFieldState(query),
+                onSearch = { query = it },
+                searchResults = allSpaces.filter {
+                    it.title.contains(query, ignoreCase = true) || it.description.contains(
+                        query,
+                        ignoreCase = true
+                    )
+                },
+                onSettingsClicked = { navController.navigate(NavRoutes.Settings.route) },
+                onCloseClicked = { query = "" },
+                onWorkspaceEvents = onWorkSpaceEvents,
+                onClick = { space -> handleWorkspaceClick(space) }
+            )
+        },
         floatingActionButton = {
-            FloatingActionButton(onClick = { addWorkspace = true }) {
-                Icon(
-                    Icons.Default.Add,
-                    null
-                )
-            }
+            ExtendedFloatingActionButton(
+                onClick = { addWorkspace = true },
+                icon = { Icon(Icons.Default.Add, null) },
+                text = {
+                    Text(
+                        "New",
+                        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
+                    )
+                })
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { innerPadding ->
@@ -128,21 +148,6 @@ fun WorkSpaces(
             EmptySpaces()
         } else {
             Column(Modifier.padding(innerPadding)) {
-                WorkspaceSearchBar(
-                    textFieldState = TextFieldState(query),
-                    onSearch = { query = it },
-                    searchResults = allSpaces.filter {
-                        it.title.contains(
-                            query,
-                            ignoreCase = true
-                        ) || it.description.contains(query, ignoreCase = true)
-                    },
-                    onSettingsClicked = { navController.navigate(NavRoutes.Settings.route) },
-                    onCloseClicked = { query = "" },
-                    onWorkspaceEvents = onWorkSpaceEvents,
-                    onClick = { space -> handleWorkspaceClick(space) }
-                )
-
                 LazyColumn {
                     if (allSpaces.any { it.isPinned }) {
                         item {
@@ -178,7 +183,9 @@ fun WorkSpaces(
                             shape = shapeManager(radius = radius * 2),
                             modifier = Modifier.padding(16.dp),
                             colors = CardDefaults.elevatedCardColors(
-                                containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(6.dp)
+                                containerColor = MaterialTheme.colorScheme.surfaceColorAtElevation(
+                                    6.dp
+                                )
                             )
                         ) {
                             Column {
@@ -186,6 +193,10 @@ fun WorkSpaces(
                                     WorkSpacesCard(
                                         workspace = space,
                                         onClick = { handleWorkspaceClick(space) },
+                                        onDeleteClick = {
+                                            selectedWorkspace = space
+                                            showDeleteAlert = true
+                                        },
                                         onWorkspaceEvents = onWorkSpaceEvents
                                     )
                                     if (index != allSpaces.lastIndex) {
@@ -197,8 +208,22 @@ fun WorkSpaces(
                     }
                 }
             }
-
         }
+    }
+
+    if (showDeleteAlert) {
+        DeleteAlert(onDismissRequest = {
+            showDeleteAlert = false
+            selectedWorkspace = null
+        }, onConfirmation = {
+            val workspace = selectedWorkspace!!
+            showDeleteAlert = false
+            onWorkSpaceEvents(WorkspaceEvents.DeleteSpace(workspace))
+            onNotesEvents(NotesEvents.DeleteAllWorkspaceNotes(workspace.workspaceId))
+            onTodoEvents(TodoEvents.DeleteAllWorkspaceLists(workspace.workspaceId))
+            onTaskEvents(TaskEvents.DeleteAllWorkspaceEvents(workspace.workspaceId, context))
+            onHabitEvents(HabitEvents.DeleteAllWorkspaceHabits(workspace.workspaceId, context))
+        })
     }
 
     NewWorkspaceBottomSheet(isVisible = addWorkspace, sheetState = sheetState, onDismiss = {

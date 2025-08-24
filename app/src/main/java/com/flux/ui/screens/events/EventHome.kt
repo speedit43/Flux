@@ -5,15 +5,15 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyListScope
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CheckCircle
 import androidx.compose.material.icons.filled.RadioButtonUnchecked
@@ -48,14 +48,15 @@ import com.flux.ui.events.TaskEvents
 import com.flux.ui.theme.completed
 import com.flux.ui.theme.pending
 import java.text.SimpleDateFormat
+import java.time.Instant
 import java.time.LocalDate
+import java.time.ZoneId
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
 @OptIn(ExperimentalMaterial3Api::class)
-@Composable
-fun EventHome(
+fun LazyListScope.eventHomeItems(
     navController: NavController,
     radius: Int,
     isLoading: Boolean,
@@ -64,86 +65,107 @@ fun EventHome(
     workspaceId: Long,
     onTaskEvents: (TaskEvents) -> Unit
 ) {
-    if (isLoading) {
-        Loader()
-    } else if (allEvents.isEmpty()) {
-        EmptyEvents()
-    } else {
+    if (isLoading) item { Loader() }
+    else if (allEvents.isEmpty()) item { EmptyEvents() }
+    else {
         val today = LocalDate.now()
 
-        val pendingTasks = allEvents.filter { event ->
-            val instance =
-                allEventInstances.find { it.eventId == event.eventId && it.instanceDate == today }
-            instance == null || instance.status == EventStatus.PENDING
-        }
-
-        val completedTasks = allEvents.filter { event ->
-            val instance =
-                allEventInstances.find { it.eventId == event.eventId && it.instanceDate == today }
-            instance != null && instance.status == EventStatus.COMPLETED
-        }
-
-        Column(
-            modifier = Modifier
-                .padding(top = 24.dp, end = 8.dp)
-                .verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            if (pendingTasks.isNotEmpty()) {
-                pendingTasks.forEach { event ->
-                    val instance =
-                        allEventInstances.find { it.eventId == event.eventId && it.instanceDate == today }
-                            ?: EventInstanceModel(
-                                eventId = event.eventId,
-                                instanceDate = today,
-                                workspaceId = workspaceId
-                            )
-
-                    EventCard(
-                        radius = radius,
-                        isAllDay = event.isAllDay,
-                        eventInstance = instance,
-                        title = event.title,
-                        timeline = event.startDateTime,
-                        description = event.description,
-                        repeat = event.repetition,
-                        onChangeStatus = { onTaskEvents(TaskEvents.ToggleStatus(it)) },
-                        onClick = {
-                            navController.navigate(
-                                NavRoutes.EventDetails.withArgs(
-                                    workspaceId,
-                                    event.eventId
-                                )
-                            )
-                        }
-                    )
-                }
+        val todayEvents = allEvents
+            .filter { it.startDateTime.toLocalDate() == today }
+            .sortedBy { event ->
+                allEventInstances
+                    .find { it.eventId == event.eventId && it.instanceDate == today }
+                    ?.status == EventStatus.COMPLETED
             }
 
-            if (completedTasks.isNotEmpty()) {
-                completedTasks.forEach { event ->
-                    val instance =
-                        allEventInstances.find { it.eventId == event.eventId && it.instanceDate == today }!!
+        val upcomingEvents = allEvents
+            .filter { it.startDateTime.toLocalDate() > today }
+            .sortedBy { event ->
+                allEventInstances
+                    .find { it.eventId == event.eventId && it.instanceDate == today }
+                    ?.status == EventStatus.COMPLETED
+            }
 
-                    EventCard(
-                        radius = radius,
-                        isAllDay = event.isAllDay,
-                        eventInstance = instance,
-                        title = event.title,
-                        timeline = event.startDateTime,
-                        description = event.description,
-                        repeat = event.repetition,
-                        onChangeStatus = { onTaskEvents(TaskEvents.ToggleStatus(it)) },
-                        onClick = {
-                            navController.navigate(
-                                NavRoutes.EventDetails.withArgs(
-                                    workspaceId,
-                                    event.eventId
-                                )
+        if (todayEvents.isNotEmpty()) {
+            item {
+                Text(
+                    text = stringResource(R.string.Today),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            }
+
+            items(todayEvents) { event ->
+                val instance =
+                    allEventInstances.find { it.eventId == event.eventId && it.instanceDate == today }
+                        ?: EventInstanceModel(
+                            eventId = event.eventId,
+                            instanceDate = today,
+                            workspaceId = workspaceId
+                        )
+
+                EventCard(
+                    radius = radius,
+                    isAllDay = event.isAllDay,
+                    eventInstance = instance,
+                    title = event.title,
+                    timeline = event.startDateTime,
+                    description = event.description,
+                    repeat = event.repetition,
+                    onChangeStatus = { onTaskEvents(TaskEvents.ToggleStatus(it)) },
+                    onClick = {
+                        navController.navigate(
+                            NavRoutes.EventDetails.withArgs(
+                                workspaceId,
+                                event.eventId
                             )
-                        }
-                    )
-                }
+                        )
+                    }
+                )
+                Spacer(Modifier.height(8.dp))
+            }
+        }
+        if (upcomingEvents.isNotEmpty()) {
+            item {
+                Text(
+                    text = stringResource(R.string.Upcoming),
+                    style = MaterialTheme.typography.titleLarge,
+                    fontWeight = FontWeight.Bold,
+                    color = MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(vertical = 8.dp)
+                )
+            }
+
+            items(upcomingEvents) { event ->
+                val instance =
+                    allEventInstances.find { it.eventId == event.eventId && it.instanceDate == today }
+                        ?: EventInstanceModel(
+                            eventId = event.eventId,
+                            instanceDate = today,
+                            workspaceId = workspaceId
+                        )
+
+                EventCard(
+                    radius = radius,
+                    isAllDay = event.isAllDay,
+                    eventInstance = instance,
+                    title = event.title,
+                    timeline = event.startDateTime,
+                    description = event.description,
+                    repeat = event.repetition,
+                    onChangeStatus = { onTaskEvents(TaskEvents.ToggleStatus(it)) },
+                    onClick = {
+                        navController.navigate(
+                            NavRoutes.EventDetails.withArgs(
+                                workspaceId,
+                                event.eventId
+                            )
+                        )
+                    }
+                )
+                Spacer(Modifier.height(8.dp))
             }
         }
     }
@@ -152,7 +174,9 @@ fun EventHome(
 @Composable
 fun EmptyEvents() {
     Column(
-        modifier = Modifier.fillMaxSize(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(24.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
@@ -294,7 +318,6 @@ fun Long.toFormattedDate(): String {
     return format.format(date)
 }
 
-
 fun Long.toFormattedDateTime(): String {
     val date = Date(this)
     val format = SimpleDateFormat("dd MMM, yyyy  'at' hh:mm a", Locale.getDefault())
@@ -341,4 +364,10 @@ private fun getDayOfMonthSuffix(day: Int): String {
             else -> "th"
         }
     }
+}
+
+fun Long.toLocalDate(): LocalDate {
+    return Instant.ofEpochMilli(this)
+        .atZone(ZoneId.systemDefault())
+        .toLocalDate()
 }

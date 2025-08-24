@@ -13,4 +13,8 @@ sealed class NotesEvents {
     data class UpsertNote(val data: NotesModel) : NotesEvents()
     data class DeleteLabel(val data: LabelModel) : NotesEvents()
     data class UpsertLabel(val data: LabelModel) : NotesEvents()
+    data class SelectNotes(val noteId: Long) : NotesEvents()
+    data class UnSelectNotes(val noteId: Long) : NotesEvents()
+    data object ClearSelection : NotesEvents()
+    data object SelectAllNotes : NotesEvents()
 }

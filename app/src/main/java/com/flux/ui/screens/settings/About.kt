@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.rounded.Article
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.rounded.Code
 import androidx.compose.material.icons.rounded.DeveloperMode
@@ -85,6 +86,16 @@ fun About(navController: NavController, radius: Int) {
 
             item {
                 SettingOption(
+                    title = "License",
+                    description = "GPL-3.0 Only",
+                    icon = Icons.AutoMirrored.Rounded.Article,
+                    radius = shapeManager(radius = radius),
+                    actionType = ActionType.None
+                )
+            }
+
+            item {
+                SettingOption(
                     title = stringResource(R.string.Source_Code),
                     description = stringResource(R.string.Github_Repository),
                     icon = Icons.Rounded.Code,
@@ -102,4 +113,3 @@ fun About(navController: NavController, radius: Int) {
         }
     }
 }
-
