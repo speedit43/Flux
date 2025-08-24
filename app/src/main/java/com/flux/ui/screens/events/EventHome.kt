@@ -47,7 +47,9 @@ import com.flux.ui.events.TaskEvents
 import com.flux.ui.theme.completed
 import com.flux.ui.theme.pending
 import java.text.SimpleDateFormat
+import java.time.Instant
 import java.time.LocalDate
+import java.time.ZoneId
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
@@ -67,57 +69,77 @@ fun LazyListScope.eventHomeItems(
     else {
         val today = LocalDate.now()
 
-        val pendingTasks = allEvents.filter { event ->
-            val instance = allEventInstances.find { it.eventId == event.eventId && it.instanceDate == today }
-            instance == null || instance.status== EventStatus.PENDING
-        }
-
-        val completedTasks = allEvents.filter { event ->
-            val instance = allEventInstances.find { it.eventId == event.eventId && it.instanceDate == today }
-            instance != null && instance.status== EventStatus.COMPLETED
-        }
-
-        if (pendingTasks.isNotEmpty()) {
-            items(pendingTasks) { event ->
-
-                val instance =
-                    allEventInstances.find { it.eventId == event.eventId && it.instanceDate == today }
-                        ?: EventInstanceModel(
-                            eventId = event.eventId,
-                            instanceDate = today,
-                            workspaceId = workspaceId
-                        )
-
-                EventCard(
-                    radius = radius,
-                    isAllDay = event.isAllDay,
-                    eventInstance = instance,
-                    title = event.title,
-                    timeline = event.startDateTime,
-                    description = event.description,
-                    repeat = event.repetition,
-                    onChangeStatus = { onTaskEvents(TaskEvents.ToggleStatus(it)) },
-                    onClick = { navController.navigate(NavRoutes.EventDetails.withArgs(workspaceId, event.eventId)) }
-                )
+        val todayEvents = allEvents
+            .filter { it.startDateTime.toLocalDate() == today }
+            .sortedBy { event ->
+                allEventInstances
+                    .find { it.eventId == event.eventId && it.instanceDate == today }
+                    ?.status == EventStatus.COMPLETED
             }
-        }
 
-        if (completedTasks.isNotEmpty()) {
-            items(completedTasks) { event ->
-                val instance =
-                    allEventInstances.find { it.eventId == event.eventId && it.instanceDate == today }!!
-
-                EventCard(
-                    radius = radius,
-                    isAllDay = event.isAllDay,
-                    eventInstance = instance,
-                    title = event.title,
-                    timeline = event.startDateTime,
-                    description = event.description,
-                    repeat = event.repetition,
-                    onChangeStatus = { onTaskEvents(TaskEvents.ToggleStatus(it)) },
-                    onClick = { navController.navigate(NavRoutes.EventDetails.withArgs(workspaceId, event.eventId)) }
+        val upcomingEvents = allEvents
+            .filter { it.startDateTime.toLocalDate() > today }
+            .sortedBy { event ->
+                allEventInstances
+                    .find { it.eventId == event.eventId && it.instanceDate == today }
+                    ?.status == EventStatus.COMPLETED
+            }
+            
+        Column(
+            modifier = Modifier.padding(top = 24.dp, end = 8.dp).verticalScroll(rememberScrollState()),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            if (todayEvents.isNotEmpty()) {
+                Text(
+                    text = stringResource(R.string.Today),
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
                 )
+
+                todayEvents.forEach { event ->
+                    val instance = allEventInstances.find { it.eventId == event.eventId && it.instanceDate == today }
+                        ?: EventInstanceModel(eventId = event.eventId, instanceDate = today, workspaceId = workspaceId)
+
+                    EventCard(
+                        radius = radius,
+                        isAllDay = event.isAllDay,
+                        eventInstance = instance,
+                        title = event.title,
+                        timeline = event.startDateTime,
+                        description = event.description,
+                        repeat = event.repetition,
+                        onChangeStatus = { onTaskEvents(TaskEvents.ToggleStatus(it)) },
+                        onClick = { navController.navigate(NavRoutes.EventDetails.withArgs(workspaceId, event.eventId)) }
+                    )
+                }
+            }
+            if (upcomingEvents.isNotEmpty()) {
+                Text(
+                    text = stringResource(R.string.Upcoming),
+                    style = MaterialTheme.typography.headlineSmall,
+                    fontWeight = FontWeight.Bold,
+                    modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp)
+                )
+
+                upcomingEvents.forEach { event ->
+                    val instance = allEventInstances.find { it.eventId == event.eventId && it.instanceDate == today }
+                        ?: EventInstanceModel(eventId = event.eventId, instanceDate = today, workspaceId = workspaceId)
+
+                    EventCard(
+                        radius = radius,
+                        isAllDay = event.isAllDay,
+                        eventInstance = instance,
+                        title = event.title,
+                        timeline = event.startDateTime,
+                        description = event.description,
+                        repeat = event.repetition,
+                        onChangeStatus = { onTaskEvents(TaskEvents.ToggleStatus(it)) },
+                        onClick = {
+                            navController.navigate(NavRoutes.EventDetails.withArgs(workspaceId, event.eventId))
+                        }
+                    )
+                }
             }
         }
     }
@@ -210,18 +232,18 @@ fun EventCard(
                     Text(title, style = MaterialTheme.typography.titleMedium)
                     Row(Modifier.padding(vertical = 2.dp), verticalAlignment = Alignment.CenterVertically) {
                         if(repeat!= Repetition.NONE){
-                                Row(
-                                    modifier = Modifier.padding(end = 6.dp),
-                                    verticalAlignment = Alignment.CenterVertically,
-                                    horizontalArrangement = Arrangement.spacedBy(2.dp),
-                                ) {
-                                    Icon(Icons.Default.Repeat, null, modifier = Modifier.size(15.dp))
-                                    Text(
-                                        repeat.toString(),
-                                        style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
-                                        modifier = Modifier.alpha(0.9f)
-                                    )
-                                }
+                            Row(
+                                modifier = Modifier.padding(end = 6.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(2.dp),
+                            ) {
+                                Icon(Icons.Default.Repeat, null, modifier = Modifier.size(15.dp))
+                                Text(
+                                    repeat.toString(),
+                                    style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.SemiBold),
+                                    modifier = Modifier.alpha(0.9f)
+                                )
+                            }
 
                         }
                         Text(
@@ -309,4 +331,10 @@ private fun getDayOfMonthSuffix(day: Int): String {
             else -> "th"
         }
     }
+}
+
+fun Long.toLocalDate(): LocalDate {
+    return Instant.ofEpochMilli(this)
+        .atZone(ZoneId.systemDefault())
+        .toLocalDate()
 }
