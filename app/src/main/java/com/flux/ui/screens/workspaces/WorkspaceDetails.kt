@@ -89,7 +89,7 @@ fun WorkspaceDetails(
     allLabels: List<LabelModel>,
     settings: Settings,
     isNotesLoading: Boolean,
-    isTodayTaskLoading: Boolean,
+    isAllEventsLoading: Boolean,
     isDatedTaskLoading: Boolean,
     isTodoLoading: Boolean,
     isJournalEntriesLoading: Boolean,
@@ -188,6 +188,7 @@ fun WorkspaceDetails(
                                 onSearch = { query=it },
                                 onChangeView = { onSettingEvents(SettingEvents.UpdateSettings(settings.data.copy(isGridView = !settings.data.isGridView))) })
                         }
+
                         if (SpacesList.first { it.id == selectedSpaceId.intValue }.title == "Journal") { JournalToolBar(navController, workspaceId) }
                         if (SpacesList.first { it.id == selectedSpaceId.intValue }.title == "To-Do") { TodoToolBar(navController, workspaceId) }
                         if (SpacesList.first { it.id == selectedSpaceId.intValue }.title == "Calendar") { CalenderToolBar(settings.data.isCalenderMonthlyView, onClick = { onSettingEvents(SettingEvents.UpdateSettings(settings.data.copy(isCalenderMonthlyView = it)))}) }
@@ -214,7 +215,7 @@ fun WorkspaceDetails(
                 todoHomeItems(navController, radius, allLists, workspaceId, isTodoLoading, onTodoEvents)
             }
             if (SpacesList.first { it.id == selectedSpaceId.intValue }.title == "Events") {
-                eventHomeItems(navController, radius, isTodayTaskLoading, todayEvents, allEventInstances, workspaceId, onTaskEvents)
+                eventHomeItems(navController, radius, isAllEventsLoading, allEvents, allEventInstances, workspaceId, onTaskEvents)
             }
         }
     }
