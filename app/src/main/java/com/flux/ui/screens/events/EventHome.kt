@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -84,62 +85,87 @@ fun LazyListScope.eventHomeItems(
                     .find { it.eventId == event.eventId && it.instanceDate == today }
                     ?.status == EventStatus.COMPLETED
             }
-            
-        Column(
-            modifier = Modifier.padding(top = 24.dp, end = 8.dp).verticalScroll(rememberScrollState()),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            if (todayEvents.isNotEmpty()) {
+
+        if (todayEvents.isNotEmpty()) {
+            item {
                 Text(
                     text = stringResource(R.string.Today),
-                    style = MaterialTheme.typography.headlineSmall,
+                    style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(start = 16.dp, bottom = 8.dp)
+                    color= MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(vertical = 8.dp)
                 )
-
-                todayEvents.forEach { event ->
-                    val instance = allEventInstances.find { it.eventId == event.eventId && it.instanceDate == today }
-                        ?: EventInstanceModel(eventId = event.eventId, instanceDate = today, workspaceId = workspaceId)
-
-                    EventCard(
-                        radius = radius,
-                        isAllDay = event.isAllDay,
-                        eventInstance = instance,
-                        title = event.title,
-                        timeline = event.startDateTime,
-                        description = event.description,
-                        repeat = event.repetition,
-                        onChangeStatus = { onTaskEvents(TaskEvents.ToggleStatus(it)) },
-                        onClick = { navController.navigate(NavRoutes.EventDetails.withArgs(workspaceId, event.eventId)) }
-                    )
-                }
             }
-            if (upcomingEvents.isNotEmpty()) {
+
+            items(todayEvents) { event ->
+                val instance =
+                    allEventInstances.find { it.eventId == event.eventId && it.instanceDate == today }
+                        ?: EventInstanceModel(
+                            eventId = event.eventId,
+                            instanceDate = today,
+                            workspaceId = workspaceId
+                        )
+
+                EventCard(
+                    radius = radius,
+                    isAllDay = event.isAllDay,
+                    eventInstance = instance,
+                    title = event.title,
+                    timeline = event.startDateTime,
+                    description = event.description,
+                    repeat = event.repetition,
+                    onChangeStatus = { onTaskEvents(TaskEvents.ToggleStatus(it)) },
+                    onClick = {
+                        navController.navigate(
+                            NavRoutes.EventDetails.withArgs(
+                                workspaceId,
+                                event.eventId
+                            )
+                        )
+                    }
+                )
+                Spacer(Modifier.height(8.dp))
+            }
+        }
+        if (upcomingEvents.isNotEmpty()) {
+            item {
                 Text(
                     text = stringResource(R.string.Upcoming),
-                    style = MaterialTheme.typography.headlineSmall,
+                    style = MaterialTheme.typography.titleLarge,
                     fontWeight = FontWeight.Bold,
-                    modifier = Modifier.padding(start = 16.dp, top = 8.dp, bottom = 8.dp)
+                    color= MaterialTheme.colorScheme.primary,
+                    modifier = Modifier.padding(vertical = 8.dp)
                 )
+            }
 
-                upcomingEvents.forEach { event ->
-                    val instance = allEventInstances.find { it.eventId == event.eventId && it.instanceDate == today }
-                        ?: EventInstanceModel(eventId = event.eventId, instanceDate = today, workspaceId = workspaceId)
+            items(upcomingEvents) { event ->
+                val instance =
+                    allEventInstances.find { it.eventId == event.eventId && it.instanceDate == today }
+                        ?: EventInstanceModel(
+                            eventId = event.eventId,
+                            instanceDate = today,
+                            workspaceId = workspaceId
+                        )
 
-                    EventCard(
-                        radius = radius,
-                        isAllDay = event.isAllDay,
-                        eventInstance = instance,
-                        title = event.title,
-                        timeline = event.startDateTime,
-                        description = event.description,
-                        repeat = event.repetition,
-                        onChangeStatus = { onTaskEvents(TaskEvents.ToggleStatus(it)) },
-                        onClick = {
-                            navController.navigate(NavRoutes.EventDetails.withArgs(workspaceId, event.eventId))
-                        }
-                    )
-                }
+                EventCard(
+                    radius = radius,
+                    isAllDay = event.isAllDay,
+                    eventInstance = instance,
+                    title = event.title,
+                    timeline = event.startDateTime,
+                    description = event.description,
+                    repeat = event.repetition,
+                    onChangeStatus = { onTaskEvents(TaskEvents.ToggleStatus(it)) },
+                    onClick = {
+                        navController.navigate(
+                            NavRoutes.EventDetails.withArgs(
+                                workspaceId,
+                                event.eventId
+                            )
+                        )
+                    }
+                )
+                Spacer(Modifier.height(8.dp))
             }
         }
     }
@@ -148,7 +174,9 @@ fun LazyListScope.eventHomeItems(
 @Composable
 fun EmptyEvents(){
     Column(
-        modifier = Modifier.fillMaxWidth().padding(24.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(24.dp),
         verticalArrangement = Arrangement.Center,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {

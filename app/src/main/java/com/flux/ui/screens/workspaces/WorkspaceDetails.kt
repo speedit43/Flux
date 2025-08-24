@@ -100,7 +100,6 @@ fun WorkspaceDetails(
     selectedNotes: List<Long>,
     selectedYearMonth: YearMonth,
     selectedDate: LocalDate,
-    todayEvents: List<EventModel>,
     datedEvents: List<EventModel>,
     allHabits: List<HabitModel>,
     allLists: List<TodoModel>,

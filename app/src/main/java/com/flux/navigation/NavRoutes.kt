@@ -168,7 +168,6 @@ val WorkspaceScreens =
                 states.notesState.selectedNotes,
                 states.eventState.selectedYearMonth,
                 states.eventState.selectedDate,
-                states.eventState.todayEvents,
                 states.eventState.datedEvents,
                 states.habitState.allHabits,
                 states.todoState.allLists,

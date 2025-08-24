@@ -43,7 +43,6 @@ class EventViewModel @Inject constructor (
             is TaskEvents.DeleteTask -> deleteEvent(event.taskEvent)
             is TaskEvents.UpsertTask -> upsertEvent(event.context, event.taskEvent, event.adjustedTime)
             is TaskEvents.ToggleStatus -> toggleStatus(event.taskInstance)
-            is TaskEvents.LoadTodayTask -> loadTodayEvents(event.workspaceId)
             is TaskEvents.LoadDateTask -> loadDateEvents(event.workspaceId, event.selectedDate)
             is TaskEvents.LoadAllTask -> loadAllEvents(event.workspaceId)
             is TaskEvents.LoadAllInstances -> loadAllEventsInstances(event.workspaceId)
@@ -82,7 +81,8 @@ class EventViewModel @Inject constructor (
         viewModelScope.launch(Dispatchers.IO) {
             _state.value.allEvent.forEach { event-> cancelReminder(context, event.eventId, "EVENT", event.title, event.description, event.repetition.toString()) }
             repository.deleteAllWorkspaceEvent(workspaceId)
-        } }
+        }
+    }
     private fun filterEventsByDate(
         events: List<EventModel>,
         date: LocalDate
@@ -114,16 +114,6 @@ class EventViewModel @Inject constructor (
             .collect { events -> onEvents(events) }
     }
 
-    private suspend fun loadTodayEvents(workspaceId: Long) {
-        val today = LocalDate.now()
-        safeUpdateState { it.copy(isTodayEventLoading = true) }
-
-        collectWorkspaceEvents(workspaceId) { events ->
-            val filtered = filterEventsByDate(events, today)
-            safeUpdateState { it.copy(isTodayEventLoading = false, todayEvents = filtered) }
-        }
-    }
-
     private suspend fun loadDateEvents(workspaceId: Long, date: LocalDate) {
         safeUpdateState { it.copy(isDatedEventLoading = true) }
 
@@ -142,13 +132,12 @@ class EventViewModel @Inject constructor (
     }
 
     private suspend fun loadAllEventsInstances(workspaceId: Long) {
-        safeUpdateState { it.copy(isTodayEventLoading = true, isDatedEventLoading = true) }
+        safeUpdateState { it.copy(isDatedEventLoading = true) }
         repository.loadAllEventInstances(workspaceId)
             .distinctUntilChanged()
             .collect { data ->
                 safeUpdateState {
                     it.copy(
-                        isTodayEventLoading = false,
                         isDatedEventLoading = false,
                         allEventInstances = data
                     )
