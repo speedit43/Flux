@@ -301,7 +301,7 @@ fun EventDetails(
                     )
                     if (!checked) {
                         Text(
-                            convertMillisToTime(selectedDateTime),
+                            convertMillisToTime(selectedDateTime, settings.data.is24HourFormat),
                             modifier = Modifier
                                 .clickable { showTimePicker = true }
                                 .padding(4.dp)
