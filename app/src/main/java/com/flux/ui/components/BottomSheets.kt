@@ -183,7 +183,7 @@ fun HabitBottomSheet(
                     )
 
                     Text(
-                        text = newHabitTime.toFormattedTime(),
+                        text = newHabitTime.toFormattedTime(settings.data.is24HourFormat),
                         style = MaterialTheme.typography.titleLarge
                     )
                 }

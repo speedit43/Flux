@@ -159,6 +159,8 @@
     <string name="enterPasskey">Entrer le code secret</string>
     <string name="Amount">Montant</string>
     <string name="Today">Aujourd\'hui</string>
+    <string name="at">à</string>
+    <string name="on">le</string>
 
     <!-- Calender -->
     <string name="Calender">Calendrier</string>

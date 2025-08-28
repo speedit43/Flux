@@ -303,6 +303,7 @@ fun WorkspaceDetails(
                     workspace.workspaceId,
                     allHabits,
                     allHabitInstances,
+                    settings,
                     onHabitEvents
                 )
             }
@@ -365,6 +366,7 @@ fun WorkspaceDetails(
                     isAllEventsLoading,
                     allEvents,
                     allEventInstances,
+                    settings,
                     workspaceId,
                     onTaskEvents
                 )
