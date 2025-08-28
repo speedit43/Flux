@@ -439,6 +439,7 @@ fun WorkspaceDetails(
     HabitBottomSheet(
         isVisible = showHabitDialog,
         sheetState = sheetState,
+        settings = settings,
         onDismissRequest = {
             scope.launch { sheetState.hide() }.invokeOnCompletion { showHabitDialog = false }
         },

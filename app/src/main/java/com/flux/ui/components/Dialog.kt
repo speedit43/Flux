@@ -322,8 +322,9 @@ fun convertMillisToDate(millis: Long): String {
     return formatter.format(Date(millis))
 }
 
-fun convertMillisToTime(millis: Long): String {
-    val formatter = SimpleDateFormat("hh:mm a", Locale.getDefault())
+fun convertMillisToTime(millis: Long, is24Hour: Boolean = false): String {
+    val pattern = if (is24Hour) "HH:mm" else "hh:mm a"
+    val formatter = SimpleDateFormat(pattern, Locale.getDefault())
     return formatter.format(Date(millis))
 }
 
@@ -331,6 +332,7 @@ fun convertMillisToTime(millis: Long): String {
 @Composable
 fun TimePicker(
     initialTime: Long,
+    is24Hour: Boolean = false,
     onConfirm: (TimePickerState) -> Unit,
     onDismiss: () -> Unit,
 ) {
@@ -339,7 +341,7 @@ fun TimePicker(
     val timePickerState = rememberTimePickerState(
         initialHour = currentTime.get(Calendar.HOUR_OF_DAY),
         initialMinute = currentTime.get(Calendar.MINUTE),
-        is24Hour = false,
+        is24Hour = is24Hour,
     )
 
     var showDial by remember { mutableStateOf(true) }
