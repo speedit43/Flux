@@ -56,6 +56,8 @@
     <string name="Developer_Name">Ronit Chinda</string>
     <string name="Source_Code">Source Code</string>
     <string name="Github_Repository">Github Repository</string>
+    <string name="Hour_Format_24">24-Hour Format</string>
+    <string name="Hour_Format_24_Desc">Use 24-hour time format</string>
 
     <!-- Common -->
     <string name="Pin">Pin</string>

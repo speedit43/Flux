@@ -56,6 +56,8 @@
     <string name="Developer_Name">Ronit Chinda</string>
     <string name="Source_Code">Code Source</string>
     <string name="Github_Repository">Dépôt Github</string>
+    <string name="Hour_Format_24">Format 24 heures</string>
+    <string name="Hour_Format_24_Desc">Utiliser le format d\'heure 24 heures</string>
 
     <!-- Common -->
     <string name="Pin">Épingler</string>
