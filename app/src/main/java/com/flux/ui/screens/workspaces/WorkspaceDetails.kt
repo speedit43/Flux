@@ -48,7 +48,7 @@ import com.flux.data.model.WorkspaceModel
 import com.flux.navigation.NavRoutes
 import com.flux.other.icons
 import com.flux.ui.components.AddNewSpacesBottomSheet
-import com.flux.ui.components.CalenderToolBar
+import com.flux.ui.components.CalendarToolBar
 import com.flux.ui.components.ChangeIconBottomSheet
 import com.flux.ui.components.DeleteAlert
 import com.flux.ui.components.EventToolBar
@@ -70,7 +70,7 @@ import com.flux.ui.events.TaskEvents
 import com.flux.ui.events.TodoEvents
 import com.flux.ui.events.WorkspaceEvents
 import com.flux.ui.screens.analytics.analyticsItems
-import com.flux.ui.screens.calender.calenderItems
+import com.flux.ui.screens.calendar.calendarItems
 import com.flux.ui.screens.events.eventHomeItems
 import com.flux.ui.screens.habits.habitsHomeItems
 import com.flux.ui.screens.journal.journalHomeItems
@@ -276,13 +276,13 @@ fun WorkspaceDetails(
                             TodoToolBar(navController, workspaceId)
                         }
                         if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Calendar") {
-                            CalenderToolBar(
-                                settings.data.isCalenderMonthlyView,
+                            CalendarToolBar(
+                                settings.data.isCalendarMonthlyView,
                                 onClick = {
                                     onSettingEvents(
                                         SettingEvents.UpdateSettings(
                                             settings.data.copy(
-                                                isCalenderMonthlyView = it
+                                                isCalendarMonthlyView = it
                                             )
                                         )
                                     )
@@ -320,7 +320,7 @@ fun WorkspaceDetails(
                 )
             }
             if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Calendar") {
-                calenderItems(
+                calendarItems(
                     navController,
                     radius,
                     isDatedTaskLoading,

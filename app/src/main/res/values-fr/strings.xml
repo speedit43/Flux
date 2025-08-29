@@ -158,8 +158,8 @@
     <string name="Amount">Montant</string>
     <string name="Today">Aujourd\'hui</string>
 
-    <!-- Calender -->
-    <string name="Calender">Calendrier</string>
+    <!-- Calendar -->
+    <string name="Calendar">Calendrier</string>
 
     <!-- Analytics -->
     <string name="Analytics">Statistiques</string>

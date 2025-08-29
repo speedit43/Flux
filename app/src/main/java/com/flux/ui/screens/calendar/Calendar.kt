@@ -1,4 +1,4 @@
-package com.flux.ui.screens.calender
+package com.flux.ui.screens.calendar
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -13,8 +13,8 @@ import com.flux.data.model.EventModel
 import com.flux.data.model.EventStatus
 import com.flux.navigation.Loader
 import com.flux.navigation.NavRoutes
-import com.flux.ui.components.DailyViewCalender
-import com.flux.ui.components.MonthlyViewCalender
+import com.flux.ui.components.DailyViewCalendar
+import com.flux.ui.components.MonthlyViewCalendar
 import com.flux.ui.events.TaskEvents
 import com.flux.ui.screens.events.EmptyEvents
 import com.flux.ui.screens.events.EventCard
@@ -23,7 +23,7 @@ import java.time.LocalDate
 import java.time.YearMonth
 
 @OptIn(ExperimentalMaterial3Api::class)
-fun LazyListScope.calenderItems(
+fun LazyListScope.calendarItems(
     navController: NavController,
     radius: Int,
     isLoading: Boolean,
@@ -35,11 +35,11 @@ fun LazyListScope.calenderItems(
     allEventInstances: List<EventInstanceModel>,
     onTaskEvents: (TaskEvents) -> Unit
 ) {
-    val isMonthlyView = settings.data.isCalenderMonthlyView
+    val isMonthlyView = settings.data.isCalendarMonthlyView
 
     if (isMonthlyView) {
         item {
-            MonthlyViewCalender(
+            MonthlyViewCalendar(
                 selectedMonth, selectedDate,
                 onMonthChange = {
                     onTaskEvents(TaskEvents.ChangeMonth(it))
@@ -51,7 +51,7 @@ fun LazyListScope.calenderItems(
         }
     } else {
         item {
-            DailyViewCalender(
+            DailyViewCalendar(
                 selectedMonth,
                 selectedDate,
                 onDateChange = {
