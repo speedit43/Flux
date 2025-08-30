@@ -17,5 +17,6 @@ data class SettingsModel(
     val dynamicTheme: Boolean = false,
     val amoledTheme: Boolean = false,
     val isScreenProtection: Boolean = false,
-    val workspaceGridColumns: Int = 1
+    val workspaceGridColumns: Int = 1,
+    val is24HourFormat: Boolean = false
 )

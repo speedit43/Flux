@@ -303,6 +303,7 @@ fun WorkspaceDetails(
                     workspace.workspaceId,
                     allHabits,
                     allHabitInstances,
+                    settings,
                     onHabitEvents
                 )
             }
@@ -365,6 +366,7 @@ fun WorkspaceDetails(
                     isAllEventsLoading,
                     allEvents,
                     allEventInstances,
+                    settings,
                     workspaceId,
                     onTaskEvents
                 )
@@ -439,6 +441,7 @@ fun WorkspaceDetails(
     HabitBottomSheet(
         isVisible = showHabitDialog,
         sheetState = sheetState,
+        settings = settings,
         onDismissRequest = {
             scope.launch { sheetState.hide() }.invokeOnCompletion { showHabitDialog = false }
         },

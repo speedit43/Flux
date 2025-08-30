@@ -27,6 +27,7 @@ import com.flux.ui.components.HabitStreakCard
 import com.flux.ui.components.MonthlyHabitAnalyticsCard
 import com.flux.ui.components.calculateStreaks
 import com.flux.ui.events.HabitEvents
+import com.flux.ui.state.Settings
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -37,6 +38,7 @@ fun HabitDetails(
     workspaceId: Long,
     habit: HabitModel,
     habitInstances: List<HabitInstanceModel>,
+    settings: Settings,
     onHabitEvents: (HabitEvents) -> Unit
 ) {
     var showHabitDialog by remember { mutableStateOf(false) }
@@ -85,6 +87,7 @@ fun HabitDetails(
         habit = habit,
         isVisible = showHabitDialog,
         sheetState = sheetState,
+        settings = settings,
         onDismissRequest = {
             scope.launch { sheetState.hide() }.invokeOnCompletion { showHabitDialog = false }
         },

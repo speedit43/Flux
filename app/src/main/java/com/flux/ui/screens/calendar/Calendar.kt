@@ -97,6 +97,7 @@ fun LazyListScope.calenderItems(
                     timeline = task.startDateTime,
                     description = task.description,
                     repeat = task.repetition,
+                    settings = settings,
                     onChangeStatus = { onTaskEvents(TaskEvents.ToggleStatus(it)) },
                     onClick = {
                         navController.navigate(
@@ -122,6 +123,7 @@ fun LazyListScope.calenderItems(
                     timeline = task.startDateTime,
                     description = task.description,
                     repeat = task.repetition,
+                    settings = settings,
                     onChangeStatus = { onTaskEvents(TaskEvents.ToggleStatus(it)) },
                     onClick = {
                         navController.navigate(
