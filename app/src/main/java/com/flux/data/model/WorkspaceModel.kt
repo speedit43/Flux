@@ -32,7 +32,7 @@ data class Space(
     val icon: ImageVector
 )
 
-val SpacesList = listOf<Space>(
+val SpacesList = listOf(
     Space(1, "Notes", Icons.AutoMirrored.Default.Notes),
     Space(2, "To-Do", Icons.Default.TaskAlt),
     Space(3, "Events", Icons.Default.Event),

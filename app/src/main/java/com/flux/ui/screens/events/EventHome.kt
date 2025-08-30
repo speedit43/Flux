@@ -292,11 +292,11 @@ fun EventCard(
                         Text(
                             when {
                                 isAllDay -> "All Day"
-                                repeat == Repetition.DAILY -> timeline.toFormattedDailyTime(context, settings.data.is24HourFormat)
-                                repeat == Repetition.WEEKLY -> timeline.toFormattedWeeklyTime(context, settings.data.is24HourFormat)
-                                repeat == Repetition.MONTHLY -> timeline.toFormattedMonthlyTime(context, settings.data.is24HourFormat)
-                                repeat == Repetition.YEARLY -> timeline.toFormattedYearlyTime(context, settings.data.is24HourFormat)
-                                else -> timeline.toFormattedDateTime(context, settings.data.is24HourFormat)
+                                repeat == Repetition.DAILY -> timeline.toFormattedDailyTime(context,settings.data.is24HourFormat)
+                                repeat == Repetition.WEEKLY -> timeline.toFormattedWeeklyTime(context,settings.data.is24HourFormat)
+                                repeat == Repetition.MONTHLY -> timeline.toFormattedMonthlyTime(settings.data.is24HourFormat)
+                                repeat == Repetition.YEARLY -> timeline.toFormattedYearlyTime(settings.data.is24HourFormat)
+                                else -> timeline.toFormattedDateTime(context,settings.data.is24HourFormat)
                             },
                             style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier.alpha(0.6f)
@@ -316,7 +316,7 @@ fun EventCard(
 }
 
 fun Long.toFormattedTime(is24Hour: Boolean = false): String {
-    val pattern = if (is24Hour) "HH'h'mm" else "hh:mm a"
+    val pattern = if (is24Hour) "HH:mm" else "hh:mm a"
     val formatter = SimpleDateFormat(pattern, Locale.getDefault())
     return formatter.format(Date(this))
 }
@@ -328,7 +328,7 @@ fun Long.toFormattedDate(): String {
 }
 
 fun Long.toFormattedDateTime(context: Context, is24Hour: Boolean = false): String {
-    val timePattern = if (is24Hour) "HH'h'mm" else "hh:mm a"
+    val timePattern = if (is24Hour) "HH:mm" else "hh:mm a"
     val datePattern = "dd MMM, yyyy"
     val atString = context.getString(R.string.at)
 
@@ -343,7 +343,7 @@ fun Long.toFormattedDateTime(context: Context, is24Hour: Boolean = false): Strin
 }
 
 fun Long.toFormattedWeeklyTime(context: Context, is24Hour: Boolean = false): String {
-    val timePattern = if (is24Hour) "HH'h'mm" else "hh:mm a"
+    val timePattern = if (is24Hour) "HH:mm" else "hh:mm a"
     val dayPattern = "EEEE"
     val atString = context.getString(R.string.at)
 
@@ -356,49 +356,33 @@ fun Long.toFormattedWeeklyTime(context: Context, is24Hour: Boolean = false): Str
     return "$dayPart $atString $timePart"
 }
 
-fun Long.toFormattedMonthlyTime(context: Context, is24Hour: Boolean = false): String {
-    return this.toOrdinalFormatted(context, "", is24Hour)
+fun Long.toFormattedMonthlyTime(is24Hour: Boolean = false): String {
+    return this.toOrdinalFormatted("", is24Hour)
 }
 
-fun Long.toFormattedYearlyTime(context: Context, is24Hour: Boolean = false): String {
-    return this.toOrdinalFormatted(context, "MMM", is24Hour)
+fun Long.toFormattedYearlyTime(is24Hour: Boolean = false): String {
+    return this.toOrdinalFormatted("MMM", is24Hour)
 }
 
-fun Long.toFormattedDailyTime(context: Context, is24Hour: Boolean = false): String {
-    val timePattern = if (is24Hour) "HH'h'mm" else "hh:mm a"
-    val atString = context.getString(R.string.at)
-
-    val timeFormatter = SimpleDateFormat(timePattern, Locale.getDefault())
-    val timePart = timeFormatter.format(Date(this))
-
-    return "$atString $timePart"
-}
-
-private fun Long.toOrdinalFormatted(context: Context, pattern: String, is24Hour: Boolean = false): String {
+private fun Long.toOrdinalFormatted(pattern: String, is24Hour: Boolean = false): String {
     val calendar = Calendar.getInstance().apply { timeInMillis = this@toOrdinalFormatted }
     val day = calendar.get(Calendar.DAY_OF_MONTH)
     val suffix = getDayOfMonthSuffix(day)
+
     val datePart = SimpleDateFormat("d'$suffix' $pattern", Locale.getDefault()).format(Date(this))
-    val timePart = SimpleDateFormat("hh:mm a", Locale.getDefault()).format(Date(this))
+    val timePattern = if (is24Hour) "HH:mm" else "hh:mm a"
+    val timePart = SimpleDateFormat(timePattern, Locale.getDefault()).format(Date(this))
+
     return "on $datePart at $timePart"
 }
 
-private fun getDayOfMonthSuffix(day: Int): String {
-    return if (day in 11..13) {
-        "th"
-    } else {
-        if (suffix.isEmpty()) "d $pattern" else "d'$suffix' $pattern"
-    }
-
-    val dateFormatter = SimpleDateFormat(datePattern, Locale.getDefault())
+fun Long.toFormattedDailyTime(context: Context, is24Hour: Boolean = false): String {
+    val timePattern = if (is24Hour) "HH:mm" else "hh:mm a"
+    val atString = context.getString(R.string.at)
     val timeFormatter = SimpleDateFormat(timePattern, Locale.getDefault())
-
-    val datePart = dateFormatter.format(Date(this))
     val timePart = timeFormatter.format(Date(this))
-
-    return "$onString $datePart $atString $timePart"
+    return "$atString $timePart"
 }
-
 private fun getDayOfMonthSuffix(day: Int, locale: Locale = Locale.getDefault()): String {
     return when (locale.language) {
         "en" -> {
@@ -410,8 +394,8 @@ private fun getDayOfMonthSuffix(day: Int, locale: Locale = Locale.getDefault()):
                 else -> "th"
             }
         }
-        "fr" -> if (day == 1) "er" else ""
-        else -> ""
+        "fr" -> if (day == 1) "er" else "" // 1er in French
+        else -> "" // default: no suffix
     }
 }
 

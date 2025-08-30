@@ -64,6 +64,7 @@ import com.flux.ui.components.SpacesToolBar
 import com.flux.ui.components.TodoToolBar
 import com.flux.ui.components.WorkspaceTopBar
 import com.flux.ui.events.HabitEvents
+import com.flux.ui.events.JournalEvents
 import com.flux.ui.events.NotesEvents
 import com.flux.ui.events.SettingEvents
 import com.flux.ui.events.TaskEvents
@@ -113,13 +114,14 @@ fun WorkspaceDetails(
     onTaskEvents: (TaskEvents) -> Unit,
     onHabitEvents: (HabitEvents) -> Unit,
     onTodoEvents: (TodoEvents) -> Unit,
+    onJournalEvents: (JournalEvents) -> Unit,
     onSettingEvents: (SettingEvents) -> Unit,
 ) {
     val radius = settings.data.cornerRadius
     val workspaceId = workspace.workspaceId
     val context = LocalContext.current
     var query by remember { mutableStateOf("") }
-    var selectedSpaceId =
+    val selectedSpaceId =
         rememberSaveable { mutableIntStateOf(if (workspace.selectedSpaces.isEmpty()) -1 else workspace.selectedSpaces.first()) }
     var editWorkspaceDialog by remember { mutableStateOf(false) }
     var editIconSheet by remember { mutableStateOf(false) }
@@ -202,7 +204,7 @@ fun WorkspaceDetails(
                 if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Notes" && selectedNotes.isNotEmpty()) {
                     SelectedBar(
                         true,
-                        allNotes.size==selectedNotes.size,
+                        allNotes.size == selectedNotes.size,
                         allNotes.filter { selectedNotes.contains(it.notesId) }.all { it.isPinned },
                         selectedNotes.size,
                         onPinClick = {
@@ -304,6 +306,7 @@ fun WorkspaceDetails(
                     workspace.workspaceId,
                     allHabits,
                     allHabitInstances,
+                    settings,
                     onHabitEvents
                 )
             }
@@ -366,6 +369,7 @@ fun WorkspaceDetails(
                     isAllEventsLoading,
                     allEvents,
                     allEventInstances,
+                    settings,
                     workspaceId,
                     onTaskEvents
                 )
@@ -399,11 +403,13 @@ fun WorkspaceDetails(
         onDismiss = { addSpaceBottomSheet = false },
         onRemove = {
             if (workspace.selectedSpaces.size == 1) selectedSpaceId.intValue = -1
+            else selectedSpaceId.intValue = workspace.selectedSpaces.first()
             onWorkspaceEvents(
                 WorkspaceEvents.UpsertSpace(
                     workspace.copy(selectedSpaces = workspace.selectedSpaces.minus(it))
                 )
             )
+            removeSpaceData(workspaceId, it, context, onTaskEvents, onTodoEvents, onHabitEvents, onNotesEvents, onJournalEvents)
         },
         onSelect = {
             if (selectedSpaceId.intValue == -1) selectedSpaceId.intValue = it
@@ -438,6 +444,7 @@ fun WorkspaceDetails(
 
     // Habit Bottom Sheet — always composed
     HabitBottomSheet(
+        settings = settings,
         isVisible = showHabitDialog,
         sheetState = sheetState,
         onDismissRequest = {
@@ -485,5 +492,24 @@ fun copyToInternalStorage(context: Context, uri: Uri): String? {
     } catch (e: Exception) {
         e.printStackTrace()
         null
+    }
+}
+
+fun removeSpaceData(
+    workspaceId: Long,
+    spaceId: Int,
+    context: Context,
+    onTaskEvents: (TaskEvents) -> Unit,
+    onTodoEvents: (TodoEvents) -> Unit,
+    onHabitEvents: (HabitEvents) -> Unit,
+    onNotesEvents: (NotesEvents) -> Unit,
+    onJournalEvents: (JournalEvents) -> Unit
+) {
+    when (spaceId) {
+        1 -> onNotesEvents(NotesEvents.DeleteAllWorkspaceNotes(workspaceId))
+        2 -> onTodoEvents(TodoEvents.DeleteAllWorkspaceLists(workspaceId))
+        3 -> onTaskEvents(TaskEvents.DeleteAllWorkspaceEvents(workspaceId, context))
+        5 -> onJournalEvents(JournalEvents.DeleteWorkspaceEntries(workspaceId))
+        6 -> onHabitEvents(HabitEvents.DeleteAllWorkspaceHabits(workspaceId, context))
     }
 }

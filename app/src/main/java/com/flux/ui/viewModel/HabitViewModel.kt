@@ -44,7 +44,6 @@ class HabitViewModel @Inject constructor(private val repository: HabitRepository
                 event.habit,
                 event.adjustedTime
             )
-
             is HabitEvents.LoadAllInstances -> loadAllInstances(event.workspaceId)
             is HabitEvents.MarkDone -> upsertInstance(event.habitInstance)
             is HabitEvents.MarkUndone -> deleteInstance(event.habitInstance)
@@ -96,10 +95,6 @@ class HabitViewModel @Inject constructor(private val repository: HabitRepository
                 description = data.description
             )
         }
-    }
-
-    private fun deleteWorkspaceHabits(workspaceId: Long) {
-        viewModelScope.launch(Dispatchers.IO) { repository.deleteAllWorkspaceHabit(workspaceId) }
     }
 
     private suspend fun loadAllInstances(workspaceId: Long) {

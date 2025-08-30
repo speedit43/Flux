@@ -294,7 +294,7 @@ fun EventDetails(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        convertMillisToDate(selectedDateTime).toString(),
+                        convertMillisToDate(selectedDateTime),
                         modifier = Modifier
                             .clickable { showDatePicker = true }
                             .padding(4.dp)

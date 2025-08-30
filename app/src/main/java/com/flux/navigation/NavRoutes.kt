@@ -225,6 +225,7 @@ val WorkspaceScreens =
                 viewModels.eventViewModel::onEvent,
                 viewModels.habitViewModel::onEvent,
                 viewModels.todoViewModel::onEvent,
+                viewModels.journalViewModel::onEvent,
                 viewModels.settingsViewModel::onEvent
             )
         }

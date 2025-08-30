@@ -323,7 +323,7 @@ fun convertMillisToDate(millis: Long): String {
 }
 
 fun convertMillisToTime(millis: Long, is24Hour: Boolean = false): String {
-    val pattern = if (is24Hour) "HH'h'mm" else "hh:mm a"
+    val pattern = if (is24Hour) "HH:mm" else "hh:mm a"
     val formatter = SimpleDateFormat(pattern, Locale.getDefault())
     return formatter.format(Date(millis))
 }
