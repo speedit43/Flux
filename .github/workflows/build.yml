@@ -10,27 +10,44 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      # 1️⃣ Checkout code
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 2️⃣ Setup Java
       - name: Setup Java
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
+          distribution: temurin
           java-version: 21
 
+      # 3️⃣ Setup Gradle
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v3
         with:
           gradle-version: wrapper
           gradle-home-cache-cleanup: true
 
+      # 4️⃣ Cache Gradle dependencies (robust)
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v3
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-deps-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: gradle-deps-
+        continue-on-error: true   # won't fail the build if cache service is down
+
+      # 5️⃣ Check Gradle version
       - name: Check Gradle version
         run: ./gradlew --version
 
+      # 6️⃣ Build APK
       - name: Build with Gradle
         run: ./gradlew assembleDebug
 
+      # 7️⃣ Upload APK artifact
       - name: Upload APK Artifact
         uses: actions/upload-artifact@v4
         with:
