@@ -162,8 +162,8 @@
     <string name="at">à</string>
     <string name="on">le</string>
 
-    <!-- Calender -->
-    <string name="Calender">Calendrier</string>
+    <!-- Calendar -->
+    <string name="Calendar">Calendrier</string>
 
     <!-- Analytics -->
     <string name="Analytics">Statistiques</string>

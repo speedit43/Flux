@@ -142,7 +142,7 @@ fun JournalToolBar(navController: NavController, workspaceId: Long) {
 }
 
 @Composable
-fun CalenderToolBar(isMonthlyView: Boolean, onClick: (Boolean) -> Unit) {
+fun CalendarToolBar(isMonthlyView: Boolean, onClick: (Boolean) -> Unit) {
     IconButton({ onClick(!isMonthlyView) }) {
         Icon(
             if (isMonthlyView) Icons.Default.CalendarViewDay else Icons.Default.CalendarViewMonth,
