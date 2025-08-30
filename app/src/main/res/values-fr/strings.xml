@@ -56,6 +56,8 @@
     <string name="Developer_Name">Ronit Chinda</string>
     <string name="Source_Code">Code Source</string>
     <string name="Github_Repository">Dépôt Github</string>
+    <string name="Hour_Format_24">Format 24 heures</string>
+    <string name="Hour_Format_24_Desc">Utiliser le format d\'heure 24 heures</string>
 
     <!-- Common -->
     <string name="Pin">Épingler</string>
@@ -157,6 +159,8 @@
     <string name="enterPasskey">Entrer le code secret</string>
     <string name="Amount">Montant</string>
     <string name="Today">Aujourd\'hui</string>
+    <string name="at">à</string>
+    <string name="on">le</string>
 
     <!-- Calendar -->
     <string name="Calendar">Calendrier</string>

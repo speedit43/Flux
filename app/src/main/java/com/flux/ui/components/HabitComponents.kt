@@ -61,6 +61,7 @@ import com.flux.ui.events.HabitEvents
 import com.flux.ui.screens.events.IconRadioButton
 import com.flux.ui.screens.events.toFormattedDate
 import com.flux.ui.screens.events.toFormattedTime
+import com.flux.ui.state.Settings
 import java.time.DayOfWeek
 import java.time.Instant
 import java.time.LocalDate
@@ -144,6 +145,7 @@ fun HabitPreviewCard(
     radius: Int,
     habit: HabitModel,
     instances: List<HabitInstanceModel>,
+    settings: Settings,
     onToggleDone: (LocalDate) -> Unit,
     onAnalyticsClicked: () -> Unit
 ) {
@@ -192,7 +194,7 @@ fun HabitPreviewCard(
                                     overflow = TextOverflow.Ellipsis
                                 )
                                 Text(
-                                    habit.startDateTime.toFormattedTime(),
+                                    habit.startDateTime.toFormattedTime(settings.data.is24HourFormat),
                                     style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.ExtraLight),
                                     modifier = Modifier.alpha(0.9f)
                                 )

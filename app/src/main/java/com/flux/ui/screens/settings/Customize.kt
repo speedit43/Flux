@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AccessTime
 import androidx.compose.material.icons.filled.Colorize
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
@@ -307,8 +308,7 @@ fun Customize(
                     description = stringResource(R.string.Monthly_View_Desc),
                     icon = Icons.Rounded.GridOn,
                     radius = shapeManager(
-                        radius = settings.data.cornerRadius,
-                        isLast = true
+                        radius = settings.data.cornerRadius
                     ),
                     variable = settings.data.isCalendarMonthlyView,
                     actionType = ActionType.SWITCH,
@@ -321,6 +321,29 @@ fun Customize(
                             )
                         )
                     },
+                )
+            }
+
+            item {
+                SettingOption(
+                    title = stringResource(R.string.Hour_Format_24),
+                    description = stringResource(R.string.Hour_Format_24_Desc),
+                    icon = Icons.Filled.AccessTime,
+                    radius = shapeManager(
+                        radius = settings.data.cornerRadius,
+                        isLast = true
+                    ),
+                    actionType = ActionType.SWITCH,
+                    variable = settings.data.is24HourFormat,
+                    switchEnabled = {
+                        onSettingsEvents(
+                            SettingEvents.UpdateSettings(
+                                settings.data.copy(
+                                    is24HourFormat = it
+                                )
+                            )
+                        )
+                    }
                 )
             }
 

@@ -107,6 +107,7 @@ val HabitScreens =
                 states.habitState.allHabits.find { it.habitId == habitId }
                     ?: HabitModel(workspaceId = workspaceId),
                 states.habitState.allInstances.filter { it.habitId == habitId },
+                states.settings,
                 viewModel.habitViewModel::onEvent
             )
         }
@@ -172,6 +173,7 @@ val EventScreens =
                     ?: EventModel(workspaceId = workspaceId),
                 states.eventState.allEventInstances.find { it.eventId == eventId && it.instanceDate == LocalDate.now() }
                     ?: EventInstanceModel(eventId = eventId, instanceDate = LocalDate.now()),
+                states.settings,
                 viewModels.eventViewModel::onEvent
             )
         }

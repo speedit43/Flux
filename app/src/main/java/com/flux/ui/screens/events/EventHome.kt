@@ -1,5 +1,6 @@
 package com.flux.ui.screens.events
 
+import android.content.Context
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -31,6 +32,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
@@ -45,6 +47,7 @@ import com.flux.navigation.Loader
 import com.flux.navigation.NavRoutes
 import com.flux.ui.components.shapeManager
 import com.flux.ui.events.TaskEvents
+import com.flux.ui.state.Settings
 import com.flux.ui.theme.completed
 import com.flux.ui.theme.pending
 import java.text.SimpleDateFormat
@@ -62,6 +65,7 @@ fun LazyListScope.eventHomeItems(
     isLoading: Boolean,
     allEvents: List<EventModel>,
     allEventInstances: List<EventInstanceModel>,
+    settings: Settings,
     workspaceId: Long,
     onTaskEvents: (TaskEvents) -> Unit
 ) {
@@ -114,6 +118,7 @@ fun LazyListScope.eventHomeItems(
                     timeline = event.startDateTime,
                     description = event.description,
                     repeat = event.repetition,
+                    settings = settings,
                     onChangeStatus = { onTaskEvents(TaskEvents.ToggleStatus(it)) },
                     onClick = {
                         navController.navigate(
@@ -155,6 +160,7 @@ fun LazyListScope.eventHomeItems(
                     timeline = event.startDateTime,
                     description = event.description,
                     repeat = event.repetition,
+                    settings = settings,
                     onChangeStatus = { onTaskEvents(TaskEvents.ToggleStatus(it)) },
                     onClick = {
                         navController.navigate(
@@ -223,9 +229,12 @@ fun EventCard(
     timeline: Long,
     description: String,
     repeat: Repetition,
+    settings: Settings,
     onChangeStatus: (EventInstanceModel) -> Unit,
     onClick: () -> Unit
 ) {
+    val context = LocalContext.current
+
     val eventStatus = eventInstance.status
     Row(Modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         IconRadioButton(
@@ -283,11 +292,11 @@ fun EventCard(
                         Text(
                             when {
                                 isAllDay -> "All Day"
-                                repeat == Repetition.DAILY -> timeline.toFormattedDailyTime()
-                                repeat == Repetition.WEEKLY -> timeline.toFormattedWeeklyTime()
-                                repeat == Repetition.MONTHLY -> timeline.toFormattedMonthlyTime()
-                                repeat == Repetition.YEARLY -> timeline.toFormattedYearlyTime()
-                                else -> timeline.toFormattedDateTime()
+                                repeat == Repetition.DAILY -> timeline.toFormattedDailyTime(context, settings.data.is24HourFormat)
+                                repeat == Repetition.WEEKLY -> timeline.toFormattedWeeklyTime(context, settings.data.is24HourFormat)
+                                repeat == Repetition.MONTHLY -> timeline.toFormattedMonthlyTime(context, settings.data.is24HourFormat)
+                                repeat == Repetition.YEARLY -> timeline.toFormattedYearlyTime(context, settings.data.is24HourFormat)
+                                else -> timeline.toFormattedDateTime(context, settings.data.is24HourFormat)
                             },
                             style = MaterialTheme.typography.bodyMedium,
                             modifier = Modifier.alpha(0.6f)
@@ -306,10 +315,10 @@ fun EventCard(
     }
 }
 
-fun Long.toFormattedTime(): String {
-    val date = Date(this)
-    val format = SimpleDateFormat("hh:mm a", Locale.getDefault())
-    return format.format(date)
+fun Long.toFormattedTime(is24Hour: Boolean = false): String {
+    val pattern = if (is24Hour) "HH'h'mm" else "hh:mm a"
+    val formatter = SimpleDateFormat(pattern, Locale.getDefault())
+    return formatter.format(Date(this))
 }
 
 fun Long.toFormattedDate(): String {
@@ -318,33 +327,54 @@ fun Long.toFormattedDate(): String {
     return format.format(date)
 }
 
-fun Long.toFormattedDateTime(): String {
-    val date = Date(this)
-    val format = SimpleDateFormat("dd MMM, yyyy  'at' hh:mm a", Locale.getDefault())
-    return format.format(date)
+fun Long.toFormattedDateTime(context: Context, is24Hour: Boolean = false): String {
+    val timePattern = if (is24Hour) "HH'h'mm" else "hh:mm a"
+    val datePattern = "dd MMM, yyyy"
+    val atString = context.getString(R.string.at)
+
+    val dateFormatter = SimpleDateFormat(datePattern, Locale.getDefault())
+    val timeFormatter = SimpleDateFormat(timePattern, Locale.getDefault())
+
+    val datePart = dateFormatter.format(Date(this))
+    val timePart = timeFormatter.format(Date(this))
+
+    // we don't put them together before in case atString contains characters SimpleDateFormat could detect
+    return "$datePart $atString $timePart"
 }
 
-fun Long.toFormattedWeeklyTime(): String {
-    val date = Date(this)
-    val format = SimpleDateFormat("EEEE  'at' hh:mm a", Locale.getDefault()) // Only day name
-    return format.format(date)
+fun Long.toFormattedWeeklyTime(context: Context, is24Hour: Boolean = false): String {
+    val timePattern = if (is24Hour) "HH'h'mm" else "hh:mm a"
+    val dayPattern = "EEEE"
+    val atString = context.getString(R.string.at)
+
+    val dayFormatter = SimpleDateFormat(dayPattern, Locale.getDefault())
+    val timeFormatter = SimpleDateFormat(timePattern, Locale.getDefault())
+
+    val dayPart = dayFormatter.format(Date(this))
+    val timePart = timeFormatter.format(Date(this))
+
+    return "$dayPart $atString $timePart"
 }
 
-fun Long.toFormattedMonthlyTime(): String {
-    return this.toOrdinalFormatted("")
+fun Long.toFormattedMonthlyTime(context: Context, is24Hour: Boolean = false): String {
+    return this.toOrdinalFormatted(context, "", is24Hour)
 }
 
-fun Long.toFormattedYearlyTime(): String {
-    return this.toOrdinalFormatted("MMM ")
+fun Long.toFormattedYearlyTime(context: Context, is24Hour: Boolean = false): String {
+    return this.toOrdinalFormatted(context, "MMM", is24Hour)
 }
 
-fun Long.toFormattedDailyTime(): String {
-    val date = Date(this)
-    val format = SimpleDateFormat("'at' hh:mm a", Locale.getDefault())
-    return format.format(date)
+fun Long.toFormattedDailyTime(context: Context, is24Hour: Boolean = false): String {
+    val timePattern = if (is24Hour) "HH'h'mm" else "hh:mm a"
+    val atString = context.getString(R.string.at)
+
+    val timeFormatter = SimpleDateFormat(timePattern, Locale.getDefault())
+    val timePart = timeFormatter.format(Date(this))
+
+    return "$atString $timePart"
 }
 
-private fun Long.toOrdinalFormatted(pattern: String): String {
+private fun Long.toOrdinalFormatted(context: Context, pattern: String, is24Hour: Boolean = false): String {
     val calendar = Calendar.getInstance().apply { timeInMillis = this@toOrdinalFormatted }
     val day = calendar.get(Calendar.DAY_OF_MONTH)
     val suffix = getDayOfMonthSuffix(day)
@@ -357,12 +387,31 @@ private fun getDayOfMonthSuffix(day: Int): String {
     return if (day in 11..13) {
         "th"
     } else {
-        when (day % 10) {
-            1 -> "st"
-            2 -> "nd"
-            3 -> "rd"
-            else -> "th"
+        if (suffix.isEmpty()) "d $pattern" else "d'$suffix' $pattern"
+    }
+
+    val dateFormatter = SimpleDateFormat(datePattern, Locale.getDefault())
+    val timeFormatter = SimpleDateFormat(timePattern, Locale.getDefault())
+
+    val datePart = dateFormatter.format(Date(this))
+    val timePart = timeFormatter.format(Date(this))
+
+    return "$onString $datePart $atString $timePart"
+}
+
+private fun getDayOfMonthSuffix(day: Int, locale: Locale = Locale.getDefault()): String {
+    return when (locale.language) {
+        "en" -> {
+            if (day in 11..13) "th"
+            else when (day % 10) {
+                1 -> "st"
+                2 -> "nd"
+                3 -> "rd"
+                else -> "th"
+            }
         }
+        "fr" -> if (day == 1) "er" else ""
+        else -> ""
     }
 }
 
