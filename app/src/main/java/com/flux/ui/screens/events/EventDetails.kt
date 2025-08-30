@@ -65,6 +65,7 @@ import com.flux.ui.components.TimePicker
 import com.flux.ui.components.convertMillisToDate
 import com.flux.ui.components.convertMillisToTime
 import com.flux.ui.events.TaskEvents
+import com.flux.ui.state.Settings
 import com.flux.ui.theme.completed
 import com.flux.ui.theme.pending
 import java.util.Calendar
@@ -75,6 +76,7 @@ fun EventDetails(
     navController: NavController,
     event: EventModel,
     eventInstance: EventInstanceModel,
+    settings: Settings,
     onTaskEvents: (TaskEvents) -> Unit
 ) {
     val context = LocalContext.current
@@ -122,6 +124,7 @@ fun EventDetails(
     if (showTimePicker) {
         TimePicker(
             initialTime = selectedDateTime,
+            is24Hour = settings.data.is24HourFormat,
             onConfirm = {
                 val calendar = Calendar.getInstance().apply {
                     timeInMillis = selectedDateTime
@@ -298,7 +301,7 @@ fun EventDetails(
                     )
                     if (!checked) {
                         Text(
-                            convertMillisToTime(selectedDateTime),
+                            convertMillisToTime(selectedDateTime, settings.data.is24HourFormat),
                             modifier = Modifier
                                 .clickable { showTimePicker = true }
                                 .padding(4.dp)

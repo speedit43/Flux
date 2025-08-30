@@ -66,6 +66,7 @@ import com.flux.data.model.WorkspaceModel
 import com.flux.other.icons
 import com.flux.other.workspaceIconList
 import com.flux.ui.screens.events.toFormattedTime
+import com.flux.ui.state.Settings
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -75,6 +76,7 @@ fun HabitBottomSheet(
     habit: HabitModel? = null,
     isVisible: Boolean,
     sheetState: SheetState,
+    settings: Settings,
     onConfirm: (HabitModel, Long) -> Unit,
     onDismissRequest: () -> Unit,
 ) {
@@ -181,7 +183,7 @@ fun HabitBottomSheet(
                     )
 
                     Text(
-                        text = newHabitTime.toFormattedTime(),
+                        text = newHabitTime.toFormattedTime(settings.data.is24HourFormat),
                         style = MaterialTheme.typography.titleLarge
                     )
                 }
@@ -234,6 +236,7 @@ fun HabitBottomSheet(
             if (timePickerDialog) {
                 TimePicker(
                     initialTime = newHabitTime,
+                    is24Hour = settings.data.is24HourFormat,
                     onConfirm = {
                         val habitCalendar = Calendar.getInstance().apply {
                             timeInMillis = newHabitTime

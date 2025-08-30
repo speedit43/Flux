@@ -14,6 +14,7 @@ import com.flux.navigation.NavRoutes
 import com.flux.ui.components.EmptyHabits
 import com.flux.ui.components.HabitPreviewCard
 import com.flux.ui.events.HabitEvents
+import com.flux.ui.state.Settings
 
 fun LazyListScope.habitsHomeItems(
     navController: NavController,
@@ -22,6 +23,7 @@ fun LazyListScope.habitsHomeItems(
     workspaceId: Long,
     allHabits: List<HabitModel>,
     allInstances: List<HabitInstanceModel>,
+    settings: Settings,
     onHabitEvents: (HabitEvents) -> Unit
 ) {
     when {
@@ -34,6 +36,7 @@ fun LazyListScope.habitsHomeItems(
                     radius = radius,
                     habit = habit,
                     instances = habitInstances,
+                    settings = settings,
                     onToggleDone = { date ->
                         val existing = habitInstances.find { it.instanceDate == date }
                         if (existing != null) {
