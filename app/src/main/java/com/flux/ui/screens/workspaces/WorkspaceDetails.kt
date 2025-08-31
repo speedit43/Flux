@@ -32,6 +32,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -83,6 +84,7 @@ import java.io.File
 import java.io.FileOutputStream
 import java.time.LocalDate
 import java.time.YearMonth
+import com.flux.R
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -254,13 +256,13 @@ fun WorkspaceDetails(
                             onConfirm = { newSpaceId -> selectedSpaceId.intValue = newSpaceId }
                         ) { showSpacesMenu = false }
 
-                        if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Habits") {
+                        if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == stringResource(R.string.Habits)) {
                             HabitToolBar(context) {
                                 showHabitDialog = true
                                 scope.launch { sheetState.show() }
                             }
                         }
-                        if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Notes") {
+                        if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == stringResource(R.string.Notes)) {
                             NotesToolBar(
                                 navController,
                                 workspaceId,
@@ -274,13 +276,13 @@ fun WorkspaceDetails(
                                     )
                                 })
                         }
-                        if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Journal") {
+                        if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == stringResource(R.string.Journal)) {
                             JournalToolBar(navController, workspaceId)
                         }
-                        if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "To-Do") {
+                        if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == stringResource(R.string.To_Do)) {
                             TodoToolBar(navController, workspaceId)
                         }
-                        if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Calendar") {
+                        if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == stringResource(R.string.Calendar)) {
                             CalendarToolBar(
                                 settings.data.isCalendarMonthlyView,
                                 onClick = {
@@ -294,13 +296,13 @@ fun WorkspaceDetails(
                                 }
                             )
                         }
-                        if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Events") {
+                        if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == stringResource(R.string.Events)) {
                             EventToolBar(context, navController, workspaceId)
                         }
                     }
                 }
             }
-            if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Habits") {
+            if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == context.getString(R.string.Habits)) {
                 habitsHomeItems(
                     navController,
                     isHabitLoading,
@@ -312,7 +314,7 @@ fun WorkspaceDetails(
                     onHabitEvents
                 )
             }
-            if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Notes") {
+            if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == context.getString(R.string.Notes)) {
                 notesHomeItems(
                     navController,
                     workspaceId,
@@ -325,7 +327,7 @@ fun WorkspaceDetails(
                     onNotesEvents
                 )
             }
-            if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Calendar") {
+            if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == context.getString(R.string.Calendar)) {
                 calendarItems(
                     navController,
                     radius,
@@ -339,10 +341,10 @@ fun WorkspaceDetails(
                     onTaskEvents
                 )
             }
-            if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Journal") {
+            if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == context.getString(R.string.Journal)) {
                 journalHomeItems(navController, isJournalEntriesLoading, workspaceId, allEntries)
             }
-            if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Analytics") {
+            if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == context.getString(R.string.Analytics)) {
                 analyticsItems(
                     workspace,
                     radius,
@@ -354,7 +356,7 @@ fun WorkspaceDetails(
                     allEventInstances
                 )
             }
-            if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "To-Do") {
+            if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == context.getString(R.string.To_Do)) {
                 todoHomeItems(
                     navController,
                     radius,
@@ -364,7 +366,7 @@ fun WorkspaceDetails(
                     onTodoEvents
                 )
             }
-            if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == "Events") {
+            if (SpacesList.find { it.id == selectedSpaceId.intValue }?.title == context.getString(R.string.Events)) {
                 eventHomeItems(
                     navController,
                     radius,
