@@ -6,6 +6,6 @@ import kotlinx.coroutines.flow.Flow
 interface TodoRepository {
     suspend fun upsertList(list: TodoModel)
     suspend fun deleteList(list: TodoModel)
-    suspend fun deleteAllWorkspaceLists(workspaceId: Long)
-    fun loadAllLists(workspaceId: Long): Flow<List<TodoModel>>
+    suspend fun deleteAllWorkspaceLists(workspaceId: String)
+    fun loadAllLists(workspaceId: String): Flow<List<TodoModel>>
 }

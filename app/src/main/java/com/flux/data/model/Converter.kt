@@ -4,6 +4,7 @@ import androidx.room.TypeConverter
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.time.LocalDate
+import java.time.format.DateTimeParseException
 import java.util.Date
 
 class Converter {
@@ -25,10 +26,22 @@ class Converter {
     fun toRepetition(value: String): Repetition = Repetition.valueOf(value)
 
     @TypeConverter
-    fun fromLocalDate(date: LocalDate): String = date.toString()
+    fun toLocalDate(dateString: String?): LocalDate {
+        return try {
+            if (dateString.isNullOrBlank() || dateString == "0000-00-00") {
+                LocalDate.of(1970, 1, 1) // default safe date
+            } else {
+                LocalDate.parse(dateString)
+            }
+        } catch (_: DateTimeParseException) {
+            LocalDate.of(1970, 1, 1)
+        }
+    }
 
     @TypeConverter
-    fun toLocalDate(value: String): LocalDate = LocalDate.parse(value)
+    fun fromLocalDate(date: LocalDate?): String {
+        return date?.toString() ?: "1970-01-01"
+    }
 
     @TypeConverter
     fun fromEventStatus(status: EventStatus): String = status.name
@@ -45,17 +58,6 @@ class Converter {
     fun toTodoItemList(json: String): List<TodoItem> {
         val type = object : TypeToken<List<TodoItem>>() {}.type
         return Gson().fromJson(json, type)
-    }
-
-    @TypeConverter
-    fun fromLongList(value: List<Long>): String {
-        return value.joinToString(separator = ",")
-    }
-
-    @TypeConverter
-    fun toLongList(value: String): List<Long> {
-        return if (value.isEmpty()) emptyList()
-        else value.split(",").map { it.toLong() }
     }
 
     @TypeConverter
@@ -79,5 +81,4 @@ class Converter {
         val listType = object : TypeToken<List<String>>() {}.type
         return Gson().fromJson(value, listType)
     }
-
 }

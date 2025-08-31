@@ -20,7 +20,7 @@ fun LazyListScope.habitsHomeItems(
     navController: NavController,
     isLoading: Boolean,
     radius: Int,
-    workspaceId: Long,
+    workspaceId: String,
     allHabits: List<HabitModel>,
     allInstances: List<HabitInstanceModel>,
     settings: Settings,

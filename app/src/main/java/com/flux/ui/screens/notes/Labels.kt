@@ -42,12 +42,12 @@ import com.flux.ui.events.NotesEvents
 fun EditLabels(
     navController: NavController,
     isLoading: Boolean,
-    workspaceId: Long,
+    workspaceId: String,
     allLabels: List<LabelModel>,
     onNotesEvents: (NotesEvents) -> Unit,
 ) {
     var showAddLabel by remember { mutableStateOf(false) }
-    var selectedLabel by remember { mutableStateOf<LabelModel>(LabelModel()) }
+    var selectedLabel by remember { mutableStateOf(LabelModel()) }
 
     if (showAddLabel) {
         AddLabelDialog(

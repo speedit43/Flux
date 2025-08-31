@@ -66,7 +66,7 @@ sealed class NavRoutes(val route: String) {
     data object Contact : NavRoutes("settings/contact")
     data object Backup : NavRoutes("setting/backup")
 
-    fun withArgs(vararg args: Long): String {
+    fun withArgs(vararg args: String): String {
         return buildString {
             append(route)
             args.forEach { arg ->
@@ -84,7 +84,7 @@ val AuthScreen =
     )
 
 val NotesScreens =
-    mapOf<String, @Composable (navController: NavController, notesId: Long, workspaceId: Long, states: States, viewModels: ViewModels) -> Unit>(
+    mapOf<String, @Composable (navController: NavController, notesId: String, workspaceId: String, states: States, viewModels: ViewModels) -> Unit>(
         NavRoutes.NoteDetails.route + "/{workspaceId}" + "/{notesId}" to { navController, notesId, workspaceId, states, viewModel ->
             NoteDetails(
                 navController,
@@ -98,7 +98,7 @@ val NotesScreens =
     )
 
 val HabitScreens =
-    mapOf<String, @Composable (navController: NavController, habitId: Long, workspaceId: Long, states: States, viewModels: ViewModels) -> Unit>(
+    mapOf<String, @Composable (navController: NavController, habitId: String, workspaceId: String, states: States, viewModels: ViewModels) -> Unit>(
         NavRoutes.HabitDetails.route + "/{workspaceId}" + "/{habitId}" to { navController, habitId, workspaceId, states, viewModel ->
             HabitDetails(
                 navController,
@@ -114,7 +114,7 @@ val HabitScreens =
     )
 
 val TodoScreens =
-    mapOf<String, @Composable (navController: NavController, listId: Long, workspaceId: Long, states: States, viewModels: ViewModels) -> Unit>(
+    mapOf<String, @Composable (navController: NavController, listId: String, workspaceId: String, states: States, viewModels: ViewModels) -> Unit>(
         NavRoutes.TodoDetail.route + "/{workspaceId}" + "/{listId}" to { navController, listId, workspaceId, states, viewModel ->
             TodoDetail(
                 navController,
@@ -127,13 +127,12 @@ val TodoScreens =
     )
 
 val JournalScreens =
-    mapOf<String, @Composable (navController: NavController, journalId: Long, workspaceId: Long, states: States, viewModels: ViewModels) -> Unit>(
+    mapOf<String, @Composable (navController: NavController, journalId: String, workspaceId: String, states: States, viewModels: ViewModels) -> Unit>(
         NavRoutes.EditJournal.route + "/{workspaceId}" + "/{journalId}" to { navController, journalId, workspaceId, states, viewModel ->
             EditJournal(
                 navController,
-                states.journalState.allEntries.find { it.journalId == journalId } ?: JournalModel(
-                    workspaceId = workspaceId
-                ),
+                states.journalState.allEntries.find { it.journalId == journalId } ?:
+                JournalModel(workspaceId = workspaceId),
                 viewModel.journalViewModel::onEvent
             )
         }
@@ -159,13 +158,13 @@ val SettingsScreens =
         NavRoutes.Contact.route to { navController, _, states, _ ->
             Contact(navController, states.settings.data.cornerRadius)
         },
-        NavRoutes.Backup.route to { navController, _, states, _ ->
-            Backup(navController, states.settings.data.cornerRadius)
+        NavRoutes.Backup.route to { navController, _, states, viewModels ->
+            Backup(navController, states.settings.data.cornerRadius, viewModels.backupViewModel)
         }
     )
 
 val EventScreens =
-    mapOf<String, @Composable (navController: NavController, states: States, viewModels: ViewModels, eventId: Long, workspaceId: Long) -> Unit>(
+    mapOf<String, @Composable (navController: NavController, states: States, viewModels: ViewModels, eventId: String, workspaceId: String) -> Unit>(
         NavRoutes.EventDetails.route + "/{workspaceId}" + "/{eventId}" to { navController, states, viewModels, eventId, workspaceId ->
             EventDetails(
                 navController,
@@ -181,7 +180,7 @@ val EventScreens =
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU)
 val WorkspaceScreens =
-    mapOf<String, @Composable (navController: NavController, snackbarHostState: SnackbarHostState, states: States, viewModels: ViewModels, workspaceId: Long) -> Unit>(
+    mapOf<String, @Composable (navController: NavController, snackbarHostState: SnackbarHostState, states: States, viewModels: ViewModels, workspaceId: String) -> Unit>(
         NavRoutes.Workspace.route to { navController, snackbarHostState, states, viewModels, _ ->
             WorkSpaces(
                 snackbarHostState,
@@ -232,7 +231,7 @@ val WorkspaceScreens =
     )
 
 val LabelScreens =
-    mapOf<String, @Composable (navController: NavController, states: States, viewModels: ViewModels, workspaceId: Long) -> Unit>(
+    mapOf<String, @Composable (navController: NavController, states: States, viewModels: ViewModels, workspaceId: String) -> Unit>(
         NavRoutes.EditLabels.route + "/{workspaceId}" to { navController, states, viewModels, workspaceId ->
             EditLabels(
                 navController,

@@ -128,15 +128,15 @@ fun SpacesToolBar(
 }
 
 @Composable
-fun TodoToolBar(navController: NavController, workspaceId: Long) {
-    IconButton({ navController.navigate(NavRoutes.TodoDetail.withArgs(workspaceId, -1)) }) {
+fun TodoToolBar(navController: NavController, workspaceId: String) {
+    IconButton({ navController.navigate(NavRoutes.TodoDetail.withArgs(workspaceId, "")) }) {
         Icon(Icons.Default.Add, null, tint = MaterialTheme.colorScheme.primary)
     }
 }
 
 @Composable
-fun JournalToolBar(navController: NavController, workspaceId: Long) {
-    IconButton({ navController.navigate(NavRoutes.EditJournal.withArgs(workspaceId, -1)) }) {
+fun JournalToolBar(navController: NavController, workspaceId: String) {
+    IconButton({ navController.navigate(NavRoutes.EditJournal.withArgs(workspaceId, "")) }) {
         Icon(Icons.Default.Add, null, tint = MaterialTheme.colorScheme.primary)
     }
 }
@@ -180,7 +180,7 @@ fun HabitToolBar(context: Context, onAddClick: () -> Unit) {
 
 @RequiresApi(Build.VERSION_CODES.TIRAMISU, Build.VERSION_CODES.S)
 @Composable
-fun EventToolBar(context: Context, navController: NavController, workspaceId: Long) {
+fun EventToolBar(context: Context, navController: NavController, workspaceId: String) {
     IconButton({
         if (!canScheduleReminder(context)) {
             Toast.makeText(
@@ -199,7 +199,7 @@ fun EventToolBar(context: Context, navController: NavController, workspaceId: Lo
             openAppNotificationSettings(context)
         }
         if (canScheduleReminder(context) && isNotificationPermissionGranted(context)) {
-            navController.navigate(NavRoutes.EventDetails.withArgs(workspaceId, -1))
+            navController.navigate(NavRoutes.EventDetails.withArgs(workspaceId, ""))
         }
     }) { Icon(Icons.Default.Add, null, tint = MaterialTheme.colorScheme.primary) }
 }
@@ -207,7 +207,7 @@ fun EventToolBar(context: Context, navController: NavController, workspaceId: Lo
 @Composable
 fun NotesToolBar(
     navController: NavController,
-    workspaceId: Long,
+    workspaceId: String,
     query: String,
     isGridView: Boolean,
     onChangeView: () -> Unit,
@@ -220,18 +220,18 @@ fun NotesToolBar(
             IconButton({ onSearchClicked = true }) {
                 Icon(Icons.Default.Search, null, tint = MaterialTheme.colorScheme.primary)
             }
-            IconButton(onChangeView) {
-                val icon = when {
-                    isGridView -> Icons.Default.ViewStream
-                    else -> Icons.Default.GridView
-                }
-                Icon(icon, null, tint = MaterialTheme.colorScheme.primary)
-            }
+//            IconButton(onChangeView) {
+//                val icon = when {
+//                    isGridView -> Icons.Default.ViewStream
+//                    else -> Icons.Default.GridView
+//                }
+//                Icon(icon, null, tint = MaterialTheme.colorScheme.primary)
+//            }
             IconButton({
                 navController.navigate(
                     NavRoutes.NoteDetails.withArgs(
                         workspaceId,
-                        -1
+                        ""
                     )
                 )
             }) {

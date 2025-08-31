@@ -29,10 +29,6 @@ import androidx.compose.material3.SwitchDefaults
 import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -172,12 +168,10 @@ fun SettingOption(
     switchEnabled: (Boolean) -> Unit = {},
     linkClicked: () -> Unit = {},
     customButton: @Composable () -> Unit = { RenderCustomIcon() },
-    customAction: @Composable (() -> Unit) -> Unit = {},
+    onCustomClick: () -> Unit = {},
     clipboardText: String = "",
 ) {
     val context = LocalContext.current
-    var showCustomAction by remember { mutableStateOf(false) }
-    if (showCustomAction) customAction { showCustomAction = !showCustomAction }
 
     AnimatedVisibility(visible = isEnabled) {
         Box(
@@ -191,7 +185,7 @@ fun SettingOption(
                         actionType,
                         variable,
                         switchEnabled,
-                        { showCustomAction = !showCustomAction },
+                        onCustomClick,
                         linkClicked,
                         clipboardText
                     )

@@ -11,11 +11,12 @@ import androidx.compose.material.icons.filled.TaskAlt
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import java.util.UUID
 
 @Entity
 data class WorkspaceModel(
-    @PrimaryKey(autoGenerate = true)
-    val workspaceId: Long = 0L,
+    @PrimaryKey
+    val workspaceId: String = UUID.randomUUID().toString(),
     val title: String = "",
     val description: String = "",
     val colorInd: Int = 0,

@@ -27,7 +27,7 @@ fun LazyListScope.calendarItems(
     navController: NavController,
     radius: Int,
     isLoading: Boolean,
-    workspaceId: Long,
+    workspaceId: String,
     selectedMonth: YearMonth,
     selectedDate: LocalDate,
     settings: Settings,

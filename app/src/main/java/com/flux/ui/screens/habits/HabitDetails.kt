@@ -35,7 +35,7 @@ import kotlinx.coroutines.launch
 fun HabitDetails(
     navController: NavController,
     radius: Int,
-    workspaceId: Long,
+    workspaceId: String,
     habit: HabitModel,
     habitInstances: List<HabitInstanceModel>,
     settings: Settings,

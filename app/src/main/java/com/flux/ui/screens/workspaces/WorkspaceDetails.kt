@@ -100,7 +100,7 @@ fun WorkspaceDetails(
     workspace: WorkspaceModel,
     allEvents: List<EventModel>,
     allNotes: List<NotesModel>,
-    selectedNotes: List<Long>,
+    selectedNotes: List<String>,
     selectedYearMonth: YearMonth,
     selectedDate: LocalDate,
     datedEvents: List<EventModel>,
@@ -496,7 +496,7 @@ fun copyToInternalStorage(context: Context, uri: Uri): String? {
 }
 
 fun removeSpaceData(
-    workspaceId: Long,
+    workspaceId: String,
     spaceId: Int,
     context: Context,
     onTaskEvents: (TaskEvents) -> Unit,

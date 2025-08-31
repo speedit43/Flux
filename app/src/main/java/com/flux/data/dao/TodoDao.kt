@@ -10,6 +10,9 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface TodoDao {
+    @Query("SELECT EXISTS(SELECT 1 FROM TodoModel WHERE  id = :id)")
+    suspend fun exists(id: String): Boolean
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertList(list: TodoModel)
 
@@ -17,8 +20,11 @@ interface TodoDao {
     suspend fun deleteList(list: TodoModel)
 
     @Query("DELETE FROM TodoModel WHERE workspaceId = :workspaceId")
-    fun deleteAllWorkspaceLists(workspaceId: Long)
+    fun deleteAllWorkspaceLists(workspaceId: String)
 
     @Query("SELECT * FROM TodoModel where workspaceId IN (:workspaceId)")
-    fun loadAllLists(workspaceId: Long): Flow<List<TodoModel>>
+    fun loadAllLists(workspaceId: String): Flow<List<TodoModel>>
+
+    @Query("SELECT * FROM TodoModel")
+    suspend fun loadAllLists(): List<TodoModel>
 }

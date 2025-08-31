@@ -80,11 +80,9 @@ fun Settings(
                     icon = Icons.Rounded.Backup,
                     shape = shapeManager(radius = settings.data.cornerRadius, isLast = true),
                     action = {
-                        navController.navigate(NavRoutes.Backup.route) {
-                            launchSingleTop = true
-                            restoreState = true
-                        }
-                    })
+                        navController.navigate(NavRoutes.Backup.route)
+                    }
+                )
             }
 
             item {

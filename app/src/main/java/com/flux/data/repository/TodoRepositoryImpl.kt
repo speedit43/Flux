@@ -12,7 +12,7 @@ class TodoRepositoryImpl @Inject constructor(
     val dao: TodoDao,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ) : TodoRepository {
-    override fun loadAllLists(workspaceId: Long): Flow<List<TodoModel>> {
+    override fun loadAllLists(workspaceId: String): Flow<List<TodoModel>> {
         return dao.loadAllLists(workspaceId)
     }
 
@@ -24,7 +24,7 @@ class TodoRepositoryImpl @Inject constructor(
         return withContext(ioDispatcher) { dao.deleteList(list) }
     }
 
-    override suspend fun deleteAllWorkspaceLists(workspaceId: Long) {
+    override suspend fun deleteAllWorkspaceLists(workspaceId: String) {
         return withContext(ioDispatcher) { dao.deleteAllWorkspaceLists(workspaceId) }
     }
 }

@@ -53,7 +53,7 @@ import java.util.Locale
 fun LazyListScope.journalHomeItems(
     navController: NavController,
     isLoading: Boolean,
-    workspaceId: Long,
+    workspaceId: String,
     allEntries: List<JournalModel>
 ) {
     // Grouping entries by Month and Year

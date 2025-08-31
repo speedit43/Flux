@@ -4,8 +4,8 @@ import com.flux.data.model.JournalModel
 import kotlinx.coroutines.flow.Flow
 
 interface JournalRepository {
-    suspend fun upsertEntry(event: JournalModel)
-    suspend fun deleteEntry(event: JournalModel)
-    suspend fun deleteAllWorkspaceEntry(workspaceId: Long)
-    fun loadAllEntries(workspaceId: Long): Flow<List<JournalModel>>
+    suspend fun upsertEntry(entry: JournalModel)
+    suspend fun deleteEntry(entry: JournalModel)
+    suspend fun deleteAllWorkspaceEntry(workspaceId: String)
+    fun loadAllEntries(workspaceId: String): Flow<List<JournalModel>>
 }

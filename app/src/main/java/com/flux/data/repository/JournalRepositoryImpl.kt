@@ -20,11 +20,11 @@ class JournalRepositoryImpl @Inject constructor(
         return withContext(ioDispatcher) { dao.deleteEntry(entry) }
     }
 
-    override suspend fun deleteAllWorkspaceEntry(workspaceId: Long) {
+    override suspend fun deleteAllWorkspaceEntry(workspaceId: String) {
         return withContext(ioDispatcher) { dao.deleteAllWorkspaceEntries(workspaceId) }
     }
 
-    override fun loadAllEntries(workspaceId: Long): Flow<List<JournalModel>> {
-        return dao.loadEntriesForMonth(workspaceId)
+    override fun loadAllEntries(workspaceId: String): Flow<List<JournalModel>> {
+        return dao.loadAllEntries(workspaceId)
     }
 }

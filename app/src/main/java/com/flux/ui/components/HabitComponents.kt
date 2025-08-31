@@ -235,8 +235,8 @@ fun HabitPreviewCard(
 @Composable
 fun HabitCalendarCard(
     radius: Int,
-    habitId: Long,
-    workspaceId: Long,
+    habitId: String,
+    workspaceId: String,
     startDateTime: Long,
     habitInstances: List<HabitInstanceModel>,
     onHabitEvents: (HabitEvents) -> Unit
@@ -637,7 +637,6 @@ fun calculateStreaks(instances: List<HabitInstanceModel>): Pair<Int, Int> {
 
     // Calculate current streak (ending at today or yesterday)
     var cursor = today
-    currentStreak = 0
     while (dates.contains(cursor)) {
         currentStreak++
         cursor = cursor.minusDays(1)

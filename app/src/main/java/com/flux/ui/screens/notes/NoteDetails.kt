@@ -55,7 +55,7 @@ import java.util.Date
 @Composable
 fun NoteDetails(
     navController: NavController,
-    workspaceId: Long,
+    workspaceId: String,
     note: NotesModel,
     allLabels: List<LabelModel>,
     onNotesEvents: (NotesEvents) -> Unit

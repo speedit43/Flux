@@ -17,8 +17,6 @@ import androidx.compose.material.icons.filled.Colorize
 import androidx.compose.material.icons.filled.DarkMode
 import androidx.compose.material.icons.filled.LightMode
 import androidx.compose.material.icons.filled.Settings
-import androidx.compose.material.icons.rounded.GridOn
-import androidx.compose.material.icons.rounded.GridView
 import androidx.compose.material.icons.rounded.RoundedCorner
 import androidx.compose.material.icons.rounded.ViewCompact
 import androidx.compose.material.icons.rounded.ViewCompactAlt
@@ -33,6 +31,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -63,6 +62,21 @@ fun Customize(
         stringResource(R.string.Medium),
         stringResource(R.string.High)
     )
+
+    var showRadiusDialog by remember { mutableStateOf(false) }
+
+    if(showRadiusDialog){
+        OnRadiusClicked(settings) {
+            onSettingsEvents(
+                SettingEvents.UpdateSettings(
+                    settings.data.copy(
+                        cornerRadius = it
+                    )
+                )
+            )
+            showRadiusDialog=false
+        }
+    }
 
     BasicScaffold(
         title = stringResource(R.string.Customize),
@@ -208,18 +222,7 @@ fun Customize(
                         isFirst = true
                     ),
                     actionType = ActionType.CUSTOM,
-                    customAction = { onExit ->
-                        OnRadiusClicked(settings) {
-                            onSettingsEvents(
-                                SettingEvents.UpdateSettings(
-                                    settings.data.copy(
-                                        cornerRadius = it
-                                    )
-                                )
-                            )
-                            onExit()
-                        }
-                    }
+                    onCustomClick = { showRadiusDialog=true }
                 )
             }
             item {
@@ -280,47 +283,6 @@ fun Customize(
                             )
                         }
                     }
-                )
-            }
-            item {
-                SettingOption(
-                    title = stringResource(R.string.Grid_View),
-                    description = stringResource(R.string.Grid_View_Desc),
-                    icon = Icons.Rounded.GridView,
-                    radius = shapeManager(radius = settings.data.cornerRadius),
-                    variable = settings.data.isGridView,
-                    actionType = ActionType.SWITCH,
-                    switchEnabled = {
-                        onSettingsEvents(
-                            SettingEvents.UpdateSettings(
-                                settings.data.copy(
-                                    isGridView = it
-                                )
-                            )
-                        )
-                    }
-                )
-            }
-
-            item {
-                SettingOption(
-                    title = stringResource(R.string.Monthly_View),
-                    description = stringResource(R.string.Monthly_View_Desc),
-                    icon = Icons.Rounded.GridOn,
-                    radius = shapeManager(
-                        radius = settings.data.cornerRadius
-                    ),
-                    variable = settings.data.isCalendarMonthlyView,
-                    actionType = ActionType.SWITCH,
-                    switchEnabled = {
-                        onSettingsEvents(
-                            SettingEvents.UpdateSettings(
-                                settings.data.copy(
-                                    isCalendarMonthlyView = it
-                                )
-                            )
-                        )
-                    },
                 )
             }
 

@@ -3,6 +3,7 @@ package com.flux
 
 import android.os.Build
 import android.os.Bundle
+import androidx.activity.addCallback
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
@@ -26,6 +27,7 @@ import com.flux.navigation.Loader
 import com.flux.other.createNotificationChannel
 import com.flux.ui.effects.ScreenEffect
 import com.flux.ui.theme.FluxTheme
+import com.flux.ui.viewModel.BackupViewModel
 import com.flux.ui.viewModel.EventViewModel
 import com.flux.ui.viewModel.HabitViewModel
 import com.flux.ui.viewModel.JournalViewModel
@@ -43,6 +45,17 @@ class MainActivity : AppCompatActivity() {
     @RequiresApi(Build.VERSION_CODES.TIRAMISU)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        // Disable predictive back gesture to prevent conflicts with file pickers
+        onBackPressedDispatcher.addCallback(this) {
+            // Handle back press normally
+            if (supportFragmentManager.backStackEntryCount > 0) {
+                supportFragmentManager.popBackStack()
+            } else {
+                finish()
+            }
+        }
+
         createNotificationChannel(this)
         // Splash screen condition
         val splashScreen = installSplashScreen()
@@ -60,6 +73,7 @@ class MainActivity : AppCompatActivity() {
             val habitViewModel: HabitViewModel = hiltViewModel()
             val todoViewModel: TodoViewModel = hiltViewModel()
             val journalViewModel: JournalViewModel = hiltViewModel()
+            val backupViewModel: BackupViewModel = hiltViewModel()
 
             // States
             val settings by settingsViewModel.state.collectAsState()
@@ -101,6 +115,7 @@ class MainActivity : AppCompatActivity() {
                             habitViewModel = habitViewModel,
                             todoViewModel = todoViewModel,
                             journalViewModel = journalViewModel,
+                            backupViewModel = backupViewModel,
                             settings = settings,
                             notesState = notesState,
                             workspaceState = workspaceState,

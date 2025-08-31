@@ -3,15 +3,16 @@ package com.flux.data.model
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.Date
+import java.util.UUID
 
 @Entity
 data class NotesModel(
-    @PrimaryKey(autoGenerate = true)
-    val notesId: Long = 0L,
+    @PrimaryKey
+    val notesId: String = UUID.randomUUID().toString(),
+    val workspaceId: String = "",
     val title: String = "",
     val description: String = "",
     val isPinned: Boolean = false,
-    val workspaceId: Long = 0L,
-    val labels: List<Long> = emptyList(),
+    val labels: List<String> = emptyList(),
     val lastEdited: Date = Date()
 )

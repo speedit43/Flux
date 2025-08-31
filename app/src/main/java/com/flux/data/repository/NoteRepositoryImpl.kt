@@ -35,19 +35,19 @@ class NoteRepositoryImpl @Inject constructor(
         return withContext(ioDispatcher) { labelDao.deleteLabel(label) }
     }
 
-    override suspend fun deleteNotes(notes: List<Long>) {
+    override suspend fun deleteNotes(notes: List<String>) {
         return withContext(ioDispatcher) { notesDao.deleteNotes(notes) }
     }
 
-    override fun loadAllNotes(workspaceId: Long): Flow<List<NotesModel>> {
+    override fun loadAllNotes(workspaceId: String): Flow<List<NotesModel>> {
         return notesDao.loadAllNotes(workspaceId)
     }
 
-    override fun loadAllLabels(workspaceId: Long): Flow<List<LabelModel>> {
+    override fun loadAllLabels(workspaceId: String): Flow<List<LabelModel>> {
         return labelDao.loadAllLabels(workspaceId)
     }
 
-    override suspend fun deleteAllWorkspaceNotes(workspaceId: Long) {
+    override suspend fun deleteAllWorkspaceNotes(workspaceId: String) {
         return (withContext(ioDispatcher) {
             labelDao.deleteAllWorkspaceLabels(workspaceId)
             notesDao.deleteAllWorkspaceNotes(workspaceId)

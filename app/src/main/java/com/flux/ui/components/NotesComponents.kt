@@ -313,7 +313,7 @@ fun NotesPreviewCard(
     isSelected: Boolean,
     note: NotesModel,
     labels: List<String>,
-    onClick: (Long) -> Unit,
+    onClick: (String) -> Unit,
     onLongPressed: () -> Unit
 ) {
     val richTextState = rememberRichTextState()

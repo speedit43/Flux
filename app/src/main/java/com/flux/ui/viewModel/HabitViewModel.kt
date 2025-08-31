@@ -58,7 +58,7 @@ class HabitViewModel @Inject constructor(private val repository: HabitRepository
         viewModelScope.launch(Dispatchers.IO) { repository.deleteInstance(instance) }
     }
 
-    private fun deleteWorkspaceHabits(workspaceId: Long, context: Context) {
+    private fun deleteWorkspaceHabits(workspaceId: String, context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
             _state.value.allHabits.forEach { habit ->
                 cancelReminder(
@@ -84,10 +84,10 @@ class HabitViewModel @Inject constructor(private val repository: HabitRepository
 
     private fun upsertHabit(context: Context, data: HabitModel, adjustedTime: Long) {
         viewModelScope.launch(Dispatchers.IO) {
-            val id = repository.upsertHabit(data)
+            repository.upsertHabit(data)
             scheduleReminder(
                 context = context,
-                id = id,
+                id = data.habitId,
                 type = "HABIT",
                 repeat = "DAILY",
                 timeInMillis = adjustedTime,
@@ -97,13 +97,13 @@ class HabitViewModel @Inject constructor(private val repository: HabitRepository
         }
     }
 
-    private suspend fun loadAllInstances(workspaceId: Long) {
+    private suspend fun loadAllInstances(workspaceId: String) {
         updateState { it.copy(isLoading = true) }
         repository.loadAllHabitInstance(workspaceId).distinctUntilChanged()
             .collect { data -> updateState { it.copy(isLoading = false, allInstances = data) } }
     }
 
-    private suspend fun loadAllHabits(workspaceId: Long) {
+    private suspend fun loadAllHabits(workspaceId: String) {
         updateState { it.copy(isLoading = true) }
         repository.loadAllHabitsOfWorkspace(workspaceId)
             .distinctUntilChanged()

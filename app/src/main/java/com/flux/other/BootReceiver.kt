@@ -140,7 +140,7 @@ interface BootReceiverEntryPoint {
 }
 
 data class Reminder(
-    val id: Long,
+    val id: String,
     val type: String,
     val repeat: String,
     val timeInMillis: Long,

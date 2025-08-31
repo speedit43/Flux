@@ -7,10 +7,10 @@ import java.time.LocalDate
 import java.time.YearMonth
 
 sealed class TaskEvents {
-    data class DeleteAllWorkspaceEvents(val workspaceId: Long, val context: Context) : TaskEvents()
-    data class LoadAllInstances(val workspaceId: Long) : TaskEvents()
-    data class LoadAllTask(val workspaceId: Long) : TaskEvents()
-    data class LoadDateTask(val workspaceId: Long, val selectedDate: LocalDate) : TaskEvents()
+    data class DeleteAllWorkspaceEvents(val workspaceId: String, val context: Context) : TaskEvents()
+    data class LoadAllInstances(val workspaceId: String) : TaskEvents()
+    data class LoadAllTask(val workspaceId: String) : TaskEvents()
+    data class LoadDateTask(val workspaceId: String, val selectedDate: LocalDate) : TaskEvents()
     data class UpsertTask(
         val context: Context,
         val taskEvent: EventModel,

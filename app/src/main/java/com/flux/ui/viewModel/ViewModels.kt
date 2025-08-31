@@ -7,5 +7,6 @@ data class ViewModels(
     val habitViewModel: HabitViewModel,
     val workspaceViewModel: WorkspaceViewModel,
     val journalViewModel: JournalViewModel,
-    val settingsViewModel: SettingsViewModel
+    val settingsViewModel: SettingsViewModel,
+    val backupViewModel: BackupViewModel
 )

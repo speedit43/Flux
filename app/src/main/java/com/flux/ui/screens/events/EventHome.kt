@@ -66,7 +66,7 @@ fun LazyListScope.eventHomeItems(
     allEvents: List<EventModel>,
     allEventInstances: List<EventInstanceModel>,
     settings: Settings,
-    workspaceId: Long,
+    workspaceId: String,
     onTaskEvents: (TaskEvents) -> Unit
 ) {
     if (isLoading) item { Loader() }

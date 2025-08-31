@@ -24,8 +24,8 @@ import com.flux.ui.events.NotesEvents
 @OptIn(ExperimentalMaterial3Api::class)
 fun LazyListScope.notesHomeItems(
     navController: NavController,
-    workspaceId: Long,
-    selectedNotes: List<Long>,
+    workspaceId: String,
+    selectedNotes: List<String>,
     query: String,
     radius: Int,
     allLabels: List<LabelModel>,

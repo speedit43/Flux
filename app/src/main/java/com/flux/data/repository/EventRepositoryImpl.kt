@@ -15,7 +15,7 @@ class EventRepositoryImpl @Inject constructor(
     private val eventInstanceDao: EventInstanceDao,
     @IODispatcher private val ioDispatcher: CoroutineDispatcher
 ) : EventRepository {
-    override suspend fun upsertEvent(event: EventModel): Long {
+    override suspend fun upsertEvent(event: EventModel) {
         return withContext(ioDispatcher) { eventDao.upsertEvent(event) }
     }
 
@@ -27,12 +27,12 @@ class EventRepositoryImpl @Inject constructor(
         return eventDao.loadAllEvents()
     }
 
-    override fun loadAllWorkspaceEvents(workspaceId: Long): Flow<List<EventModel>> {
+    override fun loadAllWorkspaceEvents(workspaceId: String): Flow<List<EventModel>> {
         return eventDao.loadAllEvents(workspaceId)
     }
 
-    override fun loadAllEventInstances(workspaceId: Long): Flow<List<EventInstanceModel>> {
-        return eventInstanceDao.loadAllInstances(workspaceId)
+    override fun loadAllEventInstances(workspaceId: String): Flow<List<EventInstanceModel>> {
+        return eventInstanceDao.loadAllWorkspaceInstances(workspaceId)
     }
 
     override suspend fun deleteEvent(event: EventModel) {
@@ -42,7 +42,7 @@ class EventRepositoryImpl @Inject constructor(
         }
     }
 
-    override suspend fun deleteAllWorkspaceEvent(workspaceId: Long) {
+    override suspend fun deleteAllWorkspaceEvent(workspaceId: String) {
         return withContext(ioDispatcher) {
             eventDao.deleteAllWorkspaceEvents(workspaceId)
             eventInstanceDao.deleteAllWorkspaceInstance(workspaceId)

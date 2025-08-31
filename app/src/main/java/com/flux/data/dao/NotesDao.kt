@@ -10,6 +10,9 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface NotesDao {
+    @Query("SELECT EXISTS(SELECT 1 FROM NotesModel WHERE notesId = :notesId)")
+    suspend fun exists(notesId: String): Boolean
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertNote(notes: NotesModel)
 
@@ -20,11 +23,14 @@ interface NotesDao {
     suspend fun deleteNote(note: NotesModel)
 
     @Query("DELETE FROM NotesModel WHERE notesId IN (:ids)")
-    suspend fun deleteNotes(ids: List<Long>)
+    suspend fun deleteNotes(ids: List<String>)
 
     @Query("DELETE FROM NotesModel WHERE workspaceId = :workspaceId")
-    suspend fun deleteAllWorkspaceNotes(workspaceId: Long)
+    suspend fun deleteAllWorkspaceNotes(workspaceId: String)
 
     @Query("SELECT * FROM NotesModel where workspaceId IN (:workspaceId)")
-    fun loadAllNotes(workspaceId: Long): Flow<List<NotesModel>>
+    fun loadAllNotes(workspaceId: String): Flow<List<NotesModel>>
+
+    @Query("SELECT * FROM NotesModel")
+    fun loadAllNotes(): List<NotesModel>
 }

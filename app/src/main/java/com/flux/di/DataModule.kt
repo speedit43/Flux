@@ -12,7 +12,6 @@ import com.flux.data.dao.NotesDao
 import com.flux.data.dao.SettingsDao
 import com.flux.data.dao.TodoDao
 import com.flux.data.dao.WorkspaceDao
-import com.flux.data.database.ALL_MIGRATIONS
 import com.flux.data.database.FluxDatabase
 import dagger.Module
 import dagger.Provides
@@ -33,7 +32,7 @@ object DataModule {
         app,
         FluxDatabase::class.java,
         "FluxDatabase"
-    ).addMigrations(*ALL_MIGRATIONS).build()
+    ).build()
 
     @Singleton
     @Provides

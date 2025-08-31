@@ -42,7 +42,7 @@ class JournalViewModel @Inject constructor(
         }
     }
 
-    private fun deleteAllWorkspaceEntries(workspaceId: Long) {
+    private fun deleteAllWorkspaceEntries(workspaceId: String) {
         viewModelScope.launch(Dispatchers.IO) { repository.deleteAllWorkspaceEntry(workspaceId) }
     }
 
@@ -54,7 +54,7 @@ class JournalViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) { repository.upsertEntry(data) }
     }
 
-    fun loadJournalEntries(workspaceId: Long) {
+    fun loadJournalEntries(workspaceId: String) {
         updateState { it.copy(isLoading = true) }
 
         viewModelScope.launch(Dispatchers.IO) {

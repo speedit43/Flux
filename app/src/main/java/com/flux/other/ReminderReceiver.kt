@@ -27,10 +27,10 @@ class ReminderReceiver : BroadcastReceiver() {
         val title = intent.getStringExtra("TITLE") ?: "Reminder"
         val description =
             intent.getStringExtra("DESCRIPTION") ?: "It's time to complete pending things"
-        val id = intent.getLongExtra("ID", 0L)
+        val id = intent.getStringExtra("ID") ?: "" // UUID string
         val type = intent.getStringExtra("TYPE") ?: "HABIT"
         val repeat = intent.getStringExtra("REPEAT") ?: "NONE"
-        val notificationId = getUniqueRequestCode(type, id).toInt()
+        val notificationId = getUniqueRequestCode(type, id)
 
         val notification = NotificationCompat.Builder(context, "notification_channel")
             .setSmallIcon(R.mipmap.ic_launcher_foreground)
@@ -104,7 +104,7 @@ fun canScheduleReminder(context: Context): Boolean {
 
 fun scheduleReminder(
     context: Context,
-    id: Long,
+    id: String, // UUID string
     type: String,
     repeat: String = "NONE",
     timeInMillis: Long,
@@ -118,7 +118,7 @@ fun scheduleReminder(
 
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            requestCode.toInt(),
+            requestCode,
             intent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )
@@ -134,7 +134,7 @@ fun scheduleReminder(
 
 fun createReminderIntent(
     context: Context,
-    id: Long,
+    id: String, // UUID string
     type: String,
     title: String,
     description: String,
@@ -149,17 +149,13 @@ fun createReminderIntent(
     }
 }
 
-
-private fun getUniqueRequestCode(type: String, id: Long): Long {
-    return when (type) {
-        "HABIT" -> id
-        else -> 200_000 + id
-    }
+fun getUniqueRequestCode(type: String, uuid: String): Int {
+    return (type + uuid).hashCode()
 }
 
 fun cancelReminder(
     context: Context,
-    id: Long,
+    id: String, // UUID string
     type: String,
     title: String,
     description: String,
@@ -177,7 +173,7 @@ fun cancelReminder(
         val requestCode = getUniqueRequestCode(type, id)
         val pendingIntent = PendingIntent.getBroadcast(
             context,
-            requestCode.toInt(),
+            requestCode,
             intent,
             PendingIntent.FLAG_IMMUTABLE or PendingIntent.FLAG_UPDATE_CURRENT
         )

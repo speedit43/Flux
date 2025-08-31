@@ -48,7 +48,7 @@ class TodoViewModel @Inject constructor(
         }
     }
 
-    private fun deleteWorkspaceLists(workspaceId: Long) {
+    private fun deleteWorkspaceLists(workspaceId: String) {
         viewModelScope.launch(Dispatchers.IO) { repository.deleteAllWorkspaceLists(workspaceId) }
     }
 
@@ -60,7 +60,7 @@ class TodoViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) { repository.upsertList(data) }
     }
 
-    private suspend fun loadAllLists(workspaceId: Long) {
+    private suspend fun loadAllLists(workspaceId: String) {
         updateState { it.copy(isLoading = true) }
         repository.loadAllLists(workspaceId).distinctUntilChanged()
             .collect { data -> updateState { it.copy(isLoading = false, allLists = data) } }

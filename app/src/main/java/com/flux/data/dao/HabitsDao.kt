@@ -10,17 +10,20 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface HabitsDao {
+    @Query("SELECT EXISTS(SELECT 1 FROM HabitModel WHERE habitId = :habitId)")
+    suspend fun exists(habitId: String): Boolean
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun upsertHabit(habit: HabitModel): Long
+    suspend fun upsertHabit(habit: HabitModel)
 
     @Delete
     suspend fun deleteHabit(habit: HabitModel)
 
     @Query("DELETE FROM HabitModel WHERE workspaceId = :workspaceId")
-    suspend fun deleteAllWorkspaceHabit(workspaceId: Long)
+    suspend fun deleteAllWorkspaceHabit(workspaceId: String)
 
     @Query("SELECT * FROM HabitModel WHERE workspaceId = :workspaceId")
-    fun loadAllHabitsOfWorkspace(workspaceId: Long): Flow<List<HabitModel>>
+    fun loadAllHabitsOfWorkspace(workspaceId: String): Flow<List<HabitModel>>
 
     @Query("Select * FROM HabitModel")
     suspend fun loadAllHabits(): List<HabitModel>

@@ -47,7 +47,7 @@ import com.flux.ui.events.TodoEvents
 fun TodoDetail(
     navController: NavController,
     list: TodoModel,
-    workspaceId: Long,
+    workspaceId: String,
     onTodoEvents: (TodoEvents) -> Unit
 ) {
     var title by remember { mutableStateOf(list.title) }

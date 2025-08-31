@@ -80,7 +80,7 @@ class NotesViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) { repository.upsertLabel(data) }
     }
 
-    private fun deleteWorkspaceNotes(workspaceId: Long) {
+    private fun deleteWorkspaceNotes(workspaceId: String) {
         viewModelScope.launch(Dispatchers.IO) { repository.deleteAllWorkspaceNotes(workspaceId) }
     }
 
@@ -97,7 +97,7 @@ class NotesViewModel @Inject constructor(
         }
     }
 
-    private suspend fun loadAllNotes(workspaceId: Long) {
+    private suspend fun loadAllNotes(workspaceId: String) {
         updateState { it.copy(isNotesLoading = true) }
 
         repository.loadAllNotes(workspaceId)
@@ -108,7 +108,7 @@ class NotesViewModel @Inject constructor(
             }
     }
 
-    private suspend fun loadAllLabels(workspaceId: Long) {
+    private suspend fun loadAllLabels(workspaceId: String) {
         updateState { it.copy(isLabelsLoading = true) }
         repository.loadAllLabels(workspaceId)
             .collect { data -> updateState { it.copy(isLabelsLoading = false, allLabels = data) } }

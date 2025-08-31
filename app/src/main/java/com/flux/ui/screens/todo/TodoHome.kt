@@ -27,7 +27,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.surfaceColorAtElevation
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableLongStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -52,7 +52,7 @@ fun LazyListScope.todoHomeItems(
     navController: NavController,
     radius: Int,
     allList: List<TodoModel>,
-    workspaceId: Long,
+    workspaceId: String,
     isLoading: Boolean,
     onTodoEvents: (TodoEvents) -> Unit
 ) {
@@ -60,7 +60,7 @@ fun LazyListScope.todoHomeItems(
     else if (allList.isEmpty()) item { EmptyTodoList() }
     else {
         item {
-            var expanded by remember { mutableLongStateOf(-1L) }
+            var expanded by remember { mutableStateOf("") }
 
             ElevatedCard(
                 modifier = Modifier.padding(top = 8.dp),
@@ -95,7 +95,7 @@ fun LazyListScope.todoHomeItems(
                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
                                 IconButton(onClick = {
-                                    expanded = if (expanded != item.id) item.id else -1
+                                    expanded = if (expanded != item.id) item.id else ""
                                 }) {
                                     Icon(
                                         if (expanded == item.id) Icons.Default.KeyboardArrowDown else Icons.AutoMirrored.Default.KeyboardArrowRight,

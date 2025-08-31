@@ -18,6 +18,7 @@ import com.flux.ui.state.Settings
 import com.flux.ui.state.States
 import com.flux.ui.state.TodoState
 import com.flux.ui.state.WorkspaceState
+import com.flux.ui.viewModel.BackupViewModel
 import com.flux.ui.viewModel.EventViewModel
 import com.flux.ui.viewModel.HabitViewModel
 import com.flux.ui.viewModel.JournalViewModel
@@ -39,6 +40,7 @@ fun AppNavHost(
     habitViewModel: HabitViewModel,
     todoViewModel: TodoViewModel,
     journalViewModel: JournalViewModel,
+    backupViewModel: BackupViewModel,
     settings: Settings,
     notesState: NotesState,
     workspaceState: WorkspaceState,
@@ -53,21 +55,21 @@ fun AppNavHost(
 
             if (route.contains("{notesId}")) {
                 arguments.add(navArgument("notesId") {
-                    type = NavType.LongType
+                    type = NavType.StringType
                     nullable = false
                 })
             }
 
             if (route.contains("{workspaceId}")) {
                 arguments.add(navArgument("workspaceId") {
-                    type = NavType.LongType
+                    type = NavType.StringType
                     nullable = false
                 })
             }
 
             bottomSlideComposable(route, arguments) { entry ->
-                val notesId = entry.arguments?.getLong("notesId") ?: 0L
-                val workspaceId = entry.arguments?.getLong("workspaceId") ?: 0L
+                val notesId = entry.arguments?.getString("notesId") ?: ""
+                val workspaceId = entry.arguments?.getString("workspaceId") ?: ""
 
                 screen(
                     navController,
@@ -89,7 +91,8 @@ fun AppNavHost(
                         habitViewModel,
                         workspaceViewModel,
                         journalViewModel,
-                        settingsViewModel
+                        settingsViewModel,
+                        backupViewModel
                     )
                 )
             }
@@ -117,21 +120,21 @@ fun AppNavHost(
 
             if (route.contains("{workspaceId}")) {
                 arguments.add(navArgument("workspaceId") {
-                    type = NavType.LongType
+                    type = NavType.StringType
                     nullable = false
                 })
             }
 
             if (route.contains("{journalId}")) {
                 arguments.add(navArgument("journalId") {
-                    type = NavType.LongType
+                    type = NavType.StringType
                     nullable = false
                 })
             }
 
             bottomSlideComposable(route, arguments) { entry ->
-                val journalId = entry.arguments?.getLong("journalId") ?: 0L
-                val workspaceId = entry.arguments?.getLong("workspaceId") ?: 0L
+                val journalId = entry.arguments?.getString("journalId") ?: ""
+                val workspaceId = entry.arguments?.getString("workspaceId") ?: ""
 
                 screen(
                     navController,
@@ -153,7 +156,8 @@ fun AppNavHost(
                         habitViewModel,
                         workspaceViewModel,
                         journalViewModel,
-                        settingsViewModel
+                        settingsViewModel,
+                        backupViewModel
                     )
                 )
             }
@@ -164,21 +168,21 @@ fun AppNavHost(
 
             if (route.contains("{listId}")) {
                 arguments.add(navArgument("listId") {
-                    type = NavType.LongType
+                    type = NavType.StringType
                     nullable = false
                 })
             }
 
             if (route.contains("{workspaceId}")) {
                 arguments.add(navArgument("workspaceId") {
-                    type = NavType.LongType
+                    type = NavType.StringType
                     nullable = false
                 })
             }
 
             bottomSlideComposable(route, arguments) { entry ->
-                val listId = entry.arguments?.getLong("listId") ?: 0L
-                val workspaceId = entry.arguments?.getLong("workspaceId") ?: 0L
+                val listId = entry.arguments?.getString("listId") ?: ""
+                val workspaceId = entry.arguments?.getString("workspaceId") ?: ""
 
                 screen(
                     navController,
@@ -200,7 +204,8 @@ fun AppNavHost(
                         habitViewModel,
                         workspaceViewModel,
                         journalViewModel,
-                        settingsViewModel
+                        settingsViewModel,
+                        backupViewModel
                     )
                 )
             }
@@ -211,21 +216,21 @@ fun AppNavHost(
 
             if (route.contains("{habitId}")) {
                 arguments.add(navArgument("habitId") {
-                    type = NavType.LongType
+                    type = NavType.StringType
                     nullable = false
                 })
             }
 
             if (route.contains("{workspaceId}")) {
                 arguments.add(navArgument("workspaceId") {
-                    type = NavType.LongType
+                    type = NavType.StringType
                     nullable = false
                 })
             }
 
             animatedComposable(route, arguments) { entry ->
-                val habitId = entry.arguments?.getLong("habitId") ?: 0L
-                val workspaceId = entry.arguments?.getLong("workspaceId") ?: 0L
+                val habitId = entry.arguments?.getString("habitId") ?: ""
+                val workspaceId = entry.arguments?.getString("workspaceId") ?: ""
 
                 screen(
                     navController,
@@ -247,7 +252,8 @@ fun AppNavHost(
                         habitViewModel,
                         workspaceViewModel,
                         journalViewModel,
-                        settingsViewModel
+                        settingsViewModel,
+                        backupViewModel
                     )
                 )
             }
@@ -275,7 +281,8 @@ fun AppNavHost(
                             habitViewModel,
                             workspaceViewModel,
                             journalViewModel,
-                            settingsViewModel
+                            settingsViewModel,
+                            backupViewModel
                         )
                     )
                 }
@@ -300,7 +307,8 @@ fun AppNavHost(
                             habitViewModel,
                             workspaceViewModel,
                             journalViewModel,
-                            settingsViewModel
+                            settingsViewModel,
+                            backupViewModel
                         )
                     )
                 }
@@ -312,21 +320,21 @@ fun AppNavHost(
 
             if (route.contains("{eventId}")) {
                 arguments.add(navArgument("eventId") {
-                    type = NavType.LongType
+                    type = NavType.StringType
                     nullable = false
                 })
             }
 
             if (route.contains("{workspaceId}")) {
                 arguments.add(navArgument("workspaceId") {
-                    type = NavType.LongType
+                    type = NavType.StringType
                     nullable = false
                 })
             }
 
             bottomSlideComposable(route, arguments) { entry ->
-                val eventId = entry.arguments?.getLong("eventId") ?: 0L
-                val workspaceId = entry.arguments?.getLong("workspaceId") ?: 0L
+                val eventId = entry.arguments?.getString("eventId") ?: ""
+                val workspaceId = entry.arguments?.getString("workspaceId") ?: ""
                 screen(
                     navController,
                     States(
@@ -345,7 +353,8 @@ fun AppNavHost(
                         habitViewModel,
                         workspaceViewModel,
                         journalViewModel,
-                        settingsViewModel
+                        settingsViewModel,
+                        backupViewModel
                     ),
                     eventId,
                     workspaceId
@@ -358,13 +367,13 @@ fun AppNavHost(
 
             if (route.contains("{workspaceId}")) {
                 arguments.add(navArgument("workspaceId") {
-                    type = NavType.LongType
+                    type = NavType.StringType
                     nullable = false
                 })
             }
 
             bottomSlideComposable(route, arguments) { entry ->
-                val workspaceId = entry.arguments?.getLong("workspaceId") ?: 0L
+                val workspaceId = entry.arguments?.getString("workspaceId") ?: ""
 
                 screen(
                     navController,
@@ -384,7 +393,8 @@ fun AppNavHost(
                         habitViewModel,
                         workspaceViewModel,
                         journalViewModel,
-                        settingsViewModel
+                        settingsViewModel,
+                        backupViewModel
                     ),
                     workspaceId
                 )
@@ -396,13 +406,13 @@ fun AppNavHost(
 
             if (route.contains("{workspaceId}")) {
                 arguments.add(navArgument("workspaceId") {
-                    type = NavType.LongType
+                    type = NavType.StringType
                     nullable = false
                 })
             }
 
             animatedComposable(route, arguments) { entry ->
-                val id = entry.arguments?.getLong("workspaceId") ?: 0L
+                val id = entry.arguments?.getString("workspaceId") ?: ""
                 screen(
                     navController,
                     snackbarHostState,
@@ -422,7 +432,8 @@ fun AppNavHost(
                         habitViewModel,
                         workspaceViewModel,
                         journalViewModel,
-                        settingsViewModel
+                        settingsViewModel,
+                        backupViewModel
                     ),
                     id
                 )

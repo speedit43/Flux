@@ -79,11 +79,11 @@ class EventViewModel @Inject constructor(
 
     private fun upsertEvent(context: Context, data: EventModel, adjustedTime: Long?) {
         viewModelScope.launch(Dispatchers.IO) {
-            val id = repository.upsertEvent(data)
+            repository.upsertEvent(data)
             if (adjustedTime != null) {
                 scheduleReminder(
                     context = context,
-                    id = id,
+                    id = data.eventId,
                     type = "EVENT",
                     repeat = data.repetition.toString(),
                     timeInMillis = adjustedTime,
@@ -98,7 +98,7 @@ class EventViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.IO) { repository.toggleStatus(data) }
     }
 
-    private fun deleteWorkspaceEvents(workspaceId: Long, context: Context) {
+    private fun deleteWorkspaceEvents(workspaceId: String, context: Context) {
         viewModelScope.launch(Dispatchers.IO) {
             _state.value.allEvent.forEach { event ->
                 cancelReminder(
@@ -139,7 +139,7 @@ class EventViewModel @Inject constructor(
     }
 
     private suspend fun collectWorkspaceEvents(
-        workspaceId: Long,
+        workspaceId: String,
         onEvents: suspend (List<EventModel>) -> Unit
     ) {
         repository.loadAllWorkspaceEvents(workspaceId)
@@ -147,7 +147,7 @@ class EventViewModel @Inject constructor(
             .collect { events -> onEvents(events) }
     }
 
-    private suspend fun loadDateEvents(workspaceId: Long, date: LocalDate) {
+    private suspend fun loadDateEvents(workspaceId: String, date: LocalDate) {
         safeUpdateState { it.copy(isDatedEventLoading = true) }
 
         collectWorkspaceEvents(workspaceId) { events ->
@@ -156,19 +156,19 @@ class EventViewModel @Inject constructor(
         }
     }
 
-    private suspend fun loadAllEvents(workspaceId: Long) {
+    private suspend fun loadAllEvents(workspaceId: String) {
         safeUpdateState { it.copy(isAllEventsLoading = true) }
 
         collectWorkspaceEvents(workspaceId) { events ->
             safeUpdateState {
                 it.copy(
                     isAllEventsLoading = false,
-                    allEvent = events.sortedBy { it.startDateTime })
+                    allEvent = events.sortedBy {event-> event.startDateTime })
             }
         }
     }
 
-    private suspend fun loadAllEventsInstances(workspaceId: Long) {
+    private suspend fun loadAllEventsInstances(workspaceId: String) {
         safeUpdateState { it.copy(isDatedEventLoading = true) }
         repository.loadAllEventInstances(workspaceId)
             .distinctUntilChanged()
