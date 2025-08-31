@@ -65,6 +65,10 @@
     <string name="Backup_Description">Backup your data to a file</string>
     <string name="Restore">Restore</string>
     <string name="Restore_Description">Restore your data from backup file</string>
+    <string name="Compact_Mode">Compact Mode</string>
+    <string name="Compact_Mode_Desc">Show workspace in compact mode</string>
+    <string name="Extreme_Compact_Mode">Extreme Compact Mode</string>
+    <string name="Extreme_Compact_Mode_Desc">Tighter the spacing between workspaces</string>
 
     <!-- Common -->
     <string name="Pin">Pin</string>
