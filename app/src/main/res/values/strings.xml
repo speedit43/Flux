@@ -5,6 +5,9 @@
     <!-- Auth -->
     <string name="Auth_with_Biometric">Authenticate with Biometrics</string>
     <string name="Auth_Error">Error: Authentication failed</string>
+    <string name="Biometric_Title">Biometric Authentication</string>
+    <string name="Biometric_Subtitle">Use your fingerprint or face to authenticate</string>
+    <string name="Biometric_Cancel">Cancel</string>
 
     <!-- Settings -->
     <string name="Settings">Settings</string>
@@ -185,6 +188,5 @@
     <string name="Write_here">Write here…</string>
     <string name="Empty_Journal">No Entry Found</string>
     <string name="Today_Entry">Today\'s Entry</string>
-
 
 </resources>
