@@ -133,6 +133,10 @@
     <string name="Add_Space">Add Space</string>
     <string name="Home">Home</string>
     <string name="Empty_Workspace">No Workspace Found</string>
+    <string name="Wrong_Passkey">Wrong Passkey</string>
+    <string name="New">New</string>
+    <string name="Pinned">Pinned</string>
+    <string name="Others">Others</string>
 
     <!-- Events -->
     <string name="Events">Events</string>
