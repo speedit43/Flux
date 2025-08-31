@@ -61,6 +61,10 @@
     <string name="Github_Repository">Github Repository</string>
     <string name="Hour_Format_24">24-Hour Format</string>
     <string name="Hour_Format_24_Desc">Use 24-hour time format</string>
+    <string name="Backup">Backup</string>
+    <string name="Backup_Description">Backup your data to a file</string>
+    <string name="Restore">Restore</string>
+    <string name="Restore_Description">Restore your data from backup file</string>
 
     <!-- Common -->
     <string name="Pin">Pin</string>

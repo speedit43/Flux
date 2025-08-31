@@ -14,8 +14,10 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.flux.R
 import com.flux.ui.components.ActionType
 import com.flux.ui.components.BasicScaffold
 import com.flux.ui.components.SettingOption
@@ -58,7 +60,7 @@ fun Backup(
     }
 
     BasicScaffold(
-        title = "Backup",
+        title = stringResource(R.string.Backup),
         onBackClicked = {
             navController.navigateUp()
         }
@@ -70,8 +72,8 @@ fun Backup(
         ) {
             item {
                 SettingOption(
-                    title = "Backup",
-                    description = "Backup your data to a file",
+                    title = stringResource(R.string.Backup),
+                    description = stringResource(R.string.Backup_Description),
                     icon = Icons.Rounded.Backup,
                     radius = shapeManager(radius = radius, isFirst = true),
                     actionType = ActionType.CUSTOM,
@@ -81,8 +83,8 @@ fun Backup(
 
             item {
                 SettingOption(
-                    title = "Restore",
-                    description = "Restore your data from a backup file",
+                    title = stringResource(R.string.Restore),
+                    description = stringResource(R.string.Restore_Description),
                     icon = Icons.Rounded.Restore,
                     radius = shapeManager(radius = radius, isLast = true),
                     actionType = ActionType.CUSTOM,
