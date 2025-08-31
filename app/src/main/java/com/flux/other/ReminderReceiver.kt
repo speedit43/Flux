@@ -88,7 +88,7 @@ fun requestExactAlarmPermission(context: Context) {
         context.startActivity(intent)
     } catch (e: ActivityNotFoundException) {
         e.printStackTrace()
-        Toast.makeText(context, "Unable to open alarm permission settings", Toast.LENGTH_LONG)
+        Toast.makeText(context, context.getString(R.string.Error_Alarm_Permission_Settings), Toast.LENGTH_LONG)
             .show()
     }
 }
@@ -127,7 +127,7 @@ fun scheduleReminder(
     } catch (e: SecurityException) {
         e.printStackTrace()
         android.os.Handler(context.mainLooper).post {
-            Toast.makeText(context, "Error: Failed to schedule alarm", Toast.LENGTH_LONG).show()
+            Toast.makeText(context, context.getString(R.string.Error_Schedule_Alarm_Failed), Toast.LENGTH_LONG).show()
         }
     }
 }
@@ -182,7 +182,7 @@ fun cancelReminder(
         alarmManager.cancel(pendingIntent)
     } catch (e: SecurityException) {
         e.printStackTrace()
-        Toast.makeText(context, "Error: Failed to cancel alarm", Toast.LENGTH_LONG).show()
+        Toast.makeText(context, context.getString(R.string.Error_Cancel_Alarm_Failed), Toast.LENGTH_LONG).show()
     }
 }
 

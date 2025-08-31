@@ -173,6 +173,9 @@
     <string name="Today">Today</string>
     <string name="at">at</string>
     <string name="on">on</string>
+    <string name="Error_Alarm_Permission_Settings">Unable to open alarm permission settings</string>
+    <string name="Error_Schedule_Alarm_Failed">Error: Failed to schedule alarm</string>
+    <string name="Error_Cancel_Alarm_Failed">Error: Failed to cancel alarm</string>
 
     <!-- Calendar -->
     <string name="Calendar">Calendar</string>
