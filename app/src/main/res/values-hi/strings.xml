@@ -2,29 +2,47 @@
 <resources>
     <string name="app_name">फ्लक्स</string>
 
-    <!-- Auth -->
+    <!-- Authentication -->
     <string name="Auth_with_Biometric">बायोमेट्रिक से प्रमाणीकरण करें</string>
     <string name="Auth_Error">त्रुटि: प्रमाणीकरण विफल हुआ</string>
+    <string name="Biometric_Title">Biometric Authentication</string>
+    <string name="Biometric_Subtitle">Use your fingerprint or face to authenticate</string>
+    <string name="Biometric_Cancel">Cancel</string>
+
+    <!-- Common UI Elements -->
+    <string name="Pin">पिन करें</string>
+    <string name="Unpin">अनपिन करें</string>
+    <string name="Pinned">पिन की गई</string>
+    <string name="Dismiss">खारिज करें</string>
+    <string name="Confirm">पुष्टि करें</string>
+    <string name="Cancel">रद्द करें</string>
+    <string name="Set">सेट करें</string>
+    <string name="Custom">कस्टम</string>
+    <string name="Today">Today</string>
+    <string name="New">New</string>
+    <string name="Others">अन्य</string>
+    <string name="Title">शीर्षक</string>
+    <string name="Description">विवरण</string>
+    <string name="Amount">राशि</string>
+    <string name="at">at</string>
+    <string name="on">on</string>
+
+    <!-- Dialog Messages -->
+    <string name="deleteDialogTitle">क्या आप वाकई सुनिश्चित हैं?</string>
+    <string name="deleteDialogText">यह पूर्ववत नहीं किया जा सकता, यह सभी डेटा को स्थायी रूप से हटा देगा।</string>
+    <string name="removeDialogTitle">स्पेस हटाएं?</string>
+    <string name="removeDialogText">इसे पूर्ववत नहीं किया जा सकता, यह इस स्पेस का सारा डेटा हटा देगा।</string>
+
+    <!-- Permissions -->
+    <string name="Reminder_Permission">कृपया रिमाइंडर चालू करें</string>
+    <string name="Notification_Permission">कृपया सूचनाएँ चालू करें</string>
 
     <!-- Settings -->
     <string name="Settings">सेटिंग्स</string>
+
+    <!-- Settings - Customize -->
     <string name="Customize">अनुकूलित करें</string>
     <string name="Customize_desc">थीम • आकृति • कंट्रास्ट</string>
-    <string name="About">अबाउट</string>
-    <string name="About_desc">संस्करण • डेवलपर्स • स्रोत कोड</string>
-    <string name="Privacy">गोपनीयता</string>
-    <string name="Privacy_desc">स्क्रीन सुरक्षा • ऐप लॉक</string>
-    <string name="Screen_Protection">स्क्रीन सुरक्षा</string>
-    <string name="Screen_Protection_Desc">स्क्रीनशॉट निष्क्रिय करें</string>
-    <string name="App_Lock">ऐप लॉक</string>
-    <string name="App_Lock_desc">फिंगरप्रिंट प्रमाणीकरण</string>
-    <string name="Languages">भाषाएँ</string>
-    <string name="Languages_desc">भाषा बदलें</string>
-    <string name="Contact">संपर्क करें</string>
-    <string name="Contact_desc">फ़ीचर अनुरोध • बग रिपोर्ट</string>
-    <string name="Contact_desc2">गिटहब पर समस्या उठाएँ</string>
-    <string name="Support">सहायता</string>
-    <string name="Support_desc">अपना समर्थन दिखाएँ</string>
     <string name="System_theme">सिस्टम थीम</string>
     <string name="System_theme_desc">डिवाइस की थीम के अनुसार स्वचालित रूप से अनुकूलित</string>
     <string name="Light_theme">लाइट थीम</string>
@@ -35,21 +53,51 @@
     <string name="Dynamic_theme_desc">पृष्ठभूमि के अनुसार स्वचालित रूप से अनुकूलित</string>
     <string name="Amoled_theme">एमोलेड थीम</string>
     <string name="Amoled_theme_desc">पृष्ठभूमि के लिए काला रंग उपयोग करें</string>
+    <string name="Themes">थीम्स</string>
+    <string name="Shape">आकार • दृश्य</string>
     <string name="Radius">कोण</string>
     <string name="Radius_desc">आकार बदलें</string>
-    <string name="Grid_View">ग्रिड दृश्य</string>
-    <string name="Grid_View_Desc">नोट्स का दृश्य ग्रिड में बदलें</string>
-    <string name="Monthly_View">मासिक दृश्य</string>
-    <string name="Monthly_View_Desc">मासिक कैलेंडर दृश्य में बदलें</string>
+    <string name="Select_radius">कोण चुनें</string>
     <string name="Contrast">कंट्रास्ट</string>
     <string name="Low">कम</string>
     <string name="Medium">मध्यम</string>
     <string name="High">उच्च</string>
-    <string name="Shape">आकार • दृश्य</string>
-    <string name="Themes">थीम्स</string>
-    <string name="Select_radius">कोण चुनें</string>
+    <string name="Grid_View">ग्रिड दृश्य</string>
+    <string name="Grid_View_Desc">नोट्स का दृश्य ग्रिड में बदलें</string>
+    <string name="Monthly_View">मासिक दृश्य</string>
+    <string name="Monthly_View_Desc">मासिक कैलेंडर दृश्य में बदलें</string>
+    <string name="Hour_Format_24">24-Hour Format</string>
+    <string name="Hour_Format_24_Desc">Use 24-hour time format</string>
+    <string name="Compact_Mode">Compact Mode</string>
+    <string name="Compact_Mode_Desc">Show workspace in compact mode</string>
+    <string name="Extreme_Compact_Mode">Extreme Compact Mode</string>
+    <string name="Extreme_Compact_Mode_Desc">Tighter the spacing between workspaces</string>
+
+    <!-- Settings - Privacy -->
+    <string name="Privacy">गोपनीयता</string>
+    <string name="Privacy_desc">स्क्रीन सुरक्षा • ऐप लॉक • Encryption</string>
+    <string name="Screen_Protection">स्क्रीन सुरक्षा</string>
+    <string name="Screen_Protection_Desc">स्क्रीनशॉट निष्क्रिय करें</string>
+    <string name="App_Lock">ऐप लॉक</string>
+    <string name="App_Lock_desc">फिंगरप्रिंट प्रमाणीकरण</string>
+    <string name="Encrypt">Encrypt</string>
+    <string name="Encrypt_Desc">Encrypt your data when backup</string>
+
+    <!-- Settings - Languages -->
+    <string name="Languages">भाषाएँ</string>
+    <string name="Languages_desc">भाषा बदलें</string>
     <string name="System_language">सिस्टम भाषा</string>
     <string name="System_language_desc">डिवाइस की भाषा के अनुसार स्वचालित रूप से अनुकूलित</string>
+
+    <!-- Settings - Backup -->
+    <string name="Backup">Backup</string>
+    <string name="Backup_Description">Backup your data to a file</string>
+    <string name="Restore">Restore</string>
+    <string name="Restore_Description">Restore your data from backup file</string>
+
+    <!-- Settings - About -->
+    <string name="About">अबाउट</string>
+    <string name="About_desc">संस्करण • डेवलपर्स • स्रोत कोड</string>
     <string name="Build_type">बिल्ड प्रकार</string>
     <string name="Build_version">बिल्ड संस्करण</string>
     <string name="Developer">डेवलपर</string>
@@ -57,38 +105,50 @@
     <string name="Source_Code">सोर्स कोड</string>
     <string name="Github_Repository">गिटहब रिपोजिटरी</string>
 
-    <!-- Common -->
-    <string name="Pin">पिन करें</string>
-    <string name="Unpin">अनपिन करें</string>
-    <string name="Pinned">पिन की गई</string>
-    <string name="Dismiss">खारिज करें</string>
-    <string name="Confirm">पुष्टि करें</string>
-    <string name="deleteDialogText">यह पूर्ववत नहीं किया जा सकता, यह सभी डेटा को स्थायी रूप से हटा देगा।</string>
-    <string name="deleteDialogTitle">क्या आप वाकई सुनिश्चित हैं?</string>
-    <string name="removeDialogText">इसे पूर्ववत नहीं किया जा सकता, यह इस स्पेस का सारा डेटा हटा देगा।</string>
-    <string name="removeDialogTitle">स्पेस हटाएं?</string>
-    <string name="Reminder_Permission">कृपया रिमाइंडर चालू करें</string>
-    <string name="Notification_Permission">कृपया सूचनाएँ चालू करें</string>
+    <!-- Settings - Contact & Support -->
+    <string name="Contact">संपर्क करें</string>
+    <string name="Contact_desc">फ़ीचर अनुरोध • बग रिपोर्ट</string>
+    <string name="Contact_desc2">गिटहब पर समस्या उठाएँ</string>
+    <string name="Support">सहायता</string>
+    <string name="Support_desc">अपना समर्थन दिखाएँ</string>
+
+    <!-- Workspace -->
+    <string name="Home">होम</string>
+    <string name="Edit_Workspace">वर्कस्पेस संपादित करें</string>
+    <string name="Add_Workspace">वर्कस्पेस जोड़ें</string>
+    <string name="Search_Workspaces">वर्कस्पेस खोजें…</string>
+    <string name="Delete_Workspace">वर्कस्पेस हटाएँ</string>
+    <string name="Edit_Details">विवरण संपादित करें</string>
+    <string name="Change_Cover">कवर बदलें</string>
+    <string name="Change_Icon">Change Icon</string>
+    <string name="Lock_Workspace">वर्कस्पेस लॉक करें</string>
+    <string name="Unlock_Workspace">वर्कस्पेस अनलॉक करें</string>
+    <string name="Add_Spaces">स्पेस जोड़ें</string>
+    <string name="Add_Space">स्पेस जोड़ें</string>
+    <string name="Empty_Workspace">कोई वर्कस्पेस नहीं मिला</string>
+    <string name="Wrong_Passkey">Wrong Passkey</string>
+    <string name="enterPasskey">पासकी दर्ज करें</string>
+
+    <!-- Space Management -->
+    <string name="Current">Current</string>
+    <string name="Available_Spaces">Available Spaces</string>
 
     <!-- Notes -->
     <string name="Notes">नोट्स</string>
-    <string name="Others">अन्य</string>
-    <string name="Labels">लेबल</string>
     <string name="Search_Notes">नोट्स खोजें…</string>
     <string name="Delete_Note">नोट हटाएं</string>
-    <string name="Title">शीर्षक</string>
-    <string name="Description">विवरण</string>
     <string name="Empty_Notes">कोई नोट नहीं मिला</string>
-    <string name="Empty_Labels">कोई लेबल नहीं मिला</string>
     <string name="Last_Edited">अंतिम संपादन</string>
     <string name="Word_Count">शब्दों की संख्या</string>
     <string name="Character_Count">अक्षरों की संख्या</string>
+    <string name="Labels">लेबल</string>
+    <string name="Empty_Labels">कोई लेबल नहीं मिला</string>
     <string name="Edit_Labels">लेबल संपादित करें</string>
     <string name="Add_Label">नया लेबल जोड़ें</string>
     <string name="Edit_Label">लेबल संपादित करें</string>
     <string name="Select_Label">लेबल चुनें</string>
 
-    <!-- To-do List -->
+    <!-- To-Do -->
     <string name="To_Do">करने के कार्य</string>
     <string name="Empty_Lists">कोई सूची नहीं मिली</string>
     <string name="Edit_list">सूची संपादित करें</string>
@@ -105,21 +165,6 @@
     <string name="Edit_Habit">आदत संपादित करें</string>
     <string name="completed_habits">%1$d बार पूरा किया गया</string>
 
-    <!-- Workspace -->
-    <string name="Edit_Workspace">वर्कस्पेस संपादित करें</string>
-    <string name="Add_Workspace">वर्कस्पेस जोड़ें</string>
-    <string name="Search_Workspaces">वर्कस्पेस खोजें…</string>
-    <string name="Delete_Workspace">वर्कस्पेस हटाएँ</string>
-    <string name="Edit_Details">विवरण संपादित करें</string>
-    <string name="Change_Cover">कवर बदलें</string>
-    <string name="Lock_Workspace">वर्कस्पेस लॉक करें</string>
-    <string name="Unlock_Workspace">वर्कस्पेस अनलॉक करें</string>
-    <string name="Add_Spaces">स्पेस जोड़ें</string>
-    <string name="Add_Space">स्पेस जोड़ें</string>
-    <string name="Home">होम</string>
-    <string name="Empty_Workspace">कोई वर्कस्पेस नहीं मिला</string>
-    <string name="Change_Icon">Change Icon</string>
-
     <!-- Events -->
     <string name="Events">इवेंट्स</string>
     <string name="Empty_Events">कोई ईवेंट नहीं मिला</string>
@@ -135,12 +180,19 @@
     <string name="Status_Pending">लंबित</string>
     <string name="Mark_As_Completed">पूर्ण के रूप में चिन्हित करें</string>
     <string name="Mark_As_Uncompleted">अपूर्ण के रूप में चिन्हित करें</string>
+
+    <!-- Event Notifications -->
     <string name="On_Time">ईवेंट के समय</string>
     <string name="five_minutes_before">5 मिनट पहले</string>
     <string name="ten_minutes_before">10 मिनट पहले</string>
     <string name="fifteen_minutes_before">15 मिनट पहले</string>
     <string name="thirty_minutes_before">30 मिनट पहले</string>
     <string name="one_hour_before">1 घंटे पहले</string>
+    <string name="Custom_Notification">कस्टम सूचना</string>
+    <string name="Add_Notification">सूचना जोड़ें</string>
+    <string name="Select_Time">समय चुनें</string>
+
+    <!-- Time Units -->
     <string name="day">दिन</string>
     <string name="days">दिन</string>
     <string name="hour">घंटा</string>
@@ -148,37 +200,38 @@
     <string name="minute">मिनट</string>
     <string name="minutes">मिनट</string>
     <string name="before">पहले</string>
-    <string name="Custom_Notification">कस्टम सूचना</string>
-    <string name="Add_Notification">सूचना जोड़ें</string>
-    <string name="Cancel">रद्द करें</string>
-    <string name="Set">सेट करें</string>
-    <string name="Custom">कस्टम</string>
-    <string name="Select_Time">समय चुनें</string>
-    <string name="enterPasskey">पासकी दर्ज करें</string>
-    <string name="Amount">राशि</string>
 
     <!-- Calendar -->
     <string name="Calendar">कैलेंडर</string>
 
+    <!-- Journal -->
+    <string name="Journal">जर्नल</string>
+    <string name="Write_here">यहाँ लिखें…</string>
+    <string name="Empty_Journal">कोई प्रविष्टि नहीं मिली</string>
+    <string name="Today_Entry">आज की प्रविष्टि</string>
+
     <!-- Analytics -->
     <string name="Analytics">विश्लेषण</string>
-    <string name="Upcoming">आगामी</string>
-    <string name="Failed">असफल</string>
-    <string name="Completed">पूरा हुआ</string>
     <string name="Empty_Analytics">एनालिटिक्स देखने के लिए स्पेस जोड़ें</string>
     <string name="HeatMap">आदत हीट मैप</string>
     <string name="Completed_Today">आज पूरा किया</string>
     <string name="This_Week">इस सप्ताह</string>
     <string name="This_Month">इस महीने</string>
+    <string name="Upcoming">आगामी</string>
+    <string name="Failed">असफल</string>
+    <string name="Completed">पूरा हुआ</string>
     <string name="journals_written">%1$d जर्नल्स लिखे गए</string>
     <string name="best_streak">सर्वश्रेष्ठ: %1$d दिन</string>
     <string name="completion_percentage">%1$d%% पूर्णता</string>
 
-    <!-- Journal -->
-    <string name="Journal">जर्नल</string>
-    <string name="Empty_Journal">कोई प्रविष्टि नहीं मिली</string>
-    <string name="Today_Entry">आज की प्रविष्टि</string>
-    <string name="Write_here">यहाँ लिखें…</string>
+    <!-- Error Messages -->
+    <string name="Error_Alarm_Permission_Settings">Unable to open alarm permission settings</string>
+    <string name="Error_Schedule_Alarm_Failed">Error: Failed to schedule alarm</string>
+    <string name="Error_Cancel_Alarm_Failed">Error: Failed to cancel alarm</string>
 
+    <!-- Content Descriptions (Accessibility) -->
+    <string name="Add_Spaces_Content_Desc">Add-spaces</string>
+    <string name="Space_Content_Desc">space</string>
+    <string name="Edit_Space_Content_Desc">Edit-space</string>
 
 </resources>
