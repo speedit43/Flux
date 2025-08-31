@@ -69,6 +69,8 @@
     <string name="Compact_Mode_Desc">Show workspace in compact mode</string>
     <string name="Extreme_Compact_Mode">Extreme Compact Mode</string>
     <string name="Extreme_Compact_Mode_Desc">Tighter the spacing between workspaces</string>
+    <string name="Encrypt">Encrypt</string>
+    <string name="Encrypt_Desc">Encrypt your data when backup</string>
 
     <!-- Common -->
     <string name="Pin">Pin</string>
