@@ -225,9 +225,9 @@
     <string name="completion_percentage">%1$d%% Terminé</string>
 
     <!-- Error Messages -->
-    <string name="Error_Alarm_Permission_Settings">Impossible d\'ouvrir les paramètres d\'autorisation d'alarme</string>
+    <string name="Error_Alarm_Permission_Settings">Impossible d\'ouvrir les paramètres d\'autorisation d\'alarme</string>
     <string name="Error_Schedule_Alarm_Failed">Erreur : Échec de la programmation de l\'alarme</string>
-    <string name="Error_Cancel_Alarm_Failed">Erreur : Échec de l\'annulation de l'alarme</string>
+    <string name="Error_Cancel_Alarm_Failed">Erreur : Échec de l\'annulation de l\'alarme</string>
 
     <!-- Content Descriptions (Accessibility) -->
     <string name="Add_Spaces_Content_Desc">Ajouter-espaces</string>
