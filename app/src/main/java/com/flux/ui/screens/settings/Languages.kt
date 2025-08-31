@@ -111,7 +111,7 @@ private fun getSupportedLanguages(context: Context): Map<String, String> {
         e.printStackTrace()
     }
     return localeList.map { it.toString() }
-        .associateBy({ LocaleListCompat.forLanguageTags(it).get(0)?.displayName ?: "" }) { it }
+        .associateBy({ getLanguageInfo(it.toString()).displayName })
 }
 
 data class LanguageInfo(
