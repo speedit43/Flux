@@ -42,9 +42,9 @@ import com.flux.data.model.HabitModel
 import com.flux.data.model.JournalModel
 import com.flux.data.model.LabelModel
 import com.flux.data.model.NotesModel
-import com.flux.data.model.SpacesList
 import com.flux.data.model.TodoModel
 import com.flux.data.model.WorkspaceModel
+import com.flux.data.model.getSpacesList
 import com.flux.navigation.NavRoutes
 import com.flux.other.icons
 import com.flux.ui.components.AddNewSpacesBottomSheet
@@ -146,6 +146,8 @@ fun WorkspaceDetails(
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
     val scope = rememberCoroutineScope()
     var addSpaceBottomSheet by remember { mutableStateOf(false) }
+
+    val SpacesList = getSpacesList()
 
     Scaffold(
         containerColor = MaterialTheme.colorScheme.surfaceContainerLow,

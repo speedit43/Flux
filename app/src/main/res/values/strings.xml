@@ -209,4 +209,8 @@
     <string name="Space_Content_Desc">space</string>
     <string name="Edit_Space_Content_Desc">Edit-space</string>
 
+    <!-- Space management -->
+    <string name="Current">Current</string>
+    <string name="Available_Spaces">Available Spaces</string>
+
 </resources>
