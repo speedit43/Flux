@@ -4,6 +4,7 @@ import androidx.biometric.BiometricManager
 import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.FragmentActivity
+import com.flux.R
 import java.util.concurrent.Executor
 
 class BiometricAuthenticator(
@@ -34,9 +35,9 @@ class BiometricAuthenticator(
     }
 
     private val promptInfo = BiometricPrompt.PromptInfo.Builder()
-        .setTitle("Fingerprint Authentication")
-        .setSubtitle("Authenticate to access the app")
-        .setNegativeButtonText("Cancel")
+        .setTitle(activity.getString(R.string.Biometric_Title))
+        .setSubtitle(activity.getString(R.string.Biometric_Subtitle))
+        .setNegativeButtonText(activity.getString(R.string.Biometric_Cancel))
         .build()
 
     fun authenticate() {

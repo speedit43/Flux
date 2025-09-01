@@ -227,8 +227,8 @@ fun Customize(
             }
             item {
                 SettingOption(
-                    title = "Compact Mode",
-                    description = "Show workspace in compact mode",
+                    title = stringResource(R.string.Compact_Mode),
+                    description = stringResource(R.string.Compact_Mode_Desc),
                     icon = Icons.Rounded.ViewCompactAlt,
                     radius = shapeManager(radius = settings.data.cornerRadius),
                     variable = settings.data.workspaceGridColumns > 1,
@@ -257,8 +257,8 @@ fun Customize(
             item {
                 val isEnabled = settings.data.workspaceGridColumns > 1
                 SettingOption(
-                    title = "Extreme Compact Mode",
-                    description = "Tighter the spacing between workspaces",
+                    title = stringResource(R.string.Extreme_Compact_Mode),
+                    description = stringResource(R.string.Extreme_Compact_Mode_Desc),
                     icon = Icons.Rounded.ViewCompact,
                     isEnabled = isEnabled,
                     radius = shapeManager(radius = settings.data.cornerRadius),

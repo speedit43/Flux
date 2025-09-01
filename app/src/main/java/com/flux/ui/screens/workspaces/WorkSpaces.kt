@@ -31,6 +31,7 @@ import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -50,6 +51,7 @@ import com.flux.ui.events.TaskEvents
 import com.flux.ui.events.TodoEvents
 import com.flux.ui.events.WorkspaceEvents
 import kotlinx.coroutines.launch
+import com.flux.R
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -88,7 +90,7 @@ fun WorkSpaces(
                 onJournalEvents(JournalEvents.LoadJournalEntries(it.workspaceId))
                 navController.navigate(NavRoutes.WorkspaceHome.withArgs(it.workspaceId))
             } else {
-                Toast.makeText(context, "Wrong Passkey", Toast.LENGTH_SHORT).show()
+                Toast.makeText(context, context.getString(R.string.Wrong_Passkey), Toast.LENGTH_SHORT).show()
             }
         }) { lockedWorkspace = null }
     }
@@ -146,7 +148,7 @@ fun WorkSpaces(
                 icon = { Icon(Icons.Default.Add, null) },
                 text = {
                     Text(
-                        "New",
+                        stringResource(R.string.New),
                         style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
                     )
                 })
@@ -186,7 +188,7 @@ fun WorkSpaces(
                     }) {
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         Text(
-                            "Pinned",
+                            stringResource(R.string.Pinned),
                             color = MaterialTheme.colorScheme.primary,
                             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold),
                             modifier = Modifier.padding(vertical = 8.dp)
@@ -227,7 +229,7 @@ fun WorkSpaces(
                     }) {
                     item(span = { GridItemSpan(maxLineSpan) }) {
                         Text(
-                            "Others",
+                            stringResource(R.string.Others),
                             modifier = Modifier.padding(vertical = 8.dp),
                             color = MaterialTheme.colorScheme.primary,
                             style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.SemiBold)
