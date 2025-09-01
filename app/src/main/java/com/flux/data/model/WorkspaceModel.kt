@@ -8,10 +8,13 @@ import androidx.compose.material.icons.filled.CalendarMonth
 import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.EventAvailable
 import androidx.compose.material.icons.filled.TaskAlt
+import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import java.util.UUID
+import com.flux.R
 
 @Entity
 data class WorkspaceModel(
@@ -33,12 +36,15 @@ data class Space(
     val icon: ImageVector
 )
 
-val SpacesList = listOf(
-    Space(1, "Notes", Icons.AutoMirrored.Default.Notes),
-    Space(2, "To-Do", Icons.Default.TaskAlt),
-    Space(3, "Events", Icons.Default.Event),
-    Space(4, "Calendar", Icons.Default.CalendarMonth),
-    Space(5, "Journal", Icons.Default.AutoStories),
-    Space(6, "Habits", Icons.Default.EventAvailable),
-    Space(7, "Analytics", Icons.Default.Analytics)
-)
+@Composable
+fun getSpacesList(): List<Space> {
+    return listOf(
+        Space(1, stringResource(R.string.Notes), Icons.AutoMirrored.Default.Notes),
+        Space(2, stringResource(R.string.To_Do), Icons.Default.TaskAlt),
+        Space(3, stringResource(R.string.Events), Icons.Default.Event),
+        Space(4, stringResource(R.string.Calendar), Icons.Default.CalendarMonth),
+        Space(5, stringResource(R.string.Journal), Icons.Default.AutoStories),
+        Space(6, stringResource(R.string.Habits), Icons.Default.EventAvailable),
+        Space(7, stringResource(R.string.Analytics), Icons.Default.Analytics)
+    )
+}

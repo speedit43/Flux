@@ -39,6 +39,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.flux.R
@@ -70,11 +71,11 @@ fun SpacesToolBar(
             ) {
                 Icon(
                     Icons.Default.Add,
-                    contentDescription = "Add-spaces",
+                    contentDescription = stringResource(R.string.Add_Spaces_Content_Desc),
                     tint = MaterialTheme.colorScheme.primary
                 )
                 Text(
-                    text = "Add Space",
+                    text = stringResource(R.string.Add_Space),
                     style = MaterialTheme.typography.bodyLarge,
                     color = MaterialTheme.colorScheme.primary
                 )
@@ -93,7 +94,7 @@ fun SpacesToolBar(
                 ) {
                     Icon(
                         icon,
-                        contentDescription = "space",
+                        contentDescription = stringResource(R.string.Space_Content_Desc),
                         tint = MaterialTheme.colorScheme.primary
                     )
                     Text(
@@ -103,7 +104,7 @@ fun SpacesToolBar(
                     )
                     Icon(
                         Icons.Default.ArrowDropDown,
-                        contentDescription = "space",
+                        contentDescription = stringResource(R.string.Space_Content_Desc),
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }
@@ -118,7 +119,7 @@ fun SpacesToolBar(
                     Icon(
                         Icons.Default.Edit,
                         modifier = Modifier.padding(6.dp),
-                        contentDescription = "Edit-space",
+                        contentDescription = stringResource(R.string.Edit_Space_Content_Desc),
                         tint = MaterialTheme.colorScheme.primary
                     )
                 }

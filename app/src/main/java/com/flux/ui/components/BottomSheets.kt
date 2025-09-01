@@ -61,8 +61,8 @@ import androidx.compose.ui.unit.dp
 import com.flux.R
 import com.flux.data.model.HabitModel
 import com.flux.data.model.Space
-import com.flux.data.model.SpacesList
 import com.flux.data.model.WorkspaceModel
+import com.flux.data.model.getSpacesList
 import com.flux.other.icons
 import com.flux.other.workspaceIconList
 import com.flux.ui.screens.events.toFormattedTime
@@ -454,6 +454,7 @@ fun AddNewSpacesBottomSheet(
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
     var removeSpace by remember { mutableIntStateOf(-1) }
+    val SpacesList = getSpacesList()
     if (showDeleteDialog) {
         DeleteAlert(onConfirmation = {
             onRemove(removeSpace)
@@ -474,7 +475,7 @@ fun AddNewSpacesBottomSheet(
                 if (selectedSpaces.isNotEmpty()) {
                     item {
                         Text(
-                            "Current",
+                            stringResource(R.string.Current),
                             modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
                             fontWeight = FontWeight.Bold,
                             color = MaterialTheme.colorScheme.primary
@@ -498,7 +499,7 @@ fun AddNewSpacesBottomSheet(
                 if (selectedSpaces.size != SpacesList.size) {
                     item {
                         Text(
-                            "Available Spaces",
+                            stringResource(R.string.Available_Spaces),
                             modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp),
                             fontWeight = FontWeight.Bold
                         )

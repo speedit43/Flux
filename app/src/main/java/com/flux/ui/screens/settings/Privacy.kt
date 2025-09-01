@@ -69,8 +69,8 @@ fun Privacy(
             }
 //            item {
 //                SettingOption(
-//                    title = "Encrypt",
-//                    description = "Encrypt your data when backup",
+//                    title = stringResource(R.string.Encrypt),
+//                    description = stringResource(R.string.Encrypt_Desc),
 //                    icon = Icons.Filled.EnhancedEncryption,
 //                    radius = shapeManager(radius = data.cornerRadius, isBoth = true),
 //                    actionType = ActionType.SWITCH,
