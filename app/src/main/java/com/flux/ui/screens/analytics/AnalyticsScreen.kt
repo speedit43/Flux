@@ -80,28 +80,36 @@ fun LazyListScope.analyticsItems(
     when {
         workspace.selectedSpaces.isEmpty() -> item { EmptyAnalytics() }
         else -> {
-            item {
-                SettingOption(
-                    title = stringResource(R.string.Notes),
-                    description = totalNotes.toString(),
-                    icon = Icons.AutoMirrored.Default.Notes,
-                    radius = shapeManager(radius = radius, isBoth = true),
-                    actionType = ActionType.None
-                )
-                Spacer(Modifier.height(8.dp))
+            if (workspace.selectedSpaces.contains(1)){
+                item {
+                    SettingOption(
+                        title = stringResource(R.string.Notes),
+                        description = totalNotes.toString(),
+                        icon = Icons.AutoMirrored.Default.Notes,
+                        radius = shapeManager(radius = radius, isBoth = true),
+                        actionType = ActionType.None
+                    )
+                    Spacer(Modifier.height(8.dp))
+                }
             }
-            item {
-                JournalAnalytics(radius, journalEntries)
-                Spacer(Modifier.height(8.dp))
+            if (workspace.selectedSpaces.contains(5)) {
+                item {
+                    JournalAnalytics(radius, journalEntries)
+                    Spacer(Modifier.height(8.dp))
+                }
             }
-            item {
-                ChartCirclePie(
-                    radius = radius,
-                    weeklyEventStats = calculateWeeklyEventStats(allEvents, allEventInstances)
-                )
-                Spacer(Modifier.height(8.dp))
+            if (workspace.selectedSpaces.contains(3)) {
+                item {
+                    ChartCirclePie(
+                        radius = radius,
+                        weeklyEventStats = calculateWeeklyEventStats(allEvents, allEventInstances)
+                    )
+                    Spacer(Modifier.height(8.dp))
+                }
             }
-            item { HabitHeatMap(radius, allHabitInstances, totalHabits) }
+            if (workspace.selectedSpaces.contains(6)){
+                item { HabitHeatMap(radius, allHabitInstances, totalHabits) }
+            }
         }
     }
 }

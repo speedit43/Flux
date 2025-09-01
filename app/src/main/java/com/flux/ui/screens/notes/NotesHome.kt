@@ -1,11 +1,12 @@
 package com.flux.ui.screens.notes
 
-import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.BoxWithConstraints
+import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyListScope
-import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
@@ -28,6 +29,7 @@ fun LazyListScope.notesHomeItems(
     selectedNotes: List<String>,
     query: String,
     radius: Int,
+    isGridView: Boolean,
     allLabels: List<LabelModel>,
     isLoading: Boolean,
     allNotes: List<NotesModel>,
@@ -53,35 +55,44 @@ fun LazyListScope.notesHomeItems(
                     }
                 }
 
-                items(pinnedNotes.filter {
-                    it.title.lowercase().contains(query.lowercase()) || it.description.lowercase()
-                        .contains(query.lowercase())
-                }) { note ->
-                    NotesPreviewCard(
-                        radius = radius,
-                        isSelected = selectedNotes.contains(note.notesId),
-                        note = note,
-                        labels = allLabels.filter { note.labels.contains(it.labelId) }
-                            .map { it.value },
-                        onClick = {
-                            navController.navigate(
-                                NavRoutes.NoteDetails.withArgs(
-                                    workspaceId,
-                                    it
+                item {
+                    BoxWithConstraints(Modifier.fillMaxWidth()) {
+                        val spacing = 8.dp
+                        val cellWidth = if(isGridView) (maxWidth - spacing) / 2 else maxWidth
+
+                        FlowRow(
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            pinnedNotes.filter {
+                                it.title.contains(query, ignoreCase = true) ||
+                                        it.description.contains(query, ignoreCase = true)
+                            }.forEach { note ->
+                                NotesPreviewCard(
+                                    radius = radius,
+                                    isSelected = selectedNotes.contains(note.notesId),
+                                    note = note,
+                                    labels = allLabels.filter { note.labels.contains(it.labelId) }.map { it.value },
+                                    onClick = {
+                                        navController.navigate(
+                                            NavRoutes.NoteDetails.withArgs(workspaceId, note.notesId)
+                                        )
+                                    },
+                                    onLongPressed = {
+                                        if (selectedNotes.contains(note.notesId)) {
+                                            onNotesEvents(NotesEvents.UnSelectNotes(note.notesId))
+                                        } else {
+                                            onNotesEvents(NotesEvents.SelectNotes(note.notesId))
+                                        }
+                                    },
+                                    modifier = Modifier.width(cellWidth)
                                 )
-                            )
-                        },
-                        onLongPressed = {
-                            if (selectedNotes.contains(note.notesId)) {
-                                onNotesEvents(NotesEvents.UnSelectNotes(note.notesId))
-                            } else {
-                                onNotesEvents(NotesEvents.SelectNotes(note.notesId))
                             }
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    Spacer(Modifier.height(8.dp))
+                        }
+                    }
                 }
+
                 if (pinnedNotes.isNotEmpty()) {
                     item {
                         Text(
@@ -92,34 +103,43 @@ fun LazyListScope.notesHomeItems(
                         )
                     }
                 }
-                items(unPinnedNotes.filter {
-                    it.title.lowercase().contains(query.lowercase()) || it.description.lowercase()
-                        .contains(query.lowercase())
-                }) { note ->
-                    NotesPreviewCard(
-                        radius = radius,
-                        isSelected = selectedNotes.contains(note.notesId),
-                        note = note,
-                        labels = allLabels.filter { note.labels.contains(it.labelId) }
-                            .map { it.value },
-                        onClick = {
-                            navController.navigate(
-                                NavRoutes.NoteDetails.withArgs(
-                                    workspaceId,
-                                    it
+
+                item {
+                    BoxWithConstraints(Modifier.fillMaxWidth()) {
+                        val spacing = 8.dp
+                        val cellWidth = if(isGridView) (maxWidth - spacing) / 2 else maxWidth
+
+                        FlowRow(
+                            horizontalArrangement = Arrangement.spacedBy(4.dp),
+                            verticalArrangement = Arrangement.spacedBy(4.dp),
+                            modifier = Modifier.fillMaxWidth()
+                        ) {
+                            unPinnedNotes.filter {
+                                it.title.contains(query, ignoreCase = true) ||
+                                        it.description.contains(query, ignoreCase = true)
+                            }.forEach { note ->
+                                NotesPreviewCard(
+                                    radius = radius,
+                                    isSelected = selectedNotes.contains(note.notesId),
+                                    note = note,
+                                    labels = allLabels.filter { note.labels.contains(it.labelId) }.map { it.value },
+                                    onClick = {
+                                        navController.navigate(
+                                            NavRoutes.NoteDetails.withArgs(workspaceId, note.notesId)
+                                        )
+                                    },
+                                    onLongPressed = {
+                                        if (selectedNotes.contains(note.notesId)) {
+                                            onNotesEvents(NotesEvents.UnSelectNotes(note.notesId))
+                                        } else {
+                                            onNotesEvents(NotesEvents.SelectNotes(note.notesId))
+                                        }
+                                    },
+                                    modifier = Modifier.width(cellWidth)
                                 )
-                            )
-                        },
-                        onLongPressed = {
-                            if (selectedNotes.contains(note.notesId)) {
-                                onNotesEvents(NotesEvents.UnSelectNotes(note.notesId))
-                            } else {
-                                onNotesEvents(NotesEvents.SelectNotes(note.notesId))
                             }
-                        },
-                        modifier = Modifier.fillMaxWidth()
-                    )
-                    Spacer(Modifier.height(8.dp))
+                        }
+                    }
                 }
             }
     }

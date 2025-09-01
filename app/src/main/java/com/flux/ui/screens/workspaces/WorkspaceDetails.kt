@@ -317,6 +317,7 @@ fun WorkspaceDetails(
                     selectedNotes,
                     query,
                     settings.data.cornerRadius,
+                    isGridView = settings.data.isGridView,
                     allLabels,
                     isNotesLoading,
                     allNotes,

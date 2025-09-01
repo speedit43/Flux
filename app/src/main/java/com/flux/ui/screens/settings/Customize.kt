@@ -2,6 +2,7 @@ package com.flux.ui.screens.settings
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -10,6 +11,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccessTime
@@ -45,10 +48,12 @@ import androidx.navigation.NavController
 import com.flux.R
 import com.flux.ui.components.ActionType
 import com.flux.ui.components.BasicScaffold
+import com.flux.ui.components.SelectableColorPlatte
 import com.flux.ui.components.SettingOption
 import com.flux.ui.components.shapeManager
 import com.flux.ui.events.SettingEvents
 import com.flux.ui.state.Settings
+import com.flux.ui.theme.lightSchemes
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -307,6 +312,28 @@ fun Customize(
                         )
                     }
                 )
+            }
+
+            item {
+                Spacer(Modifier.height(12.dp))
+                Text(
+                    "Theme Palette",
+                    color = MaterialTheme.colorScheme.primary,
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 20.sp
+                )
+                Spacer(Modifier.height(12.dp))
+
+                LazyRow(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    itemsIndexed(lightSchemes){ index, item->
+                        SelectableColorPlatte(
+                            selected = index==settings.data.themeNumber,
+                            colorScheme = item
+                        ) {
+                            onSettingsEvents(SettingEvents.UpdateSettings(settings.data.copy(themeNumber = index)))
+                        }
+                    }
+                }
             }
 
             item {

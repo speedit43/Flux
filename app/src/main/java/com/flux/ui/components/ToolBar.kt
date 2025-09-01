@@ -220,13 +220,13 @@ fun NotesToolBar(
             IconButton({ onSearchClicked = true }) {
                 Icon(Icons.Default.Search, null, tint = MaterialTheme.colorScheme.primary)
             }
-//            IconButton(onChangeView) {
-//                val icon = when {
-//                    isGridView -> Icons.Default.ViewStream
-//                    else -> Icons.Default.GridView
-//                }
-//                Icon(icon, null, tint = MaterialTheme.colorScheme.primary)
-//            }
+            IconButton(onChangeView) {
+                val icon = when {
+                    isGridView -> Icons.Default.ViewStream
+                    else -> Icons.Default.GridView
+                }
+                Icon(icon, null, tint = MaterialTheme.colorScheme.primary)
+            }
             IconButton({
                 navController.navigate(
                     NavRoutes.NoteDetails.withArgs(

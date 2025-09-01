@@ -67,19 +67,19 @@ fun Privacy(
                 )
                 Spacer(Modifier.height(16.dp))
             }
-            item {
-                SettingOption(
-                    title = "Encrypt",
-                    description = "Encrypt your data when backup",
-                    icon = Icons.Filled.EnhancedEncryption,
-                    radius = shapeManager(radius = data.cornerRadius, isBoth = true),
-                    actionType = ActionType.SWITCH,
-                    variable = false,
-                    switchEnabled = {
+//            item {
+//                SettingOption(
+//                    title = "Encrypt",
+//                    description = "Encrypt your data when backup",
+//                    icon = Icons.Filled.EnhancedEncryption,
+//                    radius = shapeManager(radius = data.cornerRadius, isBoth = true),
+//                    actionType = ActionType.SWITCH,
+//                    variable = false,
+//                    switchEnabled = {
 //                        onSettingsEvents(SettingEvents.UpdateSettings(data.copy(isBiometricEnabled = it)))
-                    }
-                )
-            }
+//                    }
+//                )
+//            }
         }
     }
 }
