@@ -317,7 +317,7 @@ fun Customize(
             item {
                 Spacer(Modifier.height(12.dp))
                 Text(
-                    "Theme Palette",
+                    stringResource(R.string.Theme_Palette),
                     color = MaterialTheme.colorScheme.primary,
                     fontWeight = FontWeight.Bold,
                     fontSize = 20.sp

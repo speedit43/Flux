@@ -5,9 +5,9 @@
     <!-- Authentication -->
     <string name="Auth_with_Biometric">बायोमेट्रिक से प्रमाणीकरण करें</string>
     <string name="Auth_Error">त्रुटि: प्रमाणीकरण विफल हुआ</string>
-    <string name="Biometric_Title">Biometric Authentication</string>
-    <string name="Biometric_Subtitle">Use your fingerprint or face to authenticate</string>
-    <string name="Biometric_Cancel">Cancel</string>
+    <string name="Biometric_Title">बायोमेट्रिक प्रमाणीकरण</string>
+    <string name="Biometric_Subtitle">प्रमाणित करने के लिए अपनी उंगली का निशान या चेहरा उपयोग करें</string>
+    <string name="Biometric_Cancel">रद्द करें</string>
 
     <!-- Common UI Elements -->
     <string name="Pin">पिन करें</string>
@@ -66,16 +66,17 @@
     <string name="Grid_View_Desc">नोट्स का दृश्य ग्रिड में बदलें</string>
     <string name="Monthly_View">मासिक दृश्य</string>
     <string name="Monthly_View_Desc">मासिक कैलेंडर दृश्य में बदलें</string>
-    <string name="Hour_Format_24">24-Hour Format</string>
-    <string name="Hour_Format_24_Desc">Use 24-hour time format</string>
-    <string name="Compact_Mode">Compact Mode</string>
-    <string name="Compact_Mode_Desc">Show workspace in compact mode</string>
-    <string name="Extreme_Compact_Mode">Extreme Compact Mode</string>
-    <string name="Extreme_Compact_Mode_Desc">Tighter the spacing between workspaces</string>
+    <string name="Hour_Format_24">24-घंटे का प्रारूप</string>
+    <string name="Hour_Format_24_Desc">24-घंटे का समय प्रारूप उपयोग करें</string>
+    <string name="Compact_Mode">कॉम्पैक्ट मोड</string>
+    <string name="Compact_Mode_Desc">वर्कस्पेस को कॉम्पैक्ट मोड में दिखाएँ</string>
+    <string name="Extreme_Compact_Mode">अत्यधिक कॉम्पैक्ट मोड</string>
+    <string name="Extreme_Compact_Mode_Desc">वर्कस्पेस के बीच की दूरी और कम करें</string>
+    <string name="Theme_Palette">थीम पैलेट</string>
 
     <!-- Settings - Privacy -->
     <string name="Privacy">गोपनीयता</string>
-    <string name="Privacy_desc">स्क्रीन सुरक्षा • ऐप लॉक • Encryption</string>
+    <string name="Privacy_desc">स्क्रीन सुरक्षा • ऐप लॉक</string>
     <string name="Screen_Protection">स्क्रीन सुरक्षा</string>
     <string name="Screen_Protection_Desc">स्क्रीनशॉट निष्क्रिय करें</string>
     <string name="App_Lock">ऐप लॉक</string>
@@ -90,10 +91,10 @@
     <string name="System_language_desc">डिवाइस की भाषा के अनुसार स्वचालित रूप से अनुकूलित</string>
 
     <!-- Settings - Backup -->
-    <string name="Backup">Backup</string>
-    <string name="Backup_Description">Backup your data to a file</string>
-    <string name="Restore">Restore</string>
-    <string name="Restore_Description">Restore your data from backup file</string>
+    <string name="Backup">बैकअप</string>
+    <string name="Backup_Description">अपने डेटा का बैकअप फ़ाइल में लें</string>
+    <string name="Restore">पुनर्स्थापित करें</string>
+    <string name="Restore_Description">बैकअप फ़ाइल से अपना डेटा पुनर्स्थापित करें</string>
 
     <!-- Settings - About -->
     <string name="About">अबाउट</string>
@@ -225,13 +226,12 @@
     <string name="completion_percentage">%1$d%% पूर्णता</string>
 
     <!-- Error Messages -->
-    <string name="Error_Alarm_Permission_Settings">Unable to open alarm permission settings</string>
-    <string name="Error_Schedule_Alarm_Failed">Error: Failed to schedule alarm</string>
-    <string name="Error_Cancel_Alarm_Failed">Error: Failed to cancel alarm</string>
+    <string name="Error_Alarm_Permission_Settings">अलार्म अनुमति सेटिंग्स खोलने में असमर्थ</string>
+    <string name="Error_Schedule_Alarm_Failed">त्रुटि: अलार्म शेड्यूल करने में विफल</string>
+    <string name="Error_Cancel_Alarm_Failed">त्रुटि: अलार्म रद्द करने में विफल</string>
 
     <!-- Content Descriptions (Accessibility) -->
-    <string name="Add_Spaces_Content_Desc">Add-spaces</string>
-    <string name="Space_Content_Desc">space</string>
-    <string name="Edit_Space_Content_Desc">Edit-space</string>
-
+    <string name="Add_Spaces_Content_Desc">स्पेस जोड़ें</string>
+    <string name="Space_Content_Desc">स्पेस</string>
+    <string name="Edit_Space_Content_Desc">स्पेस संपादित करें</string>
 </resources>

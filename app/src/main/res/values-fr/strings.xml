@@ -72,6 +72,7 @@
     <string name="Compact_Mode_Desc">Afficher l\'espace de travail en mode compact</string>
     <string name="Extreme_Compact_Mode">Mode ultra compact</string>
     <string name="Extreme_Compact_Mode_Desc">Réduire l\'espacement entre les espaces de travail</string>
+    <string name="Theme_Palette">Palette de thème</string>
 
     <!-- Settings - Privacy -->
     <string name="Privacy">Confidentialité</string>

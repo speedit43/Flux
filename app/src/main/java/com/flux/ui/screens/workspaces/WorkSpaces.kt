@@ -13,7 +13,7 @@ import androidx.compose.foundation.text.input.TextFieldState
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.ExtendedFloatingActionButton
+import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
@@ -143,15 +143,9 @@ fun WorkSpaces(
             }
         },
         floatingActionButton = {
-            ExtendedFloatingActionButton(
-                onClick = { addWorkspace = true },
-                icon = { Icon(Icons.Default.Add, null) },
-                text = {
-                    Text(
-                        stringResource(R.string.New),
-                        style = MaterialTheme.typography.bodyLarge.copy(fontWeight = FontWeight.Bold)
-                    )
-                })
+            FloatingActionButton({ addWorkspace = true }){
+                Icon(Icons.Default.Add, null)
+            }
         },
         snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { innerPadding ->

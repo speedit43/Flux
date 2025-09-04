@@ -75,8 +75,8 @@ fun Settings(
             item {
                 SettingCategory(
                     isLast = true,
-                    title = "Backup",
-                    subTitle = "Backup • Restore",
+                    title = stringResource(R.string.Backup),
+                    subTitle = stringResource(R.string.Backup_Description),
                     icon = Icons.Rounded.Backup,
                     shape = shapeManager(radius = settings.data.cornerRadius, isLast = true),
                     action = {
