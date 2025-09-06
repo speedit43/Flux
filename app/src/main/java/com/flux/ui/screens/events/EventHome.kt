@@ -53,10 +53,12 @@ import com.flux.ui.theme.pending
 import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.LocalDate
+import java.time.Month
 import java.time.ZoneId
 import java.util.Calendar
 import java.util.Date
 import java.util.Locale
+import kotlin.math.min
 
 @OptIn(ExperimentalMaterial3Api::class)
 fun LazyListScope.eventHomeItems(
@@ -75,7 +77,16 @@ fun LazyListScope.eventHomeItems(
         val today = LocalDate.now()
 
         val todayEvents = allEvents
-            .filter { it.startDateTime.toLocalDate() == today }
+            .filter { event ->
+                occursOnDate(event, today)
+            }
+            .sortedBy { event ->
+                val eventTime = Instant.ofEpochMilli(event.startDateTime)
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalTime()
+
+                today.atTime(eventTime).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+            }
             .sortedBy { event ->
                 allEventInstances
                     .find { it.eventId == event.eventId && it.instanceDate == today }
@@ -83,7 +94,29 @@ fun LazyListScope.eventHomeItems(
             }
 
         val upcomingEvents = allEvents
-            .filter { it.startDateTime.toLocalDate() > today }
+            .filter { event ->
+                val eventStartDate = Instant.ofEpochMilli(event.startDateTime)
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalDate()
+
+                eventStartDate.isAfter(today) ||
+                        (eventStartDate <= today && event.repetition != Repetition.NONE)
+            }
+            .filter { event ->
+                !occursOnDate(event, today)
+            }
+            .sortedBy { event ->
+                val nextOccurrenceDate = calculateNextOccurrence(event, today)
+                val eventTime = Instant.ofEpochMilli(event.startDateTime)
+                    .atZone(ZoneId.systemDefault())
+                    .toLocalTime()
+
+                if (nextOccurrenceDate != null) {
+                    nextOccurrenceDate.atTime(eventTime).atZone(ZoneId.systemDefault()).toInstant().toEpochMilli()
+                } else {
+                    Long.MAX_VALUE
+                }
+            }
             .sortedBy { event ->
                 allEventInstances
                     .find { it.eventId == event.eventId && it.instanceDate == today }
@@ -403,4 +436,68 @@ fun Long.toLocalDate(): LocalDate {
     return Instant.ofEpochMilli(this)
         .atZone(ZoneId.systemDefault())
         .toLocalDate()
+}
+
+private fun occursOnDate(event: EventModel, date: LocalDate): Boolean {
+    val eventStartDate = Instant.ofEpochMilli(event.startDateTime)
+        .atZone(ZoneId.systemDefault())
+        .toLocalDate()
+
+    return when (event.repetition) {
+        Repetition.DAILY -> {
+            // Daily event: occurs if date is on or after start date
+            !date.isBefore(eventStartDate)
+        }
+        Repetition.WEEKLY -> {
+            // Weekly: same day of week and on/after start date
+            !date.isBefore(eventStartDate) &&
+                    date.dayOfWeek == eventStartDate.dayOfWeek
+        }
+        Repetition.MONTHLY -> {
+            // Monthly: same day of month and on/after start date
+            !date.isBefore(eventStartDate) &&
+                    date.dayOfMonth == eventStartDate.dayOfMonth
+        }
+        Repetition.YEARLY -> {
+            // Yearly: same month/day and on/after start date
+            !date.isBefore(eventStartDate) &&
+                    date.month == eventStartDate.month &&
+                    date.dayOfMonth == eventStartDate.dayOfMonth
+        }
+        Repetition.NONE -> {
+            // One-time event: exact match
+            date == eventStartDate
+        }
+    }
+}
+
+private fun calculateNextOccurrence(event: EventModel, today: LocalDate): LocalDate? {
+    val eventStartDate = Instant.ofEpochMilli(event.startDateTime)
+        .atZone(ZoneId.systemDefault())
+        .toLocalDate()
+
+    if (today.isBefore(eventStartDate)) {
+        return eventStartDate
+    }
+
+    return when (event.repetition) {
+        Repetition.DAILY -> today.plusDays(1)
+        Repetition.WEEKLY -> {
+            val daysToAdd = (7 - (today.dayOfWeek.value - eventStartDate.dayOfWeek.value)) % 7
+            today.plusDays(if (daysToAdd == 0) 7L else daysToAdd.toLong())
+        }
+        Repetition.MONTHLY -> {
+            today.plusMonths(1).withDayOfMonth(eventStartDate.dayOfMonth)
+        }
+        Repetition.YEARLY -> {
+            val nextYear = today.plusYears(1)
+            // Handle February 29th edge case
+            if (eventStartDate.month == Month.FEBRUARY && eventStartDate.dayOfMonth == 29) {
+                nextYear.withDayOfMonth(min(29, nextYear.month.length(nextYear.isLeapYear)))
+            } else {
+                nextYear.withMonth(eventStartDate.monthValue).withDayOfMonth(eventStartDate.dayOfMonth)
+            }
+        }
+        Repetition.NONE -> if (eventStartDate.isAfter(today)) eventStartDate else null
+    }
 }
